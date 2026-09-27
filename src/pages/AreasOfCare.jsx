@@ -5,7 +5,6 @@ import {
   Search, 
   X, 
   CheckCircle2, 
-  Pill, 
   ArrowLeft 
 } from 'lucide-react';
 import { allProducts, searchFormulations } from '../data/allProducts';
@@ -101,12 +100,7 @@ export default function AreasOfCare() {
           Inspired by Lilly's bold, quiet confidence and spacious typography
           ========================================================================= */}
       <section className="pt-28 sm:pt-36 pb-12 sm:pb-16 px-4 sm:px-8 border-b border-[#E5E3DC] bg-white">
-        <div className="max-w-7xl mx-auto space-y-6">
-          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#D52B1E]">
-            <Pill className="w-4 h-4 text-[#D52B1E]" />
-            <span>Therapeutic Disciplines & Formulations</span>
-          </div>
-
+        <div className="max-w-7xl mx-auto">
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
             <div className="max-w-3xl space-y-4">
               <h1 className="text-4xl sm:text-6xl lg:text-7xl font-serif font-light text-[#121212] tracking-tight leading-[1.05]">

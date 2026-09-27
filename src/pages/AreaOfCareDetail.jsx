@@ -368,9 +368,6 @@ export default function AreaOfCareDetail() {
             <span>›</span>
             <span className="text-[#121212] font-semibold">{currentCategory.title} ({currentCategory.subtitle})</span>
           </div>
-          <div className="text-xs font-semibold uppercase tracking-wider text-[#D52B1E]">
-            {currentCategory.products.length} Registered Formulations
-          </div>
         </div>
       </div>
 
@@ -380,9 +377,6 @@ export default function AreaOfCareDetail() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
             
             <div className="lg:col-span-7 space-y-4">
-              <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#D52B1E] block">
-                Division Portfolio
-              </span>
               <h1 className="text-4xl sm:text-6xl font-serif font-light text-[#121212] tracking-tight leading-[1.05]">
                 {currentCategory.title} <br />
                 <span className="italic font-normal text-[#D52B1E]">{currentCategory.subtitle}</span>

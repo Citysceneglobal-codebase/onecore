@@ -17,6 +17,7 @@ export default function QualityManufacturing() {
     title: 'Quality is part of the product from the beginning.',
     body: 'At Onecore Pharma, quality is not treated as a final checkpoint. It is considered throughout the product journey, from formulation and sourcing to manufacturing, testing and responsible release.',
     image_url: '/assets/quality.jpg',
+    video_url: '/assets/quality-manufacturing.mp4',
     cta_text: 'Quality Principles',
     cta_url: '#principles',
     secondary_cta_text: 'Explore Formulations',
@@ -51,7 +52,7 @@ export default function QualityManufacturing() {
     eyebrow: 'MANUFACTURING DISCIPLINES',
     title: 'Manufacturing with discipline and control.',
     body: 'Onecore formulations are produced in qualified manufacturing environments adhering strictly to cGMP and regulatory standards.',
-    image_url: '/assets/hero-healthcare.jpg',
+    image_url: '/assets/pharma.jpg',
     items: [
       {
         title: 'Validated Processes',
@@ -99,8 +100,8 @@ export default function QualityManufacturing() {
   const finalCtaSec = getSection('final_cta', {
     title: 'Quality you can depend on.',
     body: 'Explore the therapeutic areas and formulations that make up the Onecore portfolio, or speak with our Medical & Quality Affairs desk.',
-    cta_text: 'Explore Areas of Care',
-    cta_url: '/areas-of-care',
+    cta_text: 'EXPLORE OUR QUALITY',
+    cta_url: '/quality-manufacturing',
     secondary_cta_text: 'Contact Quality Team',
     secondary_cta_url: '/contact',
   });
@@ -145,9 +146,12 @@ export default function QualityManufacturing() {
 
           {/* Stately Full-Bleed Laboratory Visual Frame */}
           <div className="relative rounded-[28px] overflow-hidden border border-[#E5E3DC] shadow-sm aspect-[16/9] lg:aspect-[21/9] bg-[#FAF9F6]">
-            <img
-              src={assetUrl(heroSec.image_url || '/assets/quality.jpg')}
-              alt="Quality assurance laboratory testing and analytical verification"
+            <video
+              src={assetUrl(heroSec.video_url || '/assets/quality-manufacturing.mp4')}
+              autoPlay
+              loop
+              muted
+              playsInline
               className="w-full h-full object-cover"
             />
           </div>
@@ -202,16 +206,14 @@ export default function QualityManufacturing() {
           <div className="max-w-7xl mx-auto space-y-12">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
               
-              {/* Left Video Embed */}
+              {/* Left Image Visual Frame */}
               <div className="lg:col-span-7 order-2 lg:order-1">
                 <ScrollReveal delay={0.1}>
-                  <div className="relative rounded-[28px] overflow-hidden border border-[#E5E3DC] shadow-lg aspect-video bg-black">
-                    <iframe
-                      src="https://www.youtube-nocookie.com/embed/ZPH-TVw0t6Y?rel=0&modestbranding=1"
-                      title="Onecore Pharma Manufacturing & Facility Operations"
-                      className="w-full h-full border-0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
+                  <div className="relative rounded-[28px] overflow-hidden border border-[#E5E3DC] shadow-lg aspect-video bg-[#FAF9F6]">
+                    <img
+                      src={assetUrl(manufacturingSec.image_url || '/assets/pharma.jpg')}
+                      alt="Onecore Pharma Manufacturing & Facility Operations"
+                      className="w-full h-full object-cover"
                     />
                   </div>
                 </ScrollReveal>
@@ -313,10 +315,10 @@ export default function QualityManufacturing() {
               <div className="lg:col-span-4 flex flex-wrap lg:justify-end gap-4">
                 <ScrollReveal delay={0.1}>
                   <Link
-                    to="/areas-of-care"
+                    to={finalCtaSec.cta_url || '/quality-manufacturing'}
                     className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#D52B1E] hover:bg-[#B52015] text-white text-xs font-semibold rounded-full transition-colors shadow-xs cursor-pointer"
                   >
-                    <span>Explore Areas of Care</span>
+                    <span>{finalCtaSec.cta_text || 'EXPLORE OUR QUALITY'}</span>
                     <ArrowRight className="w-4 h-4" />
                   </Link>
                 </ScrollReveal>

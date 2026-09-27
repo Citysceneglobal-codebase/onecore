@@ -191,7 +191,7 @@ export default function ProductOneFlexo() {
               <p className="text-base sm:text-xl text-[#555555] font-light leading-relaxed font-sans max-w-2xl">
                 {product?.description || `${brandName} is a specialised joint health formulation combining Aflapin®, native undenatured Type II collagen and Mobilee® in a single standardized capsule.`}
               </p>
-              <div className="pt-2 flex items-center gap-3">
+              <div className="pt-2 flex flex-wrap items-center gap-3">
                 <button
                   onClick={() => scrollToSection('composition')}
                   className="inline-flex items-center gap-2 px-6 py-3 bg-[#D52B1E] hover:bg-[#B52015] text-white text-xs font-semibold rounded-full transition-colors cursor-pointer"

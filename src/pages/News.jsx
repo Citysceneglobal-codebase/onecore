@@ -33,10 +33,6 @@ export default function News() {
           ========================================================================= */}
       <section className="pt-28 sm:pt-36 pb-16 sm:pb-20 px-4 sm:px-8 border-b border-[#E5E3DC] bg-white">
         <div className="max-w-7xl mx-auto space-y-6">
-          <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#D52B1E] block">
-            {heroSec.eyebrow || 'NEWS & PERSPECTIVES'}
-          </span>
-
           <div className="max-w-3xl space-y-4">
             <h1 className="text-4xl sm:text-6xl lg:text-7xl font-serif font-light text-[#121212] tracking-tight leading-[1.05]">
               News & <br />

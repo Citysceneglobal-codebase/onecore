@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, Search, Globe, ArrowRight, ArrowUpRight, ShieldCheck } from 'lucide-react';
+import { Menu, X, Search, ArrowRight, ArrowUpRight, ShieldCheck } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSettings } from '../hooks/useSettings';
 import { assetUrl } from '../utils/assetUrl';
@@ -143,11 +143,6 @@ export default function Navbar() {
                 <span className="hidden md:inline text-xs font-medium text-white/80 pr-1">Search</span>
               </button>
 
-              {/* Region Pill */}
-              <div className="hidden sm:flex items-center gap-1 text-xs text-white/80 pl-2 border-l border-white/15">
-                <Globe className="w-3.5 h-3.5 text-white/70" />
-                <span className="font-medium text-[11px] uppercase tracking-wider">India</span>
-              </div>
 
               {/* Contact Us Direct Link */}
               <Link

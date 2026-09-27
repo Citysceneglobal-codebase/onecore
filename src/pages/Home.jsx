@@ -63,6 +63,8 @@ export default function Home() {
     body: 'Medicines carry responsibility. That is why quality needs to be considered across manufacturing, testing, review and release, not treated as a final checkpoint.',
     subheading: 'Our approach is centered on qualified manufacturing environments, appropriate quality controls and disciplined review before products reach the market.',
     image_url: '/assets/internet/lab-chemistry.jpg',
+    cta_text: 'EXPLORE OUR QUALITY',
+    cta_url: '/quality-manufacturing',
     items: [
       {
         title: 'Consistent standards',
@@ -188,13 +190,7 @@ export default function Home() {
             </ScrollReveal>
 
             <ScrollReveal delay={0.1}>
-              <p className="text-base sm:text-xl text-white/85 font-normal max-w-2xl leading-relaxed">
-                Purposeful formulations, dependable quality, and healthcare solutions centered on patients and healthcare professionals.
-              </p>
-            </ScrollReveal>
-
-            <ScrollReveal delay={0.15}>
-              <div className="pt-2 flex flex-wrap items-center gap-4">
+              <div className="flex flex-wrap items-center gap-4">
                 <Link
                   to="/areas-of-care"
                   className="inline-flex items-center gap-2.5 px-8 py-4 bg-[#D52B1E] hover:bg-[#B52015] text-white text-sm font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 group"
@@ -522,30 +518,13 @@ export default function Home() {
                 </div>
               </ScrollReveal>
 
-              {/* Principles */}
               <ScrollReveal delay={0.15}>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4 border-t border-white/20">
-                  {qualitySec.items.map((principle, idx) => (
-                    <div key={principle.title || idx} className="space-y-2">
-                      <div className="flex items-center gap-2 text-white font-semibold">
-                        <CheckCircle2 className="w-4 h-4 text-[#D52B1E]" />
-                        <span>{principle.title}</span>
-                      </div>
-                      <p className="text-xs sm:text-sm text-stone-300 leading-relaxed">
-                        {principle.desc || principle.description || principle.text}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </ScrollReveal>
-
-              <ScrollReveal delay={0.2}>
                 <div className="pt-2">
                   <Link
-                    to="/areas-of-care"
+                    to={qualitySec.cta_url || '/quality-manufacturing'}
                     className="inline-flex items-center gap-2 px-8 py-4 bg-[#D52B1E] hover:bg-[#B52015] text-white text-xs font-bold uppercase tracking-wider rounded-full transition-colors shadow-lg"
                   >
-                    <span>Explore Areas of Care</span>
+                    <span>{qualitySec.cta_text || 'EXPLORE OUR QUALITY'}</span>
                     <ArrowRight className="w-4 h-4" />
                   </Link>
                 </div>

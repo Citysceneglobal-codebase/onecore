@@ -189,30 +189,24 @@ export default function PediatricsProductDetail() {
   }
 
   const mechanismSteps = parseMechanismSteps(product.mechanism);
-  const usedForItems = parseUsedForItems(product.usedFor);
   const directionSteps = parseDirectionSteps(product.direction);
   const precautionsAccordions = parsePrecautionsAccordions(product.precautions);
   const hasPrecautions = precautionsAccordions && precautionsAccordions.length > 0;
 
+  const scrollToSection = (id) => {
+    const el = document.getElementById(id) || document.getElementById(id === 'used' ? 'indications' : (id === 'indications' ? 'used' : id));
+    if (el) {
+      const yOffset = -90;
+      const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+  };
+
   return (
     <div className="w-full bg-white text-[#232126] font-sans antialiased">
-      {/* 2. CONTEXT / BREADCRUMB BAR */}
-      <div className="w-full border-b border-[#d9d4cf] bg-white py-3 px-6 sm:px-12 flex flex-col sm:flex-row justify-between items-start sm:items-center text-xs text-[#777078] gap-2">
-        <div className="flex items-center gap-1.5 flex-wrap">
-          <Link to="/areas-of-care" className="hover:text-[#232126] transition-colors">Areas of Care</Link>
-          <span>›</span>
-          <Link to="/areas-of-care/pediaplus" className="hover:text-[#232126] transition-colors">Pediatrics</Link>
-          <span>›</span>
-          <span className="text-[#232126] font-medium">{product.name}</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <span>Market information:</span>
-          <strong className="text-[#232126] font-semibold">India</strong>
-        </div>
-      </div>
 
       {/* 3. PRODUCT HERO (SPLIT SCREEN 43% / 57%) */}
-      <div className="w-full bg-[#f7f5f1] grid grid-cols-1 lg:grid-cols-12 min-h-[640px]">
+      <div id="overview" className="w-full bg-[#f7f5f1] grid grid-cols-1 lg:grid-cols-12 min-h-[640px] scroll-mt-24">
         {/* LEFT 43% - Packshot Presentation */}
         <div className="lg:col-span-5 bg-gradient-to-br from-[#e9e5df] to-[#f1eee9] p-8 sm:p-14 lg:p-16 flex flex-col items-center justify-center relative min-h-[420px]">
           <div className="w-[220px] sm:w-[260px] bg-white border border-[#d4cfc9] rounded-[16px] shadow-lg p-6 flex flex-col items-center relative min-h-[340px]">
@@ -262,29 +256,50 @@ export default function PediatricsProductDetail() {
       {/* 5. STICKY ANCHOR NAVIGATION */}
       <div className="sticky top-0 z-20 bg-white/95 backdrop-blur-md border-t border-[#eeeae6] border-b border-[#d9d4cf] px-6 sm:px-12">
         <div className="max-w-6xl mx-auto flex gap-8 overflow-x-auto py-4 scrollbar-none no-scrollbar">
-          <a href="#mechanism" className="text-xs uppercase tracking-wider font-semibold text-[#514b53] hover:text-[#5b2a70] transition-colors whitespace-nowrap">
-            How it works
-          </a>
-          <a href="#used" className="text-xs uppercase tracking-wider font-semibold text-[#514b53] hover:text-[#5b2a70] transition-colors whitespace-nowrap">
-            When it is used
-          </a>
-          <a href="#directions" className="text-xs uppercase tracking-wider font-semibold text-[#514b53] hover:text-[#5b2a70] transition-colors whitespace-nowrap">
+          <button
+            type="button"
+            onClick={() => scrollToSection('overview')}
+            className="text-xs uppercase tracking-wider font-semibold text-[#514b53] hover:text-[#5b2a70] transition-colors whitespace-nowrap cursor-pointer"
+          >
+            Overview
+          </button>
+          <button
+            type="button"
+            onClick={() => scrollToSection('mechanism')}
+            className="text-xs uppercase tracking-wider font-semibold text-[#514b53] hover:text-[#5b2a70] transition-colors whitespace-nowrap cursor-pointer"
+          >
+            Mechanism of Action
+          </button>
+          <button
+            type="button"
+            onClick={() => scrollToSection('used')}
+            className="text-xs uppercase tracking-wider font-semibold text-[#514b53] hover:text-[#5b2a70] transition-colors whitespace-nowrap cursor-pointer"
+          >
+            Therapeutic Role
+          </button>
+          <button
+            type="button"
+            onClick={() => scrollToSection('directions')}
+            className="text-xs uppercase tracking-wider font-semibold text-[#514b53] hover:text-[#5b2a70] transition-colors whitespace-nowrap cursor-pointer"
+          >
             Administration
-          </a>
+          </button>
           {hasPrecautions && (
-            <a href="#precautions" className="text-xs uppercase tracking-wider font-semibold text-[#514b53] hover:text-[#5b2a70] transition-colors whitespace-nowrap">
-              Precautions
-            </a>
+            <button
+              type="button"
+              onClick={() => scrollToSection('precautions')}
+              className="text-xs uppercase tracking-wider font-semibold text-[#514b53] hover:text-[#5b2a70] transition-colors whitespace-nowrap cursor-pointer"
+            >
+              Safety Profile
+            </button>
           )}
         </div>
       </div>
 
       {/* 6. MECHANISM OF WORK (DARK SECTION) */}
-      <section id="mechanism" className="bg-[#232126] text-white py-20 px-6 sm:px-16">
+      <section id="mechanism" className="bg-[#232126] text-white py-20 px-6 sm:px-16 scroll-mt-24">
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
-          <div className="lg:col-span-3 text-xs font-bold tracking-[0.19em] uppercase text-[#cfbfd6] pt-2">
-            MECHANISM OF WORK
-          </div>
+          <div className="lg:col-span-3" />
           <div className="lg:col-span-9 space-y-8">
             <h2 className="font-serif text-4xl sm:text-5xl font-normal leading-tight max-w-3xl">
               How the formula operates in the body.
@@ -311,7 +326,7 @@ export default function PediatricsProductDetail() {
       </section>
 
       {/* 7. WHEN IS IT USED? (STONE/NEUTRAL SECTION) */}
-      <section id="used" className="bg-[#ebe7e1] text-[#232126] py-20 px-6 sm:px-16">
+      <section id="used" className="bg-[#ebe7e1] text-[#232126] py-20 px-6 sm:px-16 scroll-mt-24">
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
           <div className="lg:col-span-3 text-xs font-bold tracking-[0.19em] uppercase text-[#5b2a70] pt-2">
             WHEN IS IT USED?
@@ -324,29 +339,12 @@ export default function PediatricsProductDetail() {
               {product.usedFor}
             </p>
 
-            {usedForItems.length > 0 && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 border-t border-b border-[#bdb7b2] my-8">
-                {usedForItems.map((item, idx) => (
-                  <div
-                    key={idx}
-                    className="p-6 border-b sm:border-b-0 border-[#c9c3be] last:border-0 lg:border-r"
-                  >
-                    <div className="text-[10px] tracking-widest text-[#8d818f] font-mono uppercase">
-                      {item.num}
-                    </div>
-                    <strong className="block font-serif text-xl font-normal mt-3 text-[#232126] leading-snug">
-                      {item.title}
-                    </strong>
-                  </div>
-                ))}
-              </div>
-            )}
           </div>
         </div>
       </section>
 
       {/* 8. ADMINISTRATION & DOSAGE */}
-      <section id="directions" className="bg-white text-[#232126] py-20 px-6 sm:px-16">
+      <section id="directions" className="bg-white text-[#232126] py-20 px-6 sm:px-16 scroll-mt-24">
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
           <div className="lg:col-span-3 text-xs font-bold tracking-[0.19em] uppercase text-[#5b2a70] pt-2">
             ADMINISTRATION
@@ -380,7 +378,7 @@ export default function PediatricsProductDetail() {
 
       {/* 9. PRECAUTIONS (ONLY RENDER IF PRECAUTIONS EXIST) */}
       {hasPrecautions && (
-        <section id="precautions" className="bg-white text-[#232126] py-20 px-6 sm:px-16 border-t border-[#eeeae6]">
+        <section id="precautions" className="bg-white text-[#232126] py-20 px-6 sm:px-16 border-t border-[#eeeae6] scroll-mt-24">
           <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
             <div className="lg:col-span-3 text-xs font-bold tracking-[0.19em] uppercase text-[#5b2a70] pt-2">
               PRECAUTIONS

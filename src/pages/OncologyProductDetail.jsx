@@ -185,29 +185,24 @@ export default function OncologyProductDetail() {
   }
 
   const mechanismSteps = parseMechanismSteps(product.mechanism);
-  const usedForItems = parseUsedForItems(product.usedFor);
   const directionSteps = parseDirectionSteps(product.direction);
   const precautionsAccordions = parsePrecautionsAccordions(product.precautions);
+  const hasPrecautions = precautionsAccordions && precautionsAccordions.length > 0;
+
+  const scrollToSection = (id) => {
+    const el = document.getElementById(id) || document.getElementById(id === 'used' ? 'indications' : (id === 'indications' ? 'used' : id));
+    if (el) {
+      const yOffset = -90;
+      const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+  };
 
   return (
     <div className="w-full bg-white text-[#232126] font-sans antialiased">
-      {/* CONTEXT / BREADCRUMB BAR */}
-      <div className="w-full border-b border-[#d9d4cf] bg-white py-3 px-6 sm:px-12 flex flex-col sm:flex-row justify-between items-start sm:items-center text-xs text-[#777078] gap-2">
-        <div className="flex items-center gap-1.5 flex-wrap">
-          <Link to="/areas-of-care" className="hover:text-[#232126] transition-colors">Therapeutic Areas</Link>
-          <span>›</span>
-          <Link to="/areas-of-care/cytos" className="hover:text-[#232126] transition-colors">Cytos</Link>
-          <span>›</span>
-          <span className="text-[#232126] font-medium">{product.name}</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <span>Market information:</span>
-          <strong className="text-[#232126] font-semibold">India</strong>
-        </div>
-      </div>
 
       {/* PRODUCT HERO (SPLIT SCREEN 43% / 57%) */}
-      <div className="w-full bg-[#f7f5f1] grid grid-cols-1 lg:grid-cols-12 min-h-[640px]">
+      <div id="overview" className="w-full bg-[#f7f5f1] grid grid-cols-1 lg:grid-cols-12 min-h-[640px] scroll-mt-24">
         {/* LEFT 43% */}
         <div className="lg:col-span-5 bg-gradient-to-br from-[#e5e9ec] to-[#f0f3f5] p-8 sm:p-14 lg:p-16 flex flex-col items-center justify-center relative min-h-[420px]">
           <div className="w-[220px] sm:w-[260px] bg-white border border-[#cfd6dc] rounded-[16px] shadow-lg p-6 flex flex-col items-center relative min-h-[340px]">
@@ -256,19 +251,49 @@ export default function OncologyProductDetail() {
 
       {/* STICKY ANCHOR NAVIGATION */}
       <div className="sticky top-0 z-30 bg-white border-b border-[#d9d4cf] px-6 sm:px-12 py-3 flex gap-6 sm:gap-10 overflow-x-auto text-xs uppercase tracking-widest font-semibold text-[#777078] scrollbar-none">
-        <a href="#overview" className="hover:text-[#1f4e5b] transition-colors whitespace-nowrap">Overview</a>
-        <a href="#mechanism" className="hover:text-[#1f4e5b] transition-colors whitespace-nowrap">Mechanism of Action</a>
-        <a href="#indications" className="hover:text-[#1f4e5b] transition-colors whitespace-nowrap">Therapeutic Role</a>
-        <a href="#directions" className="hover:text-[#1f4e5b] transition-colors whitespace-nowrap">Administration</a>
-        <a href="#precautions" className="hover:text-[#1f4e5b] transition-colors whitespace-nowrap">Safety Profile</a>
+        <button
+          type="button"
+          onClick={() => scrollToSection('overview')}
+          className="hover:text-[#1f4e5b] transition-colors whitespace-nowrap cursor-pointer uppercase tracking-widest text-xs font-semibold text-[#777078]"
+        >
+          Overview
+        </button>
+        <button
+          type="button"
+          onClick={() => scrollToSection('mechanism')}
+          className="hover:text-[#1f4e5b] transition-colors whitespace-nowrap cursor-pointer uppercase tracking-widest text-xs font-semibold text-[#777078]"
+        >
+          Mechanism of Action
+        </button>
+        <button
+          type="button"
+          onClick={() => scrollToSection('indications')}
+          className="hover:text-[#1f4e5b] transition-colors whitespace-nowrap cursor-pointer uppercase tracking-widest text-xs font-semibold text-[#777078]"
+        >
+          Therapeutic Role
+        </button>
+        <button
+          type="button"
+          onClick={() => scrollToSection('directions')}
+          className="hover:text-[#1f4e5b] transition-colors whitespace-nowrap cursor-pointer uppercase tracking-widest text-xs font-semibold text-[#777078]"
+        >
+          Administration
+        </button>
+        {hasPrecautions && (
+          <button
+            type="button"
+            onClick={() => scrollToSection('precautions')}
+            className="hover:text-[#1f4e5b] transition-colors whitespace-nowrap cursor-pointer uppercase tracking-widest text-xs font-semibold text-[#777078]"
+          >
+            Safety Profile
+          </button>
+        )}
       </div>
 
       {/* SECTION: MECHANISM OF ACTION */}
-      <section id="mechanism" className="bg-[#232126] text-white py-20 px-6 sm:px-16">
+      <section id="mechanism" className="bg-[#232126] text-white py-20 px-6 sm:px-16 scroll-mt-24">
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
-          <div className="lg:col-span-3 text-xs font-bold tracking-[0.19em] uppercase text-[#cfbfd6] pt-2">
-            MECHANISM OF WORK
-          </div>
+          <div className="lg:col-span-3" />
           <div className="lg:col-span-9 space-y-8">
             <h2 className="font-serif text-4xl sm:text-5xl font-normal leading-tight max-w-3xl">
               How the formula operates in the body.
@@ -295,7 +320,7 @@ export default function OncologyProductDetail() {
       </section>
 
       {/* SECTION: THERAPEUTIC INDICATIONS */}
-      <section id="indications" className="py-16 sm:py-24 px-6 sm:px-12 lg:px-20 bg-white">
+      <section id="indications" className="py-16 sm:py-24 px-6 sm:px-12 lg:px-20 bg-white scroll-mt-24">
         <div className="max-w-6xl mx-auto">
           <div className="text-[11px] tracking-[0.2em] uppercase font-bold text-[#1f4e5b] mb-3">
             CLINICAL APPLICATION
@@ -303,23 +328,14 @@ export default function OncologyProductDetail() {
           <h2 className="font-serif text-3xl sm:text-4xl text-[#232126] font-normal mb-6">
             Therapeutic Role & Indications
           </h2>
-          <p className="text-[#575159] text-base sm:text-lg max-w-3xl mb-12 leading-relaxed">
+          <p className="text-[#575159] text-base sm:text-lg max-w-3xl leading-relaxed">
             {product.usedFor}
           </p>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {usedForItems.map((item, index) => (
-              <div key={index} className="bg-[#f7f5f1] border border-[#e5e1dc] p-6 rounded-xs flex flex-col justify-between min-h-[140px]">
-                <span className="text-xs font-mono text-[#788891] mb-4">{item.num}</span>
-                <span className="font-serif text-lg text-[#232126] leading-snug">{item.title}</span>
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 
       {/* SECTION: ADMINISTRATION & DOSAGE */}
-      <section id="directions" className="bg-white text-[#232126] py-20 px-6 sm:px-16">
+      <section id="directions" className="bg-white text-[#232126] py-20 px-6 sm:px-16 scroll-mt-24">
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
           <div className="lg:col-span-3 text-xs font-bold tracking-[0.19em] uppercase text-[#1f4e5b] pt-2">
             ADMINISTRATION
@@ -352,25 +368,27 @@ export default function OncologyProductDetail() {
       </section>
 
       {/* SECTION: PRECAUTIONS & SAFETY */}
-      <section id="precautions" className="py-16 sm:py-24 px-6 sm:px-12 lg:px-20 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-[11px] tracking-[0.2em] uppercase font-bold text-[#1f4e5b] mb-3">
-            SAFETY & TOLERABILITY
-          </div>
-          <h2 className="font-serif text-3xl sm:text-4xl text-[#232126] font-normal mb-6">
-            Precautions & Clinical Considerations
-          </h2>
+      {hasPrecautions && (
+        <section id="precautions" className="py-16 sm:py-24 px-6 sm:px-12 lg:px-20 bg-white scroll-mt-24">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-[11px] tracking-[0.2em] uppercase font-bold text-[#1f4e5b] mb-3">
+              SAFETY & TOLERABILITY
+            </div>
+            <h2 className="font-serif text-3xl sm:text-4xl text-[#232126] font-normal mb-6">
+              Precautions & Clinical Considerations
+            </h2>
 
-          <div className="space-y-4 max-w-3xl">
-            {precautionsAccordions.map((item, index) => (
-              <div key={index} className="border border-[#d9d4cf] rounded-xs p-6 bg-[#fbfaf8]">
-                <h3 className="font-serif text-lg text-[#232126] font-normal mb-2">{item.title}</h3>
-                <p className="text-xs sm:text-sm text-[#575159] leading-relaxed">{item.content}</p>
-              </div>
-            ))}
+            <div className="space-y-4 max-w-3xl">
+              {precautionsAccordions.map((item, index) => (
+                <div key={index} className="border border-[#d9d4cf] rounded-xs p-6 bg-[#fbfaf8]">
+                  <h3 className="font-serif text-lg text-[#232126] font-normal mb-2">{item.title}</h3>
+                  <p className="text-xs sm:text-sm text-[#575159] leading-relaxed">{item.content}</p>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* FOOTER CTA */}
       <div className="border-t border-[#d9d4cf] py-12 px-6 sm:px-12 bg-[#f7f5f1] text-center">

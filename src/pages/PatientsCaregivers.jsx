@@ -191,10 +191,6 @@ export default function PatientsCaregivers() {
         <div className="max-w-7xl mx-auto space-y-12">
           
           <div className="max-w-4xl space-y-6">
-            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#D52B1E] block">
-              {heroSec.eyebrow || 'PATIENTS & CAREGIVERS'}
-            </span>
-
             <h1 className="text-4xl sm:text-6xl lg:text-7xl font-serif font-light text-[#121212] tracking-tight leading-[1.05]">
               Patients & Caregivers. <br />
               <span className="italic font-normal text-[#D52B1E]">Partners in healthcare.</span>

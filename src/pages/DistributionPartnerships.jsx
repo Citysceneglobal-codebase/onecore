@@ -169,14 +169,9 @@ export default function DistributionPartnerships() {
             {/* Left Narrative Column */}
             <div className="lg:col-span-6 space-y-6">
               <ScrollReveal>
-                <div className="space-y-3">
-                  <span className="text-xs font-mono font-semibold uppercase tracking-wider text-[#D52B1E]">
-                    COMMERCIAL ALLIANCES
-                  </span>
-                  <h2 className="text-3xl sm:text-5xl font-serif font-light text-[#121212] tracking-tight leading-tight">
-                    Ethical Alliances Built on Trust & Territory Integrity.
-                  </h2>
-                </div>
+                <h2 className="text-3xl sm:text-5xl font-serif font-light text-[#121212] tracking-tight leading-tight">
+                  Ethical Alliances Built on Trust & Territory Integrity.
+                </h2>
               </ScrollReveal>
 
               <ScrollReveal delay={0.1}>
@@ -487,14 +482,14 @@ export default function DistributionPartnerships() {
                 />
               </div>
 
-              <div className="pt-2 flex items-center justify-between">
+              <div className="pt-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <p className="text-xs text-[#777777]">
                   All partner submissions are strictly confidential.
                 </p>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-8 py-3.5 bg-[#D52B1E] hover:bg-[#B52015] text-white text-xs font-bold uppercase tracking-wider rounded-full transition-colors shadow-xs disabled:opacity-50"
+                  className="w-full sm:w-auto px-8 py-3.5 bg-[#D52B1E] hover:bg-[#B52015] text-white text-xs font-bold uppercase tracking-wider rounded-full transition-colors shadow-xs disabled:opacity-50"
                 >
                   {submitting ? 'Submitting Application...' : 'Submit Application'}
                 </button>

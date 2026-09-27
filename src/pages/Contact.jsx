@@ -12,7 +12,25 @@ export default function Contact() {
 
   useEffect(() => {
     document.title = "Contact Onecore | Product Inquiries & Direct Channels";
+
+    const hash = window.location.hash;
+    const match = hash.match(/#(enquiry-form|contact-details)/);
+    if (match && match[1]) {
+      setTimeout(() => {
+        scrollToSection(match[1]);
+      }, 250);
+    }
   }, []);
+
+  const scrollToSection = (id) => {
+    const cleanId = (id || '').replace(/^#/, '');
+    const element = document.getElementById(cleanId);
+    if (element) {
+      const yOffset = -90;
+      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+  };
 
   const displayEmail = contact?.general_email || contact?.email || 'info@onecorepharma.in';
   const displayPhone = contact?.phone || '8169255034';
@@ -99,7 +117,6 @@ export default function Contact() {
   const safetySec = getSection('patient_safety', {
     eyebrow: 'PATIENT SAFETY',
     title: 'Reporting a safety or quality concern?',
-    subheading: 'Use the dedicated safety reporting route.',
     body: 'Suspected side effects and product quality concerns should be reported through the appropriate safety channel so the information can be reviewed correctly.',
     items: [
       {
@@ -136,12 +153,7 @@ export default function Contact() {
 
   const handleSelectEnquiryType = (val) => {
     setFormData((prev) => ({ ...prev, natureOfEnquiry: val }));
-    const formElement = document.getElementById('enquiry-form');
-    if (formElement) {
-      const yOffset = -90;
-      const y = formElement.getBoundingClientRect().top + window.pageYOffset + yOffset;
-      window.scrollTo({ top: y, behavior: 'smooth' });
-    }
+    scrollToSection('enquiry-form');
   };
 
   const validateForm = () => {
@@ -230,20 +242,22 @@ export default function Contact() {
             </p>
 
             <div className="pt-4 flex flex-wrap items-center gap-4">
-              <a
-                href={heroSec.cta_url || '#enquiry-form'}
-                className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#D52B1E] hover:bg-[#B52015] text-white text-xs font-semibold rounded-full transition-colors shadow-xs"
+              <button
+                type="button"
+                onClick={() => scrollToSection(heroSec.cta_url || 'enquiry-form')}
+                className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#D52B1E] hover:bg-[#B52015] text-white text-xs font-semibold rounded-full transition-colors shadow-xs cursor-pointer"
               >
                 <span>{heroSec.cta_text || 'Send an Enquiry'}</span>
                 <ArrowDown className="w-3.5 h-3.5" />
-              </a>
-              <a
-                href={heroSec.secondary_cta_url || '#contact-details'}
-                className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#FAF9F6] hover:bg-[#EBE9E1] text-[#121212] text-xs font-semibold rounded-full transition-colors border border-[#E5E3DC]"
+              </button>
+              <button
+                type="button"
+                onClick={() => scrollToSection(heroSec.secondary_cta_url || 'contact-details')}
+                className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#FAF9F6] hover:bg-[#EBE9E1] text-[#121212] text-xs font-semibold rounded-full transition-colors border border-[#E5E3DC] cursor-pointer"
               >
-                <span>{heroSec.secondary_cta_text || 'Direct Channels'}</span>
+                <span>{heroSec.secondary_cta_text || 'Contact Details'}</span>
                 <ArrowRight className="w-3.5 h-3.5" />
-              </a>
+              </button>
             </div>
 
             {/* Stately Healthcare Direct Helpline & Inquiries Banner Frame */}
@@ -703,12 +717,7 @@ export default function Contact() {
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-light text-[#121212] tracking-tight text-balance">
                 Reporting a safety <br className="hidden sm:inline" />or quality concern?
               </h2>
-              {safetySec.subheading && (
-                <h3 className="text-xl sm:text-2xl font-serif italic text-[#D52B1E] pt-1">
-                  {safetySec.subheading}
-                </h3>
-              )}
-              <p className="text-base sm:text-lg text-[#555555] font-light leading-relaxed pt-1 font-sans">
+              <p className="text-base sm:text-lg text-[#555555] font-light leading-relaxed pt-2 font-sans">
                 {safetySec.body}
               </p>
             </ScrollReveal>
