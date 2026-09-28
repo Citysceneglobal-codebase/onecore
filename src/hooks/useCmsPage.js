@@ -39,6 +39,7 @@ export function useCmsPage(pageKey, fallbackData = {}) {
 
     if (!sec) {
       return {
+        ...fallback,
         title: fallbackTitle,
         heading: fallbackTitle,
         subtitle: fallbackSubtitle,
@@ -61,6 +62,8 @@ export function useCmsPage(pageKey, fallbackData = {}) {
     const subVal = sec.subtitle || sec.subheading || fallbackSubtitle;
 
     return {
+      ...fallback,
+      ...sec,
       id: sec.id || key,
       section_key: key,
       title: titleVal,

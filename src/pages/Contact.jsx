@@ -75,12 +75,41 @@ export default function Contact() {
     ]
   });
 
+  const enquiryOptions = [
+    { value: 'Product information', label: 'Product information' },
+    { value: 'Business and distribution', label: 'Business & distribution' },
+    { value: 'Careers', label: 'Careers' },
+    { value: 'General enquiry', label: 'General enquiry' },
+  ];
+
   const partnershipSec = getSection('partnerships_section', {
     eyebrow: 'Distribution & Franchise Partnerships',
     title: 'Grow with Onecore.',
     lead: 'We are expanding our distribution network across India and are looking to partner with pharmaceutical distributors and franchise partners who understand their markets and want to build for the long term.',
     body: 'With a growing portfolio across multiple therapeutic areas, Onecore offers partners access to relevant products, dependable supply and structured commercial support.',
     why_title: 'Why partner with Onecore',
+    items: [
+      {
+        num: '01',
+        title: 'Broad portfolio',
+        description: 'Access products across multiple therapeutic areas, helping you build a more diversified business.',
+      },
+      {
+        num: '02',
+        title: 'Territory focused approach',
+        description: 'Work within clearly discussed markets with a focus on sustainable product movement and growth.',
+      },
+      {
+        num: '03',
+        title: 'Better inventory planning',
+        description: 'We believe in practical stock planning and consistent replenishment rather than unnecessary inventory loading.',
+      },
+      {
+        num: '04',
+        title: 'Partner support',
+        description: 'Receive product information, promotional support and a dedicated point of contact for smoother day to day coordination.',
+      },
+    ],
     pillars: [
       {
         num: '01',
@@ -397,7 +426,7 @@ export default function Contact() {
             </ScrollReveal>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
-              {partnershipSec.pillars.map((pillar, idx) => (
+              {(partnershipSec.pillars || partnershipSec.items || []).map((pillar, idx) => (
                 <ScrollReveal key={pillar.title} delay={idx * 0.08}>
                   <div className="p-8 sm:p-10 rounded-3xl bg-[#FAFAF8] border border-[#E5E3DC] hover:border-[#121212] hover:bg-white transition-all duration-300 space-y-3 group">
                     <span className="text-2xl sm:text-3xl font-serif font-light text-[#888888] group-hover:text-[#D52B1E] transition-colors">
@@ -648,10 +677,10 @@ export default function Contact() {
                             : 'border-[#E5E3DC] focus:border-[#D52B1E] focus:ring-1 focus:ring-[#D52B1E]'
                             }`}
                         >
-                          <option value="">Select</option>
-                          {enquirySec.items.map((opt) => (
-                            <option key={opt.value || opt.title} value={opt.value || opt.title}>
-                              {opt.title}
+                          <option value="">Select enquiry type</option>
+                          {enquiryOptions.map((opt) => (
+                            <option key={opt.value} value={opt.value}>
+                              {opt.label}
                             </option>
                           ))}
                         </select>
