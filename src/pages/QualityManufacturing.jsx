@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, CheckCircle2, ShieldCheck, Microscope, Layers } from 'lucide-react';
 import ScrollReveal from '../components/ScrollReveal';
@@ -7,9 +7,23 @@ import { assetUrl } from '../utils/assetUrl';
 
 export default function QualityManufacturing() {
   const { getSection } = useCmsPage('quality-manufacturing');
+  const videoRef = useRef(null);
 
   useEffect(() => {
     document.title = "Quality & Manufacturing | Onecore Pharma";
+
+    if (videoRef.current) {
+      videoRef.current.playbackRate = 0.95;
+      const playPromise = videoRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          if (videoRef.current) {
+            videoRef.current.muted = true;
+            videoRef.current.play();
+          }
+        });
+      }
+    }
   }, []);
 
   const heroSec = getSection('hero', {
@@ -110,52 +124,66 @@ export default function QualityManufacturing() {
     <div className="w-full bg-[#FAF9F6] text-[#121212]">
       
       {/* =========================================================================
-          SECTION 1 — EDITORIAL HERO
-          Spacious, dignified typography with signature crimson accent
+          SECTION 1 — CINEMATIC MANUFACTURING VIDEO HERO
+          Headline & body overlaid directly on video with contrast grading & smooth looping
           ========================================================================= */}
-      <section className="pt-28 sm:pt-36 pb-16 sm:pb-24 px-4 sm:px-8 border-b border-[#E5E3DC] bg-white">
-        <div className="max-w-7xl mx-auto space-y-12">
-          
-          <div className="max-w-4xl space-y-6">
-            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-serif font-light text-[#121212] tracking-tight leading-[1.05]">
-              Quality is part of the product <br />
-              <span className="italic font-normal text-[#D52B1E]">from the beginning.</span>
-            </h1>
+      <section className="relative min-h-[85vh] sm:min-h-[90vh] flex items-end pb-16 sm:pb-24 pt-32 px-4 sm:px-8 lg:px-12 bg-[#071324] overflow-hidden">
+        {/* Background Video with Cinematic Grading & Color Filter */}
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          <video
+            ref={videoRef}
+            src={assetUrl(heroSec.video_url || '/assets/quality-manufacturing.mp4')}
+            poster={assetUrl(heroSec.image_url || '/assets/quality.jpg')}
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+            className="w-full h-full object-cover object-center scale-[1.02] filter brightness-[0.72] contrast-[1.12] saturate-[0.88]"
+          />
 
-            <p className="text-lg sm:text-2xl text-[#555555] font-light leading-relaxed font-sans max-w-3xl">
+          {/* Clinical Color Contrast Grading Filters */}
+          <div className="absolute inset-0 bg-[#071324]/35 mix-blend-multiply pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/55 to-black/30 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/50 to-transparent pointer-events-none" />
+        </div>
+
+        {/* Hero Content Block Overlaid On Video */}
+        <div className="relative z-10 max-w-5xl mx-auto w-full space-y-6 sm:space-y-8">
+          <ScrollReveal>
+            <span className="text-xs sm:text-sm font-semibold tracking-wider text-[#FF5A4E] uppercase font-sans">
+              {heroSec.eyebrow || 'Quality & Manufacturing'}
+            </span>
+            <h1 className="text-4xl sm:text-6xl lg:text-7xl xl:text-8xl font-serif font-light text-white tracking-tight leading-[1.05] mt-2 max-w-4xl text-balance">
+              Quality is part of the product <br />
+              <span className="italic font-normal text-[#FF5A4E]">from the beginning.</span>
+            </h1>
+          </ScrollReveal>
+
+          <ScrollReveal delay={0.08}>
+            <p className="text-base sm:text-xl lg:text-2xl text-white/90 font-light leading-relaxed font-sans max-w-3xl">
               {heroSec.body || 'At Onecore Pharma, quality is not treated as a final checkpoint. It is considered throughout the product journey, from formulation and sourcing to manufacturing, testing and responsible release.'}
             </p>
+          </ScrollReveal>
 
+          <ScrollReveal delay={0.14}>
             <div className="pt-2 flex flex-wrap items-center gap-4">
               <a
                 href={heroSec.cta_url || '#principles'}
-                className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#D52B1E] hover:bg-[#B52015] text-white text-xs font-semibold rounded-full transition-colors shadow-xs"
+                className="inline-flex items-center gap-2.5 px-8 py-4 bg-[#D52B1E] hover:bg-[#B52015] text-white text-sm font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 group"
               >
                 <span>{heroSec.cta_text || 'Quality Principles'}</span>
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </a>
 
               <Link
                 to="/areas-of-care"
-                className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#FAF9F6] hover:bg-[#EBE9E1] text-[#121212] text-xs font-semibold rounded-full transition-colors border border-[#E5E3DC]"
+                className="inline-flex items-center gap-2.5 px-8 py-4 bg-white/10 hover:bg-white/20 text-white text-sm font-medium rounded-full transition-colors border border-white/25 backdrop-blur-sm"
               >
                 <span>Explore Formulations</span>
               </Link>
             </div>
-          </div>
-
-          {/* Stately Full-Bleed Laboratory Visual Frame */}
-          <div className="relative rounded-[28px] overflow-hidden border border-[#E5E3DC] shadow-sm aspect-[16/9] lg:aspect-[21/9] bg-[#FAF9F6]">
-            <video
-              src={assetUrl(heroSec.video_url || '/assets/quality-manufacturing.mp4')}
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="w-full h-full object-cover"
-            />
-          </div>
-
+          </ScrollReveal>
         </div>
       </section>
 
