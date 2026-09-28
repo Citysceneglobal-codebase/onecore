@@ -75,36 +75,37 @@ export default function Contact() {
     ]
   });
 
-  const enquirySec = getSection('enquiry_types', {
-    eyebrow: 'HOW CAN WE HELP?',
-    title: 'Choose the reason for getting in touch.',
-    subtitle: 'Selecting the right enquiry type helps your message reach the relevant Onecore team without delay.',
-    items: [
+  const partnershipSec = getSection('partnerships_section', {
+    eyebrow: 'Distribution & Franchise Partnerships',
+    title: 'Grow with Onecore.',
+    lead: 'We are expanding our distribution network across India and are looking to partner with pharmaceutical distributors and franchise partners who understand their markets and want to build for the long term.',
+    body: 'With a growing portfolio across multiple therapeutic areas, Onecore offers partners access to relevant products, dependable supply and structured commercial support.',
+    why_title: 'Why partner with Onecore',
+    pillars: [
       {
-        num: "01",
-        title: "Product information",
-        description: "For factual information about Onecore products, compositions and available dosage forms.",
-        value: "Product information",
+        num: '01',
+        title: 'Broad portfolio',
+        description: 'Access products across multiple therapeutic areas, helping you build a more diversified business.',
       },
       {
-        num: "02",
-        title: "Business & distribution",
-        description: "For distribution, institutional supply and other commercial partnership discussions.",
-        value: "Business and distribution",
+        num: '02',
+        title: 'Territory focused approach',
+        description: 'Work within clearly discussed markets with a focus on sustainable product movement and growth.',
       },
       {
-        num: "03",
-        title: "Careers",
-        description: "For opportunities to work with Onecore and career related communication.",
-        value: "Careers",
+        num: '03',
+        title: 'Better inventory planning',
+        description: 'We believe in practical stock planning and consistent replenishment rather than unnecessary inventory loading.',
       },
       {
-        num: "04",
-        title: "General enquiries",
-        description: "For company related questions that do not fall into another category.",
-        value: "General enquiry",
+        num: '04',
+        title: 'Partner support',
+        description: 'Receive product information, promotional support and a dedicated point of contact for smoother day to day coordination.',
       },
-    ]
+    ],
+    closing: "Let’s build your market together.",
+    cta_text: 'Become a Onecore Partner',
+    cta_url: '/partnerships',
   });
 
   const formIntroSec = getSection('form_intro', {
@@ -358,57 +359,96 @@ export default function Contact() {
       )}
 
       {/* =========================================================================
-          SECTION 3 — HOW CAN WE HELP? (Numbered Reason Selection)
+          SECTION 3 — DISTRIBUTION & FRANCHISE PARTNERSHIPS
+          Clean editorial layout matching Lilly aesthetic and client brief
           ========================================================================= */}
-      {enquirySec.is_active && (
-        <section className="py-20 sm:py-28 px-4 sm:px-8 max-w-7xl mx-auto space-y-12">
+      {partnershipSec.is_active && (
+        <section className="py-20 sm:py-28 px-4 sm:px-8 max-w-7xl mx-auto space-y-16">
 
-          <div className="max-w-3xl space-y-3">
+          {/* Header & Strategic Mission */}
+          <div className="max-w-4xl space-y-6">
             <ScrollReveal>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-light text-[#121212] tracking-tight text-balance">
-                Choose the reason <br className="hidden sm:inline" />for getting in touch.
+              <span className="text-xs sm:text-sm font-semibold tracking-wider text-[#D52B1E] uppercase font-sans">
+                {partnershipSec.eyebrow || 'Distribution & Franchise Partnerships'}
+              </span>
+              <h2 className="text-3xl sm:text-5xl lg:text-6xl font-serif font-light text-[#121212] tracking-tight mt-2 text-balance">
+                {partnershipSec.title || 'Grow with Onecore.'}
               </h2>
-              <p className="text-base sm:text-lg text-[#555555] font-light leading-relaxed font-sans pt-1">
-                {enquirySec.subtitle || enquirySec.body || 'Selecting the right enquiry type helps your message reach the relevant Onecore team.'}
-              </p>
+            </ScrollReveal>
+
+            <ScrollReveal delay={0.06}>
+              <div className="space-y-4 text-base sm:text-lg lg:text-xl text-[#333333] font-light leading-relaxed font-sans max-w-3xl">
+                <p>
+                  {partnershipSec.lead}
+                </p>
+                <p className="text-sm sm:text-base text-[#666666]">
+                  {partnershipSec.body}
+                </p>
+              </div>
             </ScrollReveal>
           </div>
 
-          {/* Clean Numbered Editorial Rows */}
-          <div className="border-t border-[#E5E3DC] divide-y divide-[#E5E3DC]">
-            {enquirySec.items.map((opt, idx) => (
-              <ScrollReveal key={opt.num || idx} delay={idx * 0.06}>
-                <div
-                  onClick={() => handleSelectEnquiryType(opt.value || opt.title)}
-                  className="py-8 sm:py-10 grid grid-cols-1 md:grid-cols-12 gap-6 items-baseline group hover:bg-white transition-colors px-6 -mx-6 rounded-2xl cursor-pointer"
-                >
-                  <div className="md:col-span-2">
-                    <span className="text-3xl sm:text-4xl font-serif font-light text-[#888888] group-hover:text-[#D52B1E] transition-colors">
-                      {opt.num || String(idx + 1).padStart(2, '0')}
+          {/* Why partner with Onecore — 4 Strategic Pillars */}
+          <div className="space-y-8 border-t border-[#E5E3DC] pt-12">
+            <ScrollReveal>
+              <h3 className="text-2xl sm:text-3xl font-serif font-medium text-[#121212] tracking-tight">
+                {partnershipSec.why_title || 'Why partner with Onecore'}
+              </h3>
+            </ScrollReveal>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+              {partnershipSec.pillars.map((pillar, idx) => (
+                <ScrollReveal key={pillar.title} delay={idx * 0.08}>
+                  <div className="p-8 sm:p-10 rounded-3xl bg-[#FAFAF8] border border-[#E5E3DC] hover:border-[#121212] hover:bg-white transition-all duration-300 space-y-3 group">
+                    <span className="text-2xl sm:text-3xl font-serif font-light text-[#888888] group-hover:text-[#D52B1E] transition-colors">
+                      {pillar.num}
                     </span>
-                  </div>
-
-                  <div className="md:col-span-4">
-                    <h3 className="text-xl sm:text-2xl font-serif font-medium text-[#121212] tracking-tight group-hover:text-[#D52B1E] transition-colors">
-                      {opt.title}
-                    </h3>
-                  </div>
-
-                  <div className="md:col-span-5">
+                    <h4 className="text-xl sm:text-2xl font-serif font-medium text-[#121212] tracking-tight">
+                      {pillar.title}
+                    </h4>
                     <p className="text-sm sm:text-base text-[#555555] font-light leading-relaxed font-sans">
-                      {opt.description || opt.desc || opt.text}
+                      {pillar.description}
                     </p>
                   </div>
-
-                  <div className="md:col-span-1 flex justify-end">
-                    <span className="inline-flex items-center justify-center w-8 h-8 rounded-full border border-[#E5E3DC] group-hover:border-[#121212] group-hover:bg-[#121212] group-hover:text-white transition-all text-[#888888]">
-                      <ArrowDown className="w-3.5 h-3.5" />
-                    </span>
-                  </div>
-                </div>
-              </ScrollReveal>
-            ))}
+                </ScrollReveal>
+              ))}
+            </div>
           </div>
+
+          {/* Closing & CTA Action Banner */}
+          <ScrollReveal delay={0.15}>
+            <div className="p-8 sm:p-12 rounded-3xl bg-[#071324] text-white flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-xl">
+              <div className="space-y-2 max-w-xl">
+                <h4 className="text-2xl sm:text-3xl font-serif font-light tracking-tight">
+                  {partnershipSec.closing || 'Let’s build your market together.'}
+                </h4>
+                <p className="text-sm sm:text-base text-white/70 font-light">
+                  Join our expanding network of authorized distributors and franchise partners across India.
+                </p>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-4">
+                <Link
+                  to={partnershipSec.cta_url || '/partnerships'}
+                  className="inline-flex items-center gap-2.5 px-8 py-4 bg-[#D52B1E] hover:bg-[#B52015] text-white text-sm font-semibold rounded-full shadow-md hover:shadow-lg transition-all duration-300 group"
+                >
+                  <span>{partnershipSec.cta_text || 'Become a Onecore Partner'}</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </Link>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleSelectEnquiryType('Business and distribution');
+                  }}
+                  className="inline-flex items-center gap-2 px-6 py-4 rounded-full border border-white/30 hover:border-white text-white text-sm font-medium hover:bg-white/10 transition-colors"
+                >
+                  <span>Quick Commercial Inquiry</span>
+                  <ArrowDown className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+          </ScrollReveal>
 
         </section>
       )}

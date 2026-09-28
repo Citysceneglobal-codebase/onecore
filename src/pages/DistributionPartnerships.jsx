@@ -43,23 +43,23 @@ export default function DistributionPartnerships() {
 
   const partnerAdvantages = [
     {
-      title: 'Broad Portfolio',
-      desc: 'Access clinically engineered products across 9 specialized therapeutic areas, enabling you to build a resilient and diversified business.',
+      title: 'Broad portfolio',
+      desc: 'Access products across multiple therapeutic areas, helping you build a more diversified business.',
       icon: TrendingUp,
     },
     {
-      title: 'Territory Focused Approach',
-      desc: 'Clearly defined operating boundaries and structured regional agreements to foster long-term, sustainable commercial growth in your market.',
+      title: 'Territory focused approach',
+      desc: 'Work within clearly discussed markets with a focus on sustainable product movement and growth.',
       icon: MapPin,
     },
     {
-      title: 'Dependable Supply & Quality',
-      desc: '100% cGMP-certified manufacturing with disciplined batch release, verified stability protocols, and punctual supply chain fulfillment.',
+      title: 'Better inventory planning',
+      desc: 'We believe in practical stock planning and consistent replenishment rather than unnecessary inventory loading.',
       icon: ShieldCheck,
     },
     {
-      title: 'Commercial & Medical Support',
-      desc: 'Comprehensive clinical monographs, doctor visual aids, regulatory dossiers, and dedicated operational desks to empower your field team.',
+      title: 'Partner support',
+      desc: 'Receive product information, promotional support and a dedicated point of contact for smoother day to day coordination.',
       icon: Users,
     },
   ];
