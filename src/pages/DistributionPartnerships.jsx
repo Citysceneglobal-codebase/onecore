@@ -91,13 +91,19 @@ export default function DistributionPartnerships() {
             </p>
 
             <div className="pt-2 flex flex-wrap items-center gap-4">
-              <a
-                href="#partner-form"
-                className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#D52B1E] hover:bg-[#B52015] text-white text-xs font-semibold rounded-full transition-colors shadow-xs"
+              <button
+                type="button"
+                onClick={() => {
+                  const el = document.getElementById('partner-form');
+                  if (el) {
+                    el.scrollIntoView({ behavior: 'smooth' });
+                  }
+                }}
+                className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#D52B1E] hover:bg-[#B52015] text-white text-xs font-semibold rounded-full transition-colors shadow-xs cursor-pointer"
               >
                 <span>Apply for Partnership</span>
                 <ArrowRight className="w-4 h-4" />
-              </a>
+              </button>
 
               <Link
                 to="/areas-of-care"

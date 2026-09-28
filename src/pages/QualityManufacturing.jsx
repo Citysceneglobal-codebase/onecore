@@ -168,13 +168,20 @@ export default function QualityManufacturing() {
 
           <ScrollReveal delay={0.14}>
             <div className="pt-2 flex flex-wrap items-center gap-4">
-              <a
-                href={heroSec.cta_url || '#principles'}
-                className="inline-flex items-center gap-2.5 px-8 py-4 bg-[#D52B1E] hover:bg-[#B52015] text-white text-sm font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 group"
+              <button
+                type="button"
+                onClick={() => {
+                  const targetId = (heroSec.cta_url || '#principles').replace(/^#/, '');
+                  const el = document.getElementById(targetId);
+                  if (el) {
+                    el.scrollIntoView({ behavior: 'smooth' });
+                  }
+                }}
+                className="inline-flex items-center gap-2.5 px-8 py-4 bg-[#D52B1E] hover:bg-[#B52015] text-white text-sm font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 group cursor-pointer"
               >
                 <span>{heroSec.cta_text || 'Quality Principles'}</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </a>
+              </button>
 
               <Link
                 to="/areas-of-care"

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { HashRouter, Routes, Route, useLocation, Link } from 'react-router-dom';
+import { HashRouter, Routes, Route, useLocation, Link, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
@@ -123,6 +123,16 @@ function AppRoutes() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/disclaimer" element={<Disclaimer />} />
+
+          {/* Section anchor fallbacks to prevent 404 in HashRouter */}
+          <Route path="/principles" element={<Navigate to="/quality-manufacturing#principles" replace />} />
+          <Route path="/partner-form" element={<Navigate to="/partnerships#partner-form" replace />} />
+          <Route path="/enquiry-form" element={<Navigate to="/contact#enquiry-form" replace />} />
+          <Route path="/contact-details" element={<Navigate to="/contact#contact-details" replace />} />
+          <Route path="/for-patients" element={<Navigate to="/patients-caregivers#for-patients" replace />} />
+          <Route path="/for-professionals" element={<Navigate to="/patients-caregivers#for-professionals" replace />} />
+          <Route path="/patient-safety" element={<Navigate to="/patients-caregivers#patient-safety" replace />} />
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

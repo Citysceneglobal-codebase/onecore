@@ -201,20 +201,30 @@ export default function PatientsCaregivers() {
             </p>
 
             <div className="pt-2 flex flex-wrap items-center gap-4">
-              <a
-                href={heroSec.cta_url || '#for-patients'}
-                className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#D52B1E] hover:bg-[#B52015] text-white text-xs font-semibold rounded-full transition-colors shadow-xs"
+              <button
+                type="button"
+                onClick={() => {
+                  const targetId = (heroSec.cta_url || '#for-patients').replace(/^#/, '');
+                  const el = document.getElementById(targetId);
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#D52B1E] hover:bg-[#B52015] text-white text-xs font-semibold rounded-full transition-colors shadow-xs cursor-pointer"
               >
                 <span>{heroSec.cta_text || 'For Patients & Families'}</span>
                 <ArrowRight className="w-4 h-4" />
-              </a>
+              </button>
 
-              <a
-                href={heroSec.secondary_cta_url || '#for-professionals'}
-                className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#FAF9F6] hover:bg-[#EBE9E1] text-[#121212] text-xs font-semibold rounded-full transition-colors border border-[#E5E3DC]"
+              <button
+                type="button"
+                onClick={() => {
+                  const targetId = (heroSec.secondary_cta_url || '#for-professionals').replace(/^#/, '');
+                  const el = document.getElementById(targetId);
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#FAF9F6] hover:bg-[#EBE9E1] text-[#121212] text-xs font-semibold rounded-full transition-colors border border-[#E5E3DC] cursor-pointer"
               >
                 <span>{heroSec.secondary_cta_text || 'For Healthcare Professionals'}</span>
-              </a>
+              </button>
             </div>
           </div>
 
