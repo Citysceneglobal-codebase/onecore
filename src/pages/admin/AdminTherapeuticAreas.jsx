@@ -12,6 +12,8 @@ import {
   Image as ImageIcon,
   Eye,
   EyeOff,
+  ChevronUp,
+  ChevronDown,
 } from 'lucide-react';
 import AdminLayout from '../../components/admin/AdminLayout';
 import { AdminCard } from '../../components/admin/AdminCard';
@@ -37,15 +39,15 @@ const DIVISION_MAP = {
 };
 
 const SEED_AREAS = [
-  { id: 1, name: 'Women’s Health', slug: 'womens-health', heading: 'Supporting women through different stages of care.', focus_title: 'Supporting women through different stages of care.', image_url: '/assets/therapeutic-womens-health.jpg', display_order: 1, is_active: 1, tags: ['Reproductive health', 'Fertility', 'Pregnancy related nutrition', 'Gynaecological care', 'Intimate health'] },
-  { id: 2, name: 'Paediatrics', slug: 'paediatrics', heading: 'Care designed around the needs of growing children.', focus_title: 'Care designed around the needs of growing children.', image_url: '/assets/therapeutic-paediatrics.jpg', display_order: 2, is_active: 1, tags: ['Child health', 'Nutrition', 'Paediatric medicines'] },
-  { id: 3, name: 'Orthopaedics', slug: 'orthopaedics', heading: 'Supporting movement, mobility and musculoskeletal care.', focus_title: 'Supporting movement, mobility and musculoskeletal care.', image_url: '/assets/therapeutic-orthopaedics.jpg', display_order: 3, is_active: 1, tags: ['Joint health', 'Bone health', 'Pain management', 'Mobility'] },
-  { id: 4, name: 'Neurology', slug: 'neurology', heading: 'A focused portfolio across neurological care.', focus_title: 'A focused portfolio across neurological care.', image_url: '/assets/therapeutic-neurology.jpg', display_order: 4, is_active: 1, tags: ['Neuropathic care', 'Neuro nutrition', 'CNS care'] },
-  { id: 5, name: 'Ophthalmology', slug: 'ophthalmology', heading: 'Specialised formulations for different areas of eye care.', focus_title: 'Specialised formulations for different areas of eye care.', image_url: '/assets/therapeutic-ophthalmology.jpg', display_order: 5, is_active: 1, tags: ['Ocular infection', 'Inflammation', 'Glaucoma care', 'Ocular lubrication'] },
-  { id: 6, name: 'Dermatology', slug: 'dermatology', heading: 'Formulations for medical and supportive skin care.', focus_title: 'Formulations for medical and supportive skin care.', image_url: '/assets/therapeutic-dermatology.jpg', display_order: 6, is_active: 1, tags: ['Acne', 'Fungal care', 'Inflammatory conditions', 'Pigmentation'] },
-  { id: 7, name: 'ENT', slug: 'ent', heading: 'Focused support across ear, nose and throat care.', focus_title: 'Focused support across ear, nose and throat care.', image_url: '/assets/therapeutic-ent.jpg', display_order: 7, is_active: 1, tags: ['ENT care', 'Allergy', 'Infection management'] },
-  { id: 8, name: 'General Medicine', slug: 'general-medicine', heading: 'Everyday therapies across a broad range of clinical needs.', focus_title: 'Everyday therapies across a broad range of clinical needs.', image_url: '/assets/therapeutic-general-medicine.jpg', display_order: 8, is_active: 1, tags: ['Gastrointestinal care', 'Anti infectives', 'Pain management', 'Allergy care'] },
-  { id: 9, name: 'Oncology', slug: 'oncology', heading: 'Specialised therapies within cancer care.', focus_title: 'Specialised therapies within cancer care.', image_url: '/assets/therapeutic-oncology.jpg', display_order: 9, is_active: 1, tags: ['Specialised therapies', 'Oncology care', 'Supportive care'] },
+  { id: 1, name: 'Women’s Health', slug: 'womens-health', number_label: '01', heading: 'Supporting women through different stages of care.', description: 'Our women’s health portfolio brings together prescription medicines and supportive formulations across reproductive health, fertility, pregnancy related nutrition, gynaecological care and intimate health.', image_url: '/assets/therapeutic-womens-health.jpg', display_order: 1, is_active: 1, tags: ['Reproductive health', 'Fertility', 'Pregnancy related nutrition', 'Gynaecological care', 'Intimate health'] },
+  { id: 2, name: 'Paediatrics', slug: 'paediatrics', number_label: '02', heading: 'Care designed around the needs of growing children.', description: 'A portfolio spanning paediatric therapeutic and nutritional needs, with formulations and dosage formats suited to different stages of childhood care.', image_url: '/assets/therapeutic-paediatrics.jpg', display_order: 2, is_active: 1, tags: ['Child health', 'Nutrition', 'Paediatric medicines'] },
+  { id: 3, name: 'Orthopaedics', slug: 'orthopaedics', number_label: '03', heading: 'Supporting movement, mobility and musculoskeletal care.', description: 'Our orthopaedic portfolio spans joint health, bone health, mobility, pain management and musculoskeletal support.', image_url: '/assets/therapeutic-orthopaedics.jpg', display_order: 3, is_active: 1, tags: ['Joint health', 'Bone health', 'Pain management', 'Mobility'] },
+  { id: 4, name: 'Neurology', slug: 'neurology', number_label: '04', heading: 'A focused portfolio across neurological care.', description: 'Onecore’s neurology portfolio includes prescription therapies and supportive formulations used across a range of neurological and neuro nutritional needs.', image_url: '/assets/therapeutic-neurology.jpg', display_order: 4, is_active: 1, tags: ['Neuropathic care', 'Neuro nutrition', 'CNS care'] },
+  { id: 5, name: 'Ophthalmology', slug: 'ophthalmology', number_label: '05', heading: 'Specialised formulations for different areas of eye care.', description: 'Our ophthalmology range includes products used across ocular infection, inflammation, glaucoma related care, lubrication and other ophthalmic needs.', image_url: '/assets/therapeutic-ophthalmology.jpg', display_order: 5, is_active: 1, tags: ['Ocular infection', 'Inflammation', 'Glaucoma care', 'Ocular lubrication'] },
+  { id: 6, name: 'Dermatology', slug: 'dermatology', number_label: '06', heading: 'Formulations for medical and supportive skin care.', description: 'The dermatology portfolio spans prescription and supportive formulations across fungal infections, acne, inflammatory skin conditions, pigmentation and skin health.', image_url: '/assets/therapeutic-dermatology.jpg', display_order: 6, is_active: 1, tags: ['Acne', 'Fungal care', 'Inflammatory conditions', 'Pigmentation'] },
+  { id: 7, name: 'ENT', slug: 'ent', number_label: '07', heading: 'Focused support across ear, nose and throat care.', description: 'A portfolio developed around common and specialised needs encountered across ENT practice.', image_url: '/assets/therapeutic-ent.jpg', display_order: 7, is_active: 1, tags: ['ENT care', 'Allergy', 'Infection management'] },
+  { id: 8, name: 'General Medicine', slug: 'general-medicine', number_label: '08', heading: 'Everyday therapies across a broad range of clinical needs.', description: 'Our general medicine portfolio includes gastrointestinal care, anti infectives, pain management, allergy care and other commonly encountered therapeutic needs.', image_url: '/assets/therapeutic-general-medicine.jpg', display_order: 8, is_active: 1, tags: ['Gastrointestinal care', 'Anti infectives', 'Pain management', 'Allergy care'] },
+  { id: 9, name: 'Oncology', slug: 'oncology', number_label: '09', heading: 'Specialised therapies within cancer care.', description: 'Onecore’s oncology portfolio brings together specialised prescription products used across selected areas of cancer treatment and supportive care.', image_url: '/assets/therapeutic-oncology.jpg', display_order: 9, is_active: 1, tags: ['Specialised therapies', 'Oncology care', 'Supportive care'] },
 ];
 
 // ─── Inline Area Editor ────────────────────────────────────────────────────────
@@ -53,9 +55,9 @@ function AreaEditorPanel({ area, onSave, onCancel, onOpenMedia }) {
   const [form, setForm] = useState({
     name: area?.name || '',
     slug: area?.slug || '',
-    number_label: area?.number_label || '',
+    number_label: area?.number_label || '01',
     heading: area?.heading || area?.name || '',
-    description: area?.description || area?.focus_title || '',
+    description: area?.description || '',
     image_url: area?.image_url || '',
     is_active: area?.is_active !== 0,
     tags: (area?.tags || []).join(', '),
@@ -65,189 +67,189 @@ function AreaEditorPanel({ area, onSave, onCancel, onOpenMedia }) {
   const division = area?.slug ? DIVISION_MAP[area.slug.toLowerCase()] : (area?.name ? DIVISION_MAP[area.name.toLowerCase().replace(/\s+/g, '-')] : null);
 
   return (
-    <div className="bg-brand-navy-dark/60 border border-brand-teal/20 rounded-xl p-5 space-y-4">
+    <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 space-y-4">
       {division && (
-        <div className="flex items-center gap-2 pb-2 border-b border-white/5">
-          <span className="text-[10px] font-mono uppercase tracking-widest px-2 py-0.5 rounded bg-brand-teal/10 border border-brand-teal/30 text-brand-teal font-semibold">
+        <div className="flex items-center gap-2 pb-2 border-b border-slate-200">
+          <span className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded bg-[#0D5C75]/10 border border-[#0D5C75]/20 text-[#0D5C75] font-bold">
             Division: {division}
           </span>
-          <span className="text-xs text-brand-slate/60">
+          <span className="text-xs text-slate-500 font-medium">
             {form.name || area?.name}
           </span>
         </div>
       )}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-[11px] font-mono uppercase tracking-wider text-brand-slate/70 mb-1.5">Therapeutic Area Name *</label>
-          <input type="text" value={form.name} onChange={set('name')} placeholder="e.g. Orthopaedics" className="w-full bg-brand-navy border border-white/10 rounded-lg px-3 py-2 text-xs text-white placeholder-brand-slate/30 focus:outline-none focus:border-brand-teal/50" />
+          <label className="block text-[11px] font-mono uppercase tracking-wider text-slate-600 font-medium mb-1.5">
+            Therapeutic Area Name *
+          </label>
+          <input
+            type="text"
+            value={form.name}
+            onChange={set('name')}
+            placeholder="e.g. Orthopaedics"
+            className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-[#0D5C75] focus:ring-1 focus:ring-[#0D5C75]"
+          />
         </div>
         <div>
-          <label className="block text-[11px] font-mono uppercase tracking-wider text-brand-slate/70 mb-1.5">URL Slug</label>
-          <input type="text" value={form.slug} onChange={set('slug')} placeholder="auto-generated" className="w-full bg-brand-navy border border-white/10 rounded-lg px-3 py-2 text-xs text-white placeholder-brand-slate/30 focus:outline-none focus:border-brand-teal/50" />
+          <label className="block text-[11px] font-mono uppercase tracking-wider text-slate-600 font-medium mb-1.5">
+            URL Slug
+          </label>
+          <input
+            type="text"
+            value={form.slug}
+            onChange={set('slug')}
+            placeholder="orthopaedics"
+            className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 font-mono focus:outline-none focus:border-[#0D5C75] focus:ring-1 focus:ring-[#0D5C75]"
+          />
         </div>
         <div className="md:col-span-2">
-          <label className="block text-[11px] font-mono uppercase tracking-wider text-brand-slate/70 mb-1.5">Heading / Focus Title</label>
-          <input type="text" value={form.heading} onChange={set('heading')} placeholder="Main heading shown on the area page" className="w-full bg-brand-navy border border-white/10 rounded-lg px-3 py-2 text-xs text-white placeholder-brand-slate/30 focus:outline-none focus:border-brand-teal/50" />
+          <label className="block text-[11px] font-mono uppercase tracking-wider text-slate-600 font-medium mb-1.5">
+            Heading / Focus Title
+          </label>
+          <input
+            type="text"
+            value={form.heading}
+            onChange={set('heading')}
+            placeholder="Main heading shown on the area page"
+            className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-[#0D5C75] focus:ring-1 focus:ring-[#0D5C75]"
+          />
         </div>
         <div className="md:col-span-2">
-          <label className="block text-[11px] font-mono uppercase tracking-wider text-brand-slate/70 mb-1.5">Description</label>
-          <textarea value={form.description} onChange={set('description')} rows={3} placeholder="Clinical description of this therapeutic area..." className="w-full bg-brand-navy border border-white/10 rounded-lg px-3 py-2 text-xs text-white placeholder-brand-slate/30 focus:outline-none focus:border-brand-teal/50 resize-y" />
+          <label className="block text-[11px] font-mono uppercase tracking-wider text-slate-600 font-medium mb-1.5">
+            Clinical Description
+          </label>
+          <textarea
+            value={form.description}
+            onChange={set('description')}
+            rows={3}
+            placeholder="Clinical description of this therapeutic area..."
+            className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-[#0D5C75] focus:ring-1 focus:ring-[#0D5C75] resize-y"
+          />
         </div>
         <div className="md:col-span-2">
-          <label className="block text-[11px] font-mono uppercase tracking-wider text-brand-slate/70 mb-1.5">Tags (comma-separated)</label>
-          <input type="text" value={form.tags} onChange={set('tags')} placeholder="Joint Preservation, Bone Density, Cartilage Health" className="w-full bg-brand-navy border border-white/10 rounded-lg px-3 py-2 text-xs text-white placeholder-brand-slate/30 focus:outline-none focus:border-brand-teal/50" />
+          <label className="block text-[11px] font-mono uppercase tracking-wider text-slate-600 font-medium mb-1.5">
+            Tags (comma-separated)
+          </label>
+          <input
+            type="text"
+            value={form.tags}
+            onChange={set('tags')}
+            placeholder="Joint health, Bone health, Pain management, Mobility"
+            className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-[#0D5C75] focus:ring-1 focus:ring-[#0D5C75]"
+          />
         </div>
         <div className="md:col-span-2">
-          <label className="block text-[11px] font-mono uppercase tracking-wider text-brand-slate/70 mb-1.5">Featured Image / Division Card Image</label>
+          <label className="block text-[11px] font-mono uppercase tracking-wider text-slate-600 font-medium mb-1.5">
+            Area Feature Image URL
+          </label>
           <div className="flex gap-2">
-            <input type="text" value={form.image_url} onChange={set('image_url')} placeholder="/assets/therapeutic-area.jpg" className="flex-1 bg-brand-navy border border-white/10 rounded-lg px-3 py-2 text-xs text-white placeholder-brand-slate/30 focus:outline-none focus:border-brand-teal/50" />
+            <input
+              type="text"
+              value={form.image_url}
+              onChange={set('image_url')}
+              placeholder="/assets/therapeutic-orthopaedics.jpg"
+              className="flex-1 bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-[#0D5C75] focus:ring-1 focus:ring-[#0D5C75]"
+            />
             <button
               type="button"
               onClick={() => onOpenMedia((url) => setForm((p) => ({ ...p, image_url: url })))}
-              className="shrink-0 flex items-center gap-1.5 px-3 py-2 bg-brand-navy border border-white/10 hover:border-brand-teal/40 rounded-lg text-xs text-brand-slate hover:text-white transition-all cursor-pointer"
+              className="shrink-0 flex items-center gap-1 px-3 py-2 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-lg text-xs font-semibold text-slate-700 transition-all"
             >
-              <ImageIcon size={13} />
-              Choose from Library
+              <ImageIcon size={14} />
+              <span>Media</span>
             </button>
-            {form.image_url && (
-              <button
-                type="button"
-                onClick={() => setForm((p) => ({ ...p, image_url: '' }))}
-                className="shrink-0 flex items-center gap-1 px-2.5 py-2 bg-red-500/10 border border-red-500/20 hover:bg-red-500/20 rounded-lg text-xs text-red-400 transition-all cursor-pointer"
-                title="Remove Image"
-              >
-                <X size={13} />
-                Clear
-              </button>
-            )}
           </div>
-          {form.image_url && (
-            <div className="mt-3 flex items-start gap-3 p-2 bg-brand-navy/60 border border-white/10 rounded-lg">
-              <div className="h-20 w-32 rounded-md overflow-hidden bg-black/40 border border-white/10 shrink-0">
-                <img src={form.image_url} alt="" className="w-full h-full object-cover" />
-              </div>
-              <div className="text-xs text-brand-slate/70 space-y-1">
-                <p className="text-white font-medium">Image Preview</p>
-                <p className="text-[11px] font-mono text-brand-teal truncate max-w-xs">{form.image_url}</p>
-                <p className="text-[10px] text-brand-slate/50">Used on Home page division card & Areas of Care section</p>
-              </div>
-            </div>
-          )}
-        </div>
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={() => setForm((p) => ({ ...p, is_active: !p.is_active }))}
-            className={`relative w-11 h-6 rounded-full transition-colors ${form.is_active ? 'bg-brand-teal' : 'bg-white/10'}`}
-          >
-            <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${form.is_active ? 'translate-x-5' : ''}`} />
-          </button>
-          <span className="text-xs text-brand-slate">Visible on Website</span>
         </div>
       </div>
-      <div className="flex items-center justify-end gap-3 pt-3 border-t border-white/5">
-        <button onClick={onCancel} className="flex items-center gap-1.5 px-3 py-2 text-xs text-brand-slate hover:text-white border border-white/10 rounded-lg transition-all">
-          <X size={13} /> Cancel
+      <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-200">
+        <button
+          type="button"
+          onClick={onCancel}
+          className="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
+        >
+          Cancel
         </button>
         <button
-          onClick={() => {
-            const tagsArray = form.tags.split(',').map((t) => t.trim()).filter(Boolean);
-            onSave({ ...form, tags: tagsArray });
-          }}
-          className="flex items-center gap-1.5 px-4 py-2 text-xs font-medium bg-brand-teal hover:bg-brand-teal/90 text-white rounded-lg transition-all"
+          type="button"
+          onClick={() =>
+            onSave({
+              ...form,
+              tags: form.tags
+                .split(',')
+                .map((t) => t.trim())
+                .filter(Boolean),
+            })
+          }
+          className="flex items-center gap-1.5 px-4 py-2 text-xs font-semibold bg-[#1B365D] hover:bg-[#152a48] text-white rounded-lg transition-colors shadow-xs"
         >
-          <Save size={13} /> Save Area
+          <Save size={13} />
+          <span>Save Area</span>
         </button>
       </div>
     </div>
   );
 }
 
-// ─── Main ──────────────────────────────────────────────────────────────────────
 export default function AdminTherapeuticAreas() {
   const { token } = useAdminAuth();
   const [areas, setAreas] = useState(SEED_AREAS);
-  const [search, setSearch] = useState('');
   const [editingId, setEditingId] = useState(null);
-  const [showAddForm, setShowAddForm] = useState(false);
+  const [addingNew, setAddingNew] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [toast, setToast] = useState(null);
   const [mediaCb, setMediaCb] = useState(null);
+  const [search, setSearch] = useState('');
 
   const showToast = (type, message) => setToast({ type, message });
 
   const fetchAreas = async () => {
     try {
-      const res = await fetch('/api/therapeutic-areas');
+      const res = await fetch('/api/therapeutic-areas', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       if (res.ok) {
         const data = await res.json();
-        if (data.success && data.data && data.data.length > 0) setAreas(data.data);
+        if (data.success && data.data && data.data.length > 0) {
+          setAreas(data.data);
+        }
       }
-    } catch (err) {
-      console.warn('Using seeded therapeutic areas:', err);
+    } catch {
+      // Keep seed areas
     }
   };
 
   useEffect(() => {
-    document.title = 'Therapeutic Areas | Onecore Admin';
+    document.title = 'Areas of Care | Onecore Admin';
     fetchAreas();
   }, []);
 
-  const handleSave = async (id, form) => {
+  const handleSave = async (areaId, payload) => {
     try {
-      const res = await fetch(`/api/therapeutic-areas/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({
-          name: form.name,
-          slug: form.slug,
-          number_label: form.number_label,
-          heading: form.heading,
-          description: form.description,
-          image_url: form.image_url,
-          is_active: form.is_active ? 1 : 0,
-          tags: form.tags,
-        }),
+      const isNew = areaId === 'new';
+      const endpoint = isNew ? '/api/therapeutic-areas' : `/api/therapeutic-areas/${areaId}`;
+      const method = isNew ? 'POST' : 'PUT';
+
+      const res = await fetch(endpoint, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
       });
+
       const data = await res.json();
-      if (data.success) {
-        fetchAreas();
+      if (res.ok && data.success) {
+        showToast('success', isNew ? 'Therapeutic area added.' : 'Therapeutic area updated.');
         setEditingId(null);
-        showToast('success', 'Therapeutic area saved.');
+        setAddingNew(false);
+        fetchAreas();
       } else {
         showToast('error', data.message || 'Save failed.');
       }
-    } catch {
-      showToast('error', 'Network error.');
-    }
-  };
-
-  const handleCreate = async (form) => {
-    try {
-      const res = await fetch('/api/therapeutic-areas', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({
-          name: form.name,
-          slug: form.slug,
-          number_label: form.number_label,
-          heading: form.heading,
-          description: form.description,
-          image_url: form.image_url,
-          is_active: form.is_active ? 1 : 0,
-          tags: form.tags,
-        }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        fetchAreas();
-        setShowAddForm(false);
-        showToast('success', 'New therapeutic area created.');
-      } else {
-        showToast('error', data.message || 'Create failed.');
-      }
-    } catch {
-      showToast('error', 'Network error.');
+    } catch (err) {
+      showToast('error', err.message);
     }
   };
 
@@ -260,171 +262,249 @@ export default function AdminTherapeuticAreas() {
       });
       const data = await res.json();
       if (data.success) {
-        setAreas((prev) => prev.filter((a) => a.id !== deleteTarget));
         showToast('success', 'Therapeutic area deleted.');
+        fetchAreas();
       } else {
-        showToast('error', data.message || 'Cannot delete. May have linked products.');
+        showToast('error', data.message || 'Delete failed.');
       }
-    } catch {
-      showToast('error', 'Network error.');
+    } catch (err) {
+      showToast('error', err.message);
     } finally {
       setDeleteTarget(null);
     }
   };
 
-  const filteredAreas = areas.filter(
-    (a) =>
-      !search ||
-      a.name?.toLowerCase().includes(search.toLowerCase()) ||
-      a.focus_title?.toLowerCase().includes(search.toLowerCase()) ||
-      a.heading?.toLowerCase().includes(search.toLowerCase())
+  const handleToggleActive = async (area) => {
+    const newActive = area.is_active === 1 ? 0 : 1;
+    try {
+      const res = await fetch(`/api/therapeutic-areas/${area.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ is_active: newActive }),
+      });
+      if (res.ok) {
+        setAreas((prev) =>
+          prev.map((a) => (a.id === area.id ? { ...a, is_active: newActive } : a))
+        );
+        showToast('success', `Therapeutic area ${newActive === 1 ? 'enabled' : 'disabled'}.`);
+      }
+    } catch {
+      showToast('error', 'Update failed.');
+    }
+  };
+
+  const handleReorder = async (index, direction) => {
+    const swapIndex = direction === 'up' ? index - 1 : index + 1;
+    if (swapIndex < 0 || swapIndex >= areas.length) return;
+
+    const newAreas = [...areas];
+    [newAreas[index], newAreas[swapIndex]] = [newAreas[swapIndex], newAreas[index]];
+    setAreas(newAreas);
+
+    try {
+      await fetch('/api/therapeutic-areas/reorder', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ orderedIds: newAreas.map((a) => a.id) }),
+      });
+      showToast('success', 'Order updated.');
+    } catch {
+      showToast('error', 'Reorder failed.');
+      fetchAreas();
+    }
+  };
+
+  const filtered = areas.filter((a) =>
+    (a.name || '').toLowerCase().includes(search.toLowerCase()) ||
+    (a.heading || '').toLowerCase().includes(search.toLowerCase()) ||
+    (a.slug || '').toLowerCase().includes(search.toLowerCase())
   );
 
   return (
     <AdminLayout
-      title="Therapeutic Areas"
-      subtitle="Manage the specialized clinical care sectors and associated focus tags"
+      title="Areas of Care (Therapeutic Disciplines)"
+      subtitle="Manage clinical divisions, therapeutic descriptions, category tags, and product associations"
     >
-      {/* Toolbar */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-brand-navy border border-brand-navy-light/40 p-4 rounded-xl">
-        <div className="flex items-center gap-2 text-xs font-mono text-brand-slate">
-          <Activity size={16} className="text-brand-teal" />
-          <span>{areas.filter((a) => a.is_active !== 0).length} Active Specialities</span>
-        </div>
-        <div className="flex items-center gap-3 w-full sm:w-auto">
-          <div className="relative flex-1 sm:w-64">
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Filter therapeutic areas..."
-              className="w-full bg-brand-navy-dark/60 border border-white/10 rounded-lg px-3 py-1.5 pl-9 text-xs text-white placeholder-brand-slate/40 focus:outline-none focus:border-brand-teal/50"
-            />
-            <Search size={14} className="absolute left-3 top-2.5 text-brand-slate/50" />
+      <AdminCard
+        title={`Therapeutic Areas (${filtered.length})`}
+        subtitle="Clinical specialities and franchise divisions across Onecore portfolio"
+        action={
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search areas..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="bg-white border border-slate-200 rounded-lg px-3 py-1.5 pl-8 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#0D5C75] focus:ring-1 focus:ring-[#0D5C75]"
+              />
+              <Search size={13} className="absolute left-2.5 top-2.5 text-slate-400 pointer-events-none" />
+            </div>
+            <button
+              type="button"
+              onClick={() => setAddingNew(true)}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-[#1B365D] hover:bg-[#152a48] text-white rounded-lg transition-all shadow-xs"
+            >
+              <Plus size={13} />
+              <span>Add Therapeutic Area</span>
+            </button>
           </div>
-          <button
-            onClick={() => { setShowAddForm(true); setEditingId(null); }}
-            className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-brand-teal hover:bg-brand-teal/90 text-white rounded-lg transition-all"
-          >
-            <Plus size={13} />
-            Add Area
-          </button>
-        </div>
-      </div>
+        }
+      >
+        {addingNew && (
+          <div className="mb-6">
+            <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-2">
+              New Therapeutic Area
+            </h4>
+            <AreaEditorPanel
+              area={{}}
+              onSave={(payload) => handleSave('new', payload)}
+              onCancel={() => setAddingNew(false)}
+              onOpenMedia={(cb) => setMediaCb(() => cb)}
+            />
+          </div>
+        )}
 
-      {/* Add Form */}
-      {showAddForm && (
-        <AdminCard title="Add New Therapeutic Area">
-          <AreaEditorPanel
-            area={null}
-            onSave={handleCreate}
-            onCancel={() => setShowAddForm(false)}
-            onOpenMedia={(cb) => setMediaCb(() => cb)}
-          />
-        </AdminCard>
-      )}
+        <div className="space-y-3">
+          {filtered.map((area, idx) => {
+            const isEditing = editingId === area.id;
+            const division = area.slug ? DIVISION_MAP[area.slug.toLowerCase()] : null;
 
-      <AdminCard>
-        <div className="space-y-2">
-          {filteredAreas.map((area) => (
-            <div key={area.id}>
-              {/* Row */}
+            return (
               <div
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl border transition-all ${
-                  area.is_active === 0
-                    ? 'border-white/5 bg-brand-navy-dark/30 opacity-60'
-                    : 'border-white/10 bg-brand-navy hover:border-white/20'
+                key={area.id}
+                className={`border rounded-xl transition-all shadow-xs ${
+                  isEditing
+                    ? 'border-[#1B365D] bg-[#FAFAFC]'
+                    : area.is_active === 0
+                    ? 'border-slate-200 bg-slate-50/60 opacity-60'
+                    : 'border-slate-200 bg-white hover:border-slate-300'
                 }`}
               >
-                {/* Status dot */}
-                <div className={`w-2 h-2 rounded-full shrink-0 ${area.is_active !== 0 ? 'bg-brand-teal' : 'bg-white/20'}`} />
-
-                {/* Info */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    {(() => {
-                      const divName = area.slug ? DIVISION_MAP[area.slug.toLowerCase()] : (area.name ? DIVISION_MAP[area.name.toLowerCase().replace(/\s+/g, '-')] : null);
-                      return divName ? (
-                        <span className="text-[10px] font-mono font-bold tracking-wider px-2 py-0.5 rounded bg-brand-teal/15 text-brand-teal border border-brand-teal/30 uppercase">
-                          {divName}
-                        </span>
-                      ) : null;
-                    })()}
-                    <span className="text-xs font-semibold text-white">{area.name}</span>
-                    {area.is_active === 0 && (
-                      <span className="text-[10px] font-mono text-amber-400/70 bg-amber-500/10 px-1.5 py-0.5 rounded">Hidden</span>
-                    )}
-                  </div>
-                  <p className="text-[11px] text-brand-slate/60 truncate mt-0.5">
-                    {area.heading || area.focus_title}
-                  </p>
-                  {area.tags && area.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-1 mt-1">
-                      {(area.tags || []).slice(0, 3).map((tag, i) => (
-                        <span key={i} className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-white/5 border border-white/8 text-brand-slate/60">
-                          {typeof tag === 'string' ? tag : tag.name || tag.tag_name}
-                        </span>
-                      ))}
+                <div className="p-4 flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3 min-w-0 flex-1">
+                    {/* Reorder buttons */}
+                    <div className="flex flex-col gap-0.5 shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => handleReorder(idx, 'up')}
+                        disabled={idx === 0}
+                        className="text-slate-400 hover:text-slate-800 disabled:opacity-20 transition-colors"
+                      >
+                        <ChevronUp size={14} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleReorder(idx, 'down')}
+                        disabled={idx === filtered.length - 1}
+                        className="text-slate-400 hover:text-slate-800 disabled:opacity-20 transition-colors"
+                      >
+                        <ChevronDown size={14} />
+                      </button>
                     </div>
-                  )}
+
+                    <span className="w-7 h-7 rounded-full bg-slate-100 border border-slate-200 text-slate-700 text-xs font-mono font-bold flex items-center justify-center shrink-0">
+                      {area.number_label || String(idx + 1).padStart(2, '0')}
+                    </span>
+
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-sm font-bold text-slate-900">{area.name}</span>
+                        {division && (
+                          <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-[#0D5C75]/10 text-[#0D5C75] border border-[#0D5C75]/20">
+                            Division: {division}
+                          </span>
+                        )}
+                        <span className="text-xs font-mono text-slate-400">/{area.slug}</span>
+                        {area.is_active === 0 && (
+                          <span className="text-[10px] font-mono text-rose-700 bg-rose-50 border border-rose-200 px-1.5 py-0.5 rounded font-semibold">
+                            Disabled
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-xs text-slate-600 truncate mt-1">
+                        {area.heading || area.description}
+                      </p>
+                      {area.tags && area.tags.length > 0 && (
+                        <div className="flex items-center gap-1.5 flex-wrap mt-1.5">
+                          {area.tags.slice(0, 4).map((t, tIdx) => (
+                            <span key={tIdx} className="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded">
+                              {typeof t === 'string' ? t : t.name}
+                            </span>
+                          ))}
+                          {area.tags.length > 4 && (
+                            <span className="text-[10px] text-slate-400 font-mono">
+                              +{area.tags.length - 4} more
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => handleToggleActive(area)}
+                      className="p-2 text-slate-400 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors"
+                      title={area.is_active === 1 ? 'Disable Area' : 'Enable Area'}
+                    >
+                      {area.is_active === 1 ? <Eye size={15} /> : <EyeOff size={15} />}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setEditingId(isEditing ? null : area.id)}
+                      className="flex items-center gap-1 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold rounded-lg transition-all"
+                    >
+                      <Edit2 size={12} />
+                      <span>{isEditing ? 'Close' : 'Edit'}</span>
+                    </button>
+                    <a
+                      href={`/areas-of-care/${area.slug}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-2 text-slate-400 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors"
+                      title="View Public Page"
+                    >
+                      <ExternalLink size={14} />
+                    </a>
+                    <button
+                      type="button"
+                      onClick={() => setDeleteTarget(area.id)}
+                      className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
+                      title="Delete Area"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
                 </div>
 
-                {/* Image preview */}
-                {area.image_url && (
-                  <div className="w-10 h-10 rounded-lg overflow-hidden border border-white/10 shrink-0">
-                    <img src={area.image_url} alt="" className="w-full h-full object-cover" />
+                {isEditing && (
+                  <div className="p-4 pt-0">
+                    <AreaEditorPanel
+                      area={area}
+                      onSave={(payload) => handleSave(area.id, payload)}
+                      onCancel={() => setEditingId(null)}
+                      onOpenMedia={(cb) => setMediaCb(() => cb)}
+                    />
                   </div>
                 )}
-
-                {/* Actions */}
-                <div className="flex items-center gap-1 shrink-0">
-                  <button
-                    onClick={() => setEditingId(editingId === area.id ? null : area.id)}
-                    className={`p-1.5 rounded-lg transition-colors ${
-                      editingId === area.id
-                        ? 'text-white bg-brand-teal/20'
-                        : 'text-brand-slate/70 hover:text-white hover:bg-white/5'
-                    }`}
-                  >
-                    {editingId === area.id ? <X size={14} /> : <Edit2 size={14} />}
-                  </button>
-                  <a
-                    href={`/areas-of-care#${area.slug}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-1.5 text-brand-slate/50 hover:text-brand-teal hover:bg-white/5 rounded-lg transition-colors"
-                  >
-                    <ExternalLink size={14} />
-                  </a>
-                  <button
-                    onClick={() => setDeleteTarget(area.id)}
-                    className="p-1.5 text-brand-slate/50 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
-                  >
-                    <Trash2 size={14} />
-                  </button>
-                </div>
               </div>
-
-              {/* Inline Editor */}
-              {editingId === area.id && (
-                <div className="mt-2">
-                  <AreaEditorPanel
-                    area={area}
-                    onSave={(form) => handleSave(area.id, form)}
-                    onCancel={() => setEditingId(null)}
-                    onOpenMedia={(cb) => setMediaCb(() => cb)}
-                  />
-                </div>
-              )}
-            </div>
-          ))}
+            );
+          })}
         </div>
       </AdminCard>
 
       <ConfirmModal
         isOpen={!!deleteTarget}
         title="Delete Therapeutic Area"
-        message="This will remove the therapeutic area and all associated tags. Products linked to this area must be reassigned first."
+        message="This action will delete the therapeutic area and its tag mappings. Linked products must be reassigned first."
         confirmLabel="Delete Area"
         onConfirm={handleDelete}
         onCancel={() => setDeleteTarget(null)}
@@ -433,8 +513,11 @@ export default function AdminTherapeuticAreas() {
 
       <MediaSelectorModal
         isOpen={!!mediaCb}
-        onSelect={(url) => { mediaCb && mediaCb(url); setMediaCb(null); }}
         onClose={() => setMediaCb(null)}
+        onSelect={(url) => {
+          if (mediaCb) mediaCb(url);
+          setMediaCb(null);
+        }}
       />
 
       <ToastNotification toast={toast} onDismiss={() => setToast(null)} />

@@ -6,7 +6,7 @@ export default function AdminLayout({ children, title, subtitle }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[#0A1118] text-white flex">
+    <div className="min-h-screen bg-[#F8F9FA] text-[#141A17] flex font-sans antialiased">
       {/* Sidebar */}
       <AdminSidebar
         isOpen={isSidebarOpen}

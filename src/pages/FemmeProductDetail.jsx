@@ -148,9 +148,13 @@ function parsePrecautionsAccordions(precautionsArray) {
   });
 }
 
+import { useProduct } from '../hooks/useProduct';
+
 export default function FemmeProductDetail() {
   const { productSlug } = useParams();
-  const product = getFemmeProductBySlug(productSlug);
+  const staticProduct = getFemmeProductBySlug(productSlug);
+  const { product: cmsProduct } = useProduct(productSlug);
+  const product = cmsProduct || staticProduct;
 
   useEffect(() => {
     if (product) {

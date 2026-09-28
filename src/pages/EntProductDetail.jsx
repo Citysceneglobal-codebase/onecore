@@ -152,9 +152,13 @@ function parsePrecautionsAccordions(precautionsArray) {
   });
 }
 
+import { useProduct } from '../hooks/useProduct';
+
 export default function EntProductDetail() {
   const { productSlug } = useParams();
-  const product = getEntProductBySlug(productSlug);
+  const staticProduct = getEntProductBySlug(productSlug);
+  const { product: cmsProduct } = useProduct(productSlug);
+  const product = cmsProduct || staticProduct;
 
   useEffect(() => {
     if (product) {

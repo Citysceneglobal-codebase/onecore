@@ -7,7 +7,7 @@ export function useAreaDetail(slug) {
     const found = slug ? getAreaBySlug(slug) : null;
     return found?.sampleProducts || [];
   });
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -18,19 +18,56 @@ export function useAreaDetail(slug) {
       return;
     }
 
-    const found = getAreaBySlug(slug);
-    if (found) {
-      setArea(found);
-      setProducts(found.sampleProducts || []);
-      setError(null);
-    } else {
-      setArea(null);
-      setProducts([]);
-      setError('Area of care not found.');
+    let isMounted = true;
+    const fallback = getAreaBySlug(slug);
+    if (fallback) {
+      setArea(fallback);
+      setProducts(fallback.sampleProducts || []);
     }
-    setLoading(false);
+
+    const fetchDetail = async () => {
+      try {
+        const res = await fetch(`/api/therapeutic-areas/${slug}`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const result = await res.json();
+
+        if (isMounted && result.success && result.data) {
+          const apiArea = result.data;
+          const merged = {
+            ...fallback,
+            ...apiArea,
+            id: apiArea.id,
+            name: apiArea.name || fallback?.title,
+            title: apiArea.name || fallback?.title,
+            slug: apiArea.slug || slug,
+            heading: apiArea.heading || fallback?.focusTitle,
+            focusTitle: apiArea.heading || fallback?.focusTitle,
+            description: apiArea.description || fallback?.description,
+            image: apiArea.image_url || fallback?.image,
+            image_url: apiArea.image_url || fallback?.image,
+            tags: apiArea.tags && apiArea.tags.length > 0 ? apiArea.tags : fallback?.tags || [],
+            sampleProducts: (apiArea.products && apiArea.products.length > 0) ? apiArea.products : fallback?.sampleProducts || [],
+          };
+
+          setArea(merged);
+          setProducts(merged.sampleProducts);
+          setError(null);
+        }
+      } catch {
+        if (!fallback && isMounted) {
+          setError('Area of care not found.');
+        }
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+
+    fetchDetail();
+
+    return () => {
+      isMounted = false;
+    };
   }, [slug]);
 
   return { area, products, loading, error };
 }
-

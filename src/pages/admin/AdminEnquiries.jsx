@@ -8,77 +8,71 @@ import {
   Clock,
   Trash2,
   X,
-  Send,
-  Building,
   Mail,
   Phone,
+  Building,
   User,
   AlertCircle,
-  FileText,
 } from 'lucide-react';
 import AdminLayout from '../../components/admin/AdminLayout';
 import { AdminCard } from '../../components/admin/AdminCard';
 import AdminTable from '../../components/admin/AdminTable';
+import ToastNotification from '../../components/admin/ToastNotification';
+import ConfirmModal from '../../components/admin/ConfirmModal';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 
 export default function AdminEnquiries() {
-  const { token, isSuperAdmin, isAdmin } = useAdminAuth();
+  const { token, isSuperAdmin } = useAdminAuth();
   const [enquiries, setEnquiries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('all');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [search, setSearch] = useState('');
   const [selectedEnquiry, setSelectedEnquiry] = useState(null);
-  const [updating, setUpdating] = useState(false);
   const [adminNotes, setAdminNotes] = useState('');
   const [currentStatus, setCurrentStatus] = useState('new');
-  const [notification, setNotification] = useState(null);
+  const [updating, setUpdating] = useState(false);
+  const [toast, setToast] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+
+  const showToast = (type, message) => setToast({ type, message });
+
+  const fetchEnquiries = async () => {
+    setLoading(true);
+    try {
+      const url = statusFilter === 'all' ? '/api/admin/enquiries' : `/api/admin/enquiries?status=${statusFilter}`;
+      const res = await fetch(url, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && data.data) {
+          const list = Array.isArray(data.data) ? data.data : (data.data.enquiries || []);
+          setEnquiries(list);
+        }
+      }
+    } catch {
+      // Keep state
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     document.title = 'Contact Enquiries | Onecore Admin';
     fetchEnquiries();
   }, [token, statusFilter]);
 
-  const fetchEnquiries = async () => {
-    setLoading(true);
-    try {
-      const url =
-        statusFilter === 'all'
-          ? '/api/admin/enquiries'
-          : `/api/admin/enquiries?status=${statusFilter}`;
-      const res = await fetch(url, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (res.ok) {
-        const data = await res.json();
-        if (data.success && data.data) {
-          setEnquiries(data.data);
-        }
-      }
-    } catch (err) {
-      console.warn('Error loading enquiries:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleOpenDetail = (enquiry) => {
-    setSelectedEnquiry(enquiry);
-    setCurrentStatus(enquiry.status);
-    setAdminNotes(enquiry.admin_notes || '');
-  };
-
-  const handleCloseDetail = () => {
-    setSelectedEnquiry(null);
-    setAdminNotes('');
+  const handleOpenDetail = (item) => {
+    setSelectedEnquiry(item);
+    setCurrentStatus(item.status || 'new');
+    setAdminNotes(item.admin_notes || '');
   };
 
   const handleUpdateStatus = async (e) => {
     e.preventDefault();
     if (!selectedEnquiry) return;
-
     setUpdating(true);
+
     try {
       const res = await fetch(`/api/admin/enquiries/${selectedEnquiry.id}`, {
         method: 'PATCH',
@@ -88,66 +82,54 @@ export default function AdminEnquiries() {
         },
         body: JSON.stringify({
           status: currentStatus,
-          admin_notes: adminNotes,
+          adminNotes: adminNotes,
         }),
       });
 
-      if (res.ok) {
-        setNotification({ type: 'success', message: 'Enquiry updated successfully.' });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        showToast('success', 'Enquiry updated successfully.');
+        setSelectedEnquiry((prev) => ({ ...prev, status: currentStatus, admin_notes: adminNotes }));
         fetchEnquiries();
-        setSelectedEnquiry((prev) => ({
-          ...prev,
-          status: currentStatus,
-          admin_notes: adminNotes,
-        }));
       } else {
-        setNotification({ type: 'error', message: 'Failed to update enquiry.' });
+        showToast('error', data.message || 'Update failed.');
       }
     } catch (err) {
-      setNotification({ type: 'error', message: err.message });
+      showToast('error', err.message);
     } finally {
       setUpdating(false);
-      setTimeout(() => setNotification(null), 3000);
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this enquiry record?')) {
-      return;
-    }
-
+  const handleDelete = async () => {
+    if (!deleteTarget) return;
     try {
-      const res = await fetch(`/api/admin/enquiries/${id}`, {
+      const res = await fetch(`/api/admin/enquiries/${deleteTarget}`, {
         method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
-
-      if (res.ok) {
-        setNotification({ type: 'success', message: 'Enquiry deleted.' });
-        if (selectedEnquiry?.id === id) {
-          handleCloseDetail();
-        }
-        fetchEnquiries();
+      const data = await res.json();
+      if (res.ok && data.success) {
+        showToast('success', 'Enquiry deleted.');
+        setEnquiries((prev) => prev.filter((e) => e.id !== deleteTarget));
+        if (selectedEnquiry?.id === deleteTarget) setSelectedEnquiry(null);
       } else {
-        setNotification({ type: 'error', message: 'Failed to delete enquiry.' });
+        showToast('error', data.message || 'Delete failed.');
       }
     } catch (err) {
-      setNotification({ type: 'error', message: err.message });
+      showToast('error', err.message);
     } finally {
-      setTimeout(() => setNotification(null), 3000);
+      setDeleteTarget(null);
     }
   };
 
-  const filteredEnquiries = enquiries.filter((item) => {
-    const q = searchQuery.toLowerCase();
+  const filtered = enquiries.filter((e) => {
+    const q = search.toLowerCase();
     return (
-      (item.full_name && item.full_name.toLowerCase().includes(q)) ||
-      (item.email && item.email.toLowerCase().includes(q)) ||
-      (item.organisation && item.organisation.toLowerCase().includes(q)) ||
-      (item.nature_of_enquiry && item.nature_of_enquiry.toLowerCase().includes(q)) ||
-      (item.message && item.message.toLowerCase().includes(q))
+      (e.full_name || '').toLowerCase().includes(q) ||
+      (e.email || '').toLowerCase().includes(q) ||
+      (e.organisation || '').toLowerCase().includes(q) ||
+      (e.message || '').toLowerCase().includes(q)
     );
   });
 
@@ -155,31 +137,26 @@ export default function AdminEnquiries() {
     switch (status) {
       case 'new':
         return (
-          <span className="px-2 py-0.5 rounded-full text-[10px] font-mono uppercase font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+          <span className="px-2 py-0.5 rounded-full text-[10px] font-mono uppercase font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
             New
           </span>
         );
       case 'in_progress':
         return (
-          <span className="px-2 py-0.5 rounded-full text-[10px] font-mono uppercase font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">
+          <span className="px-2 py-0.5 rounded-full text-[10px] font-mono uppercase font-semibold bg-amber-50 text-amber-700 border border-amber-200">
             In Progress
           </span>
         );
       case 'resolved':
         return (
-          <span className="px-2 py-0.5 rounded-full text-[10px] font-mono uppercase font-semibold bg-sky-500/10 text-sky-400 border border-sky-500/20">
+          <span className="px-2 py-0.5 rounded-full text-[10px] font-mono uppercase font-semibold bg-sky-50 text-sky-700 border border-sky-200">
             Resolved
           </span>
         );
       case 'archived':
-        return (
-          <span className="px-2 py-0.5 rounded-full text-[10px] font-mono uppercase font-semibold bg-white/5 text-brand-slate border border-white/10">
-            Archived
-          </span>
-        );
       default:
         return (
-          <span className="px-2 py-0.5 rounded-full text-[10px] font-mono uppercase font-semibold bg-white/5 text-brand-slate border border-white/10">
+          <span className="px-2 py-0.5 rounded-full text-[10px] font-mono uppercase font-semibold bg-slate-100 text-slate-600 border border-slate-200">
             {status}
           </span>
         );
@@ -189,265 +166,232 @@ export default function AdminEnquiries() {
   return (
     <AdminLayout
       title="Contact Enquiries"
-      subtitle="Review and process incoming enquiries from the public Contact page"
+      subtitle="Review and manage incoming commercial enquiries, distributor requests, and medical communications"
     >
-      {notification && (
-        <div
-          className={`p-4 rounded-xl border text-xs flex items-center justify-between transition-all ${
-            notification.type === 'success'
-              ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-300'
-              : 'bg-red-500/10 border-red-500/20 text-red-300'
-          }`}
-        >
-          <span>{notification.message}</span>
-          <button onClick={() => setNotification(null)} className="text-white/60 hover:text-white">
-            <X size={14} />
-          </button>
-        </div>
-      )}
-
-      {/* Filter and Search Bar */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-brand-navy border border-brand-navy-light/40 p-4 rounded-xl">
-        {/* Status Tabs */}
-        <div className="flex items-center gap-1 overflow-x-auto w-full sm:w-auto">
-          {['all', 'new', 'in_progress', 'resolved', 'archived'].map((status) => (
-            <button
-              key={status}
-              onClick={() => setStatusFilter(status)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium capitalize transition-colors whitespace-nowrap ${
-                statusFilter === status
-                  ? 'bg-brand-teal text-white'
-                  : 'text-brand-slate hover:text-white hover:bg-white/5'
-              }`}
-            >
-              {status.replace('_', ' ')}
-            </button>
-          ))}
-        </div>
-
-        {/* Search Field */}
-        <div className="relative w-full sm:w-72">
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search enquiries..."
-            className="w-full bg-brand-navy-dark/60 border border-white/10 rounded-lg px-3 py-1.5 pl-9 text-xs text-white placeholder-brand-slate/40 focus:outline-hidden focus:border-brand-teal"
-          />
-          <Search size={14} className="absolute left-3 top-2.5 text-brand-slate/50" />
-        </div>
-      </div>
-
-      {/* Enquiries Table */}
-      <AdminCard>
-        {loading ? (
-          <div className="py-16 text-center text-brand-slate/60 text-xs">
-            <div className="w-6 h-6 border-2 border-brand-teal border-t-transparent rounded-full animate-spin mx-auto mb-2" />
-            <p>Loading enquiries from database...</p>
-          </div>
-        ) : filteredEnquiries.length > 0 ? (
-          <AdminTable
-            headers={['Contact', 'Organisation', 'Role / Category', 'Date', 'Status', 'Actions']}
-          >
-            {filteredEnquiries.map((enquiry) => (
-              <tr
-                key={enquiry.id}
-                className="hover:bg-white/[0.02] transition-colors cursor-pointer"
-                onClick={() => handleOpenDetail(enquiry)}
-              >
-                <td className="py-3 px-4">
-                  <div className="font-medium text-white">{enquiry.full_name}</div>
-                  <div className="text-[11px] text-brand-slate/70">{enquiry.email}</div>
-                </td>
-                <td className="py-3 px-4 text-white">
-                  {enquiry.organisation || '—'}
-                </td>
-                <td className="py-3 px-4">
-                  <div className="text-white">{enquiry.nature_of_enquiry || enquiry.subject_category}</div>
-                  <div className="text-[11px] text-brand-teal font-mono">{enquiry.contact_type}</div>
-                </td>
-                <td className="py-3 px-4 font-mono text-[11px]">
-                  {new Date(enquiry.created_at).toLocaleDateString()}
-                </td>
-                <td className="py-3 px-4">
-                  {getStatusBadge(enquiry.status)}
-                </td>
-                <td className="py-3 px-4" onClick={(e) => e.stopPropagation()}>
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => handleOpenDetail(enquiry)}
-                      className="p-1.5 text-brand-slate hover:text-white hover:bg-white/5 rounded transition-colors"
-                      title="View Details"
-                    >
-                      <Eye size={14} />
-                    </button>
-                    {(isSuperAdmin || isAdmin) && (
-                      <button
-                        onClick={() => handleDelete(enquiry.id)}
-                        className="p-1.5 text-brand-slate hover:text-red-400 hover:bg-red-500/10 rounded transition-colors"
-                        title="Delete Enquiry"
-                      >
-                        <Trash2 size={14} />
-                      </button>
-                    )}
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </AdminTable>
-        ) : (
-          <div className="py-16 text-center text-brand-slate/60 text-xs">
-            <Inbox size={32} className="mx-auto mb-2 text-brand-slate/40" />
-            <p>No enquiries found matching your filter.</p>
-          </div>
-        )}
-      </AdminCard>
-
-      {/* Enquiry Detail Modal */}
-      {selectedEnquiry && (
-        <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 backdrop-blur-xs">
-          <div className="bg-brand-navy border border-white/10 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl p-6 lg:p-8 relative">
-            <button
-              onClick={handleCloseDetail}
-              className="absolute top-6 right-6 text-brand-slate hover:text-white p-1 rounded-lg hover:bg-white/5"
-            >
-              <X size={20} />
-            </button>
-
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-3 rounded-xl bg-brand-teal/10 text-brand-teal">
-                <FileText size={20} />
-              </div>
-              <div>
-                <span className="text-xs font-mono uppercase tracking-wider text-brand-teal">
-                  Enquiry #{selectedEnquiry.id}
-                </span>
-                <h3 className="text-lg font-medium text-white">
-                  {selectedEnquiry.nature_of_enquiry || selectedEnquiry.subject_category || 'General Enquiry'}
-                </h3>
-              </div>
-            </div>
-
-            {/* Submitter Info Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-brand-navy-dark/50 border border-white/5 rounded-xl p-4 mb-6 text-xs">
-              <div className="flex items-center gap-2">
-                <User size={14} className="text-brand-slate/60" />
-                <span className="text-brand-slate">Name:</span>
-                <span className="text-white font-medium">{selectedEnquiry.full_name}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Mail size={14} className="text-brand-slate/60" />
-                <span className="text-brand-slate">Email:</span>
-                <a
-                  href={`mailto:${selectedEnquiry.email}`}
-                  className="text-brand-teal hover:underline"
-                >
-                  {selectedEnquiry.email}
-                </a>
-              </div>
-              {selectedEnquiry.phone && (
-                <div className="flex items-center gap-2">
-                  <Phone size={14} className="text-brand-slate/60" />
-                  <span className="text-brand-slate">Phone:</span>
-                  <span className="text-white">{selectedEnquiry.phone}</span>
-                </div>
-              )}
-              {selectedEnquiry.organisation && (
-                <div className="flex items-center gap-2">
-                  <Building size={14} className="text-brand-slate/60" />
-                  <span className="text-brand-slate">Organisation:</span>
-                  <span className="text-white">{selectedEnquiry.organisation}</span>
-                </div>
-              )}
-              <div className="flex items-center gap-2">
-                <Clock size={14} className="text-brand-slate/60" />
-                <span className="text-brand-slate">Submitted:</span>
-                <span className="font-mono text-white">
-                  {new Date(selectedEnquiry.created_at).toLocaleString()}
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-brand-slate">Contact Role:</span>
-                <span className="text-brand-teal font-mono">{selectedEnquiry.contact_type}</span>
-              </div>
-            </div>
-
-            {/* Message Body */}
-            <div className="mb-6">
-              <h4 className="text-xs font-mono uppercase tracking-wider text-brand-slate mb-2">
-                Message Content
-              </h4>
-              <div className="bg-brand-navy-dark/70 border border-white/10 rounded-xl p-4 text-xs text-white leading-relaxed whitespace-pre-wrap">
-                {selectedEnquiry.message}
-              </div>
-            </div>
-
-            {/* Status & Notes Management */}
-            <form onSubmit={handleUpdateStatus} className="space-y-4 pt-4 border-t border-white/10">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-brand-slate mb-1.5">
-                    Update Status
-                  </label>
-                  <select
-                    value={currentStatus}
-                    onChange={(e) => setCurrentStatus(e.target.value)}
-                    className="w-full bg-brand-navy-dark/60 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:outline-hidden focus:border-brand-teal"
-                  >
-                    <option value="new">New</option>
-                    <option value="in_progress">In Progress</option>
-                    <option value="resolved">Resolved</option>
-                    <option value="archived">Archived</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-brand-slate mb-1.5">
-                    Internal Admin Notes
-                  </label>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Main Table Column (2 cols) */}
+        <div className="lg:col-span-2">
+          <AdminCard
+            title={`Enquiries (${filtered.length})`}
+            subtitle="Public contact messages stored securely in MySQL"
+            action={
+              <div className="flex items-center gap-2.5 flex-wrap">
+                <div className="relative">
                   <input
                     type="text"
-                    value={adminNotes}
-                    onChange={(e) => setAdminNotes(e.target.value)}
-                    placeholder="e.g., Forwarded to Commercial Team"
-                    className="w-full bg-brand-navy-dark/60 border border-white/10 rounded-lg px-3 py-2 text-xs text-white placeholder-brand-slate/40 focus:outline-hidden focus:border-brand-teal"
+                    placeholder="Search by name, email, org..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="bg-white border border-slate-200 rounded-lg px-3 py-1.5 pl-8 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#0D5C75] focus:ring-1 focus:ring-[#0D5C75]"
                   />
+                  <Search size={13} className="absolute left-2.5 top-2.5 text-slate-400 pointer-events-none" />
                 </div>
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  className="bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-xs text-slate-900 focus:outline-none focus:border-[#0D5C75] focus:ring-1 focus:ring-[#0D5C75]"
+                >
+                  <option value="all">All Statuses</option>
+                  <option value="new">New</option>
+                  <option value="in_progress">In Progress</option>
+                  <option value="resolved">Resolved</option>
+                  <option value="archived">Archived</option>
+                </select>
               </div>
-
-              <div className="flex items-center justify-between pt-2">
-                {(isSuperAdmin || isAdmin) && (
-                  <button
-                    type="button"
-                    onClick={() => handleDelete(selectedEnquiry.id)}
-                    className="text-xs text-red-400 hover:text-red-300 flex items-center gap-1.5"
+            }
+          >
+            {loading ? (
+              <div className="py-12 text-center text-slate-400 text-xs">
+                Loading contact enquiries...
+              </div>
+            ) : filtered.length === 0 ? (
+              <div className="py-12 text-center text-slate-400 text-xs">
+                <Inbox size={32} className="mx-auto mb-2 text-slate-300" />
+                <p className="font-semibold text-slate-700">No enquiries found.</p>
+                <p className="text-[11px] text-slate-400 mt-1">
+                  Enquiries submitted on the website contact page will appear here.
+                </p>
+              </div>
+            ) : (
+              <AdminTable
+                headers={['Contact', 'Category', 'Date', 'Status', 'Actions']}
+              >
+                {filtered.map((item) => (
+                  <tr
+                    key={item.id}
+                    onClick={() => handleOpenDetail(item)}
+                    className={`cursor-pointer transition-colors ${
+                      selectedEnquiry?.id === item.id ? 'bg-blue-50/40' : 'hover:bg-slate-50'
+                    }`}
                   >
-                    <Trash2 size={14} />
-                    <span>Delete Enquiry</span>
-                  </button>
-                )}
+                    <td className="py-3 px-4">
+                      <div className="font-semibold text-slate-900">{item.full_name}</div>
+                      <div className="text-[11px] text-slate-500">{item.email}</div>
+                    </td>
+                    <td className="py-3 px-4 text-slate-700 font-medium text-xs">
+                      {item.enquiry_type || item.nature_of_enquiry || 'General'}
+                    </td>
+                    <td className="py-3 px-4 font-mono text-[11px] text-slate-500">
+                      {new Date(item.submitted_at || item.created_at).toLocaleDateString()}
+                    </td>
+                    <td className="py-3 px-4">
+                      {getStatusBadge(item.status)}
+                    </td>
+                    <td className="py-3 px-4" onClick={(e) => e.stopPropagation()}>
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          onClick={() => handleOpenDetail(item)}
+                          className="px-2.5 py-1 text-xs font-semibold bg-[#1B365D] text-white rounded-md"
+                        >
+                          View
+                        </button>
+                        {isSuperAdmin && (
+                          <button
+                            onClick={() => setDeleteTarget(item.id)}
+                            className="p-1 text-slate-400 hover:text-rose-600 rounded"
+                            title="Delete"
+                          >
+                            <Trash2 size={13} />
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </AdminTable>
+            )}
+          </AdminCard>
+        </div>
 
-                <div className="flex items-center gap-3 ml-auto">
-                  <button
-                    type="button"
-                    onClick={handleCloseDetail}
-                    className="px-4 py-2 bg-white/5 hover:bg-white/10 text-white rounded-lg text-xs"
-                  >
-                    Cancel
-                  </button>
+        {/* Selected Enquiry Detail Panel (1 col) */}
+        <div>
+          {selectedEnquiry ? (
+            <AdminCard
+              title="Enquiry Details"
+              subtitle={`Ref #${selectedEnquiry.id} • ${new Date(selectedEnquiry.submitted_at || selectedEnquiry.created_at).toLocaleString()}`}
+              action={
+                <button
+                  onClick={() => setSelectedEnquiry(null)}
+                  className="p-1 text-slate-400 hover:text-slate-700 rounded"
+                >
+                  <X size={16} />
+                </button>
+              }
+            >
+              <div className="space-y-4">
+                {/* Sender card */}
+                <div className="p-3.5 bg-[#FAFAFC] border border-slate-200 rounded-xl space-y-2">
+                  <div className="flex items-center gap-2">
+                    <User size={14} className="text-[#0D5C75]" />
+                    <span className="text-xs font-bold text-slate-900">{selectedEnquiry.full_name}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-slate-600">
+                    <Mail size={13} className="text-slate-400" />
+                    <a href={`mailto:${selectedEnquiry.email}`} className="text-[#0D5C75] hover:underline">
+                      {selectedEnquiry.email}
+                    </a>
+                  </div>
+                  {selectedEnquiry.phone && (
+                    <div className="flex items-center gap-2 text-xs text-slate-600">
+                      <Phone size={13} className="text-slate-400" />
+                      <a href={`tel:${selectedEnquiry.phone}`} className="text-slate-800">
+                        {selectedEnquiry.phone}
+                      </a>
+                    </div>
+                  )}
+                  {selectedEnquiry.organisation && (
+                    <div className="flex items-center gap-2 text-xs text-slate-600">
+                      <Building size={13} className="text-slate-400" />
+                      <span>{selectedEnquiry.organisation}</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Profile & Type */}
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div className="p-2.5 bg-slate-50 border border-slate-200 rounded-lg">
+                    <span className="text-[10px] font-mono text-slate-500 uppercase block">Contact Profile</span>
+                    <span className="font-semibold text-slate-800">{selectedEnquiry.contacting_as || selectedEnquiry.contact_type || '—'}</span>
+                  </div>
+                  <div className="p-2.5 bg-slate-50 border border-slate-200 rounded-lg">
+                    <span className="text-[10px] font-mono text-slate-500 uppercase block">Category</span>
+                    <span className="font-semibold text-slate-800">{selectedEnquiry.enquiry_type || selectedEnquiry.nature_of_enquiry || '—'}</span>
+                  </div>
+                </div>
+
+                {/* Message Body */}
+                <div>
+                  <label className="block text-[10px] font-mono uppercase tracking-wider text-slate-500 font-semibold mb-1">
+                    Message Content
+                  </label>
+                  <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 leading-relaxed whitespace-pre-wrap max-h-48 overflow-y-auto">
+                    {selectedEnquiry.message}
+                  </div>
+                </div>
+
+                {/* Status & Notes Form */}
+                <form onSubmit={handleUpdateStatus} className="space-y-3 pt-3 border-t border-slate-100">
+                  <div>
+                    <label className="block text-[11px] font-mono uppercase tracking-wider text-slate-600 font-medium mb-1">
+                      Update Status
+                    </label>
+                    <select
+                      value={currentStatus}
+                      onChange={(e) => setCurrentStatus(e.target.value)}
+                      className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-[#0D5C75] focus:ring-1 focus:ring-[#0D5C75]"
+                    >
+                      <option value="new">New (Unread)</option>
+                      <option value="in_progress">In Progress</option>
+                      <option value="resolved">Resolved</option>
+                      <option value="archived">Archived</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-mono uppercase tracking-wider text-slate-600 font-medium mb-1">
+                      Internal Admin Notes
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={adminNotes}
+                      onChange={(e) => setAdminNotes(e.target.value)}
+                      placeholder="Add follow-up notes, assigned representative, or resolution details..."
+                      className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#0D5C75] focus:ring-1 focus:ring-[#0D5C75] resize-y"
+                    />
+                  </div>
+
                   <button
                     type="submit"
                     disabled={updating}
-                    className="px-4 py-2 bg-brand-teal hover:bg-brand-teal/90 text-white rounded-lg text-xs font-medium flex items-center gap-2"
+                    className="w-full py-2 px-4 bg-[#1B365D] hover:bg-[#152a48] text-white rounded-lg text-xs font-semibold transition-all shadow-xs disabled:opacity-50"
                   >
-                    {updating ? 'Saving...' : 'Save Status & Notes'}
+                    {updating ? 'Saving Notes...' : 'Save Enquiry Status & Notes'}
                   </button>
-                </div>
+                </form>
               </div>
-            </form>
-          </div>
+            </AdminCard>
+          ) : (
+            <AdminCard title="Enquiry Overview">
+              <div className="py-12 text-center text-slate-400 text-xs">
+                <Inbox size={28} className="mx-auto mb-2 text-slate-300" />
+                <p>Select any enquiry from the list to review details and record internal notes.</p>
+              </div>
+            </AdminCard>
+          )}
         </div>
-      )}
+      </div>
+
+      <ConfirmModal
+        isOpen={!!deleteTarget}
+        title="Delete Enquiry"
+        message="This enquiry record will be permanently deleted from MySQL."
+        confirmLabel="Delete"
+        onConfirm={handleDelete}
+        onCancel={() => setDeleteTarget(null)}
+        dangerous
+      />
+
+      <ToastNotification toast={toast} onDismiss={() => setToast(null)} />
     </AdminLayout>
   );
 }

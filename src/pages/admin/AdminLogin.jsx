@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ShieldCheck, Mail, Lock, ArrowRight, AlertCircle, Sparkles } from 'lucide-react';
+import { ShieldCheck, Mail, Lock, ArrowRight, AlertCircle } from 'lucide-react';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 
 export default function AdminLogin() {
@@ -43,43 +43,39 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-[#070D12] flex items-center justify-center p-6 relative overflow-hidden">
-      {/* Subtle Background Elements */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-brand-teal/5 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute top-0 right-0 w-96 h-96 bg-brand-navy-light/20 rounded-full blur-3xl pointer-events-none" />
-
+    <div className="min-h-screen bg-[#F4F6F8] flex items-center justify-center p-6 relative font-sans">
       <div className="w-full max-w-md relative z-10">
         {/* Brand Header */}
-        <div className="text-center mb-8 flex flex-col items-center">
+        <div className="text-center mb-7 flex flex-col items-center">
           <img
             src="/assets/onecore-logo.png"
             alt="Onecore Pharma"
-            className="h-10 w-auto object-contain brightness-0 invert mb-3"
+            className="h-9 w-auto object-contain mb-2"
           />
-          <p className="text-xs font-mono tracking-widest uppercase text-brand-teal mt-1">
-            Custom CMS & Admin Portal
-          </p>
+          <span className="text-[10px] font-mono tracking-widest uppercase text-[#0D5C75] font-semibold">
+            Database-Driven CMS & Admin Portal
+          </span>
         </div>
 
         {/* Login Card */}
-        <div className="bg-brand-navy/90 border border-white/10 backdrop-blur-md rounded-2xl p-8 shadow-2xl">
+        <div className="bg-white border border-slate-200 rounded-xl p-8 shadow-sm">
           <div className="mb-6">
-            <h2 className="text-lg font-medium text-white tracking-tight">Sign In</h2>
-            <p className="text-xs text-brand-slate font-light mt-1">
-              Enter your authorized administrative credentials to access the portal.
+            <h2 className="text-xl font-bold text-slate-900 tracking-tight">Admin Sign In</h2>
+            <p className="text-xs text-slate-500 font-normal mt-1">
+              Enter your authorized credentials to manage website content and specifications.
             </p>
           </div>
 
           {error && (
-            <div className="mb-6 p-4 rounded-lg bg-red-500/10 border border-red-500/20 flex items-start gap-3 text-xs text-red-300">
-              <AlertCircle size={16} className="shrink-0 text-red-400 mt-0.5" />
+            <div className="mb-6 p-3.5 rounded-lg bg-rose-50 border border-rose-200 flex items-start gap-2.5 text-xs text-rose-700">
+              <AlertCircle size={15} className="shrink-0 text-rose-600 mt-0.5" />
               <span>{error}</span>
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-mono uppercase tracking-wider text-brand-slate mb-1.5">
+              <label className="block text-xs font-mono uppercase tracking-wider text-slate-600 font-medium mb-1.5">
                 Email Address
               </label>
               <div className="relative">
@@ -90,16 +86,16 @@ export default function AdminLogin() {
                   autoComplete="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@onecorepharma.com"
+                  placeholder="admin@onecorepharma.in"
                   required
-                  className="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 pl-11 text-xs text-[#111827] placeholder:text-gray-400 focus:outline-none focus:border-brand-teal focus:ring-2 focus:ring-brand-teal/20 transition-all shadow-xs"
+                  className="w-full bg-white border border-slate-200 rounded-lg px-3.5 py-2.5 pl-10 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#0D5C75] focus:ring-1 focus:ring-[#0D5C75] transition-all shadow-xs"
                 />
-                <Mail size={16} className="absolute left-3.5 top-3.5 text-gray-400 pointer-events-none" />
+                <Mail size={15} className="absolute left-3.5 top-3 text-slate-400 pointer-events-none" />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-mono uppercase tracking-wider text-brand-slate mb-1.5">
+              <label className="block text-xs font-mono uppercase tracking-wider text-slate-600 font-medium mb-1.5">
                 Password
               </label>
               <div className="relative">
@@ -112,44 +108,44 @@ export default function AdminLogin() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••••••"
                   required
-                  className="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 pl-11 text-xs text-[#111827] placeholder:text-gray-400 focus:outline-none focus:border-brand-teal focus:ring-2 focus:ring-brand-teal/20 transition-all shadow-xs"
+                  className="w-full bg-white border border-slate-200 rounded-lg px-3.5 py-2.5 pl-10 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#0D5C75] focus:ring-1 focus:ring-[#0D5C75] transition-all shadow-xs"
                 />
-                <Lock size={16} className="absolute left-3.5 top-3.5 text-gray-400 pointer-events-none" />
+                <Lock size={15} className="absolute left-3.5 top-3 text-slate-400 pointer-events-none" />
               </div>
             </div>
 
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full mt-2 py-3 px-4 bg-brand-teal hover:bg-brand-teal/90 text-white rounded-lg text-xs font-medium tracking-wide flex items-center justify-center gap-2 transition-all shadow-md shadow-brand-teal/20 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full mt-2 py-2.5 px-4 bg-[#1B365D] hover:bg-[#152a48] text-white rounded-lg text-xs font-semibold tracking-wide flex items-center justify-center gap-2 transition-all shadow-xs disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? (
                 <>
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   <span>Authenticating...</span>
                 </>
               ) : (
                 <>
                   <span>Sign In to Admin Portal</span>
-                  <ArrowRight size={14} />
+                  <ArrowRight size={13} />
                 </>
               )}
             </button>
           </form>
 
           {/* Super Admin Bootstrap Note */}
-          <div className="mt-8 pt-6 border-t border-white/5 text-[11px] text-brand-slate/60 text-center font-light">
+          <div className="mt-6 pt-5 border-t border-slate-100 text-[11px] text-slate-500 text-center font-normal">
             <p>
-              New administrator accounts and credentials must be provisioned via the secure CLI tool or by a Super Administrator.
+              Secured with bcrypt password hashing and JWT authentication on MySQL 8+.
             </p>
           </div>
         </div>
 
         {/* Back link */}
-        <div className="text-center mt-6">
+        <div className="text-center mt-5">
           <a
             href="/"
-            className="text-xs text-brand-slate hover:text-white transition-colors"
+            className="text-xs text-slate-500 hover:text-slate-800 transition-colors"
           >
             ← Return to public website
           </a>

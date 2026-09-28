@@ -152,9 +152,13 @@ function parsePrecautionsAccordions(precautionsArray) {
   });
 }
 
+import { useProduct } from '../hooks/useProduct';
+
 export default function PediatricsProductDetail() {
   const { productSlug } = useParams();
-  const product = getPediatricsProductBySlug(productSlug);
+  const staticProduct = getPediatricsProductBySlug(productSlug);
+  const { product: cmsProduct } = useProduct(productSlug);
+  const product = cmsProduct || staticProduct;
 
   useEffect(() => {
     if (product) {

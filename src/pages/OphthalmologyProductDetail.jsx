@@ -152,9 +152,13 @@ function parsePrecautionsAccordions(precautionsArray) {
   });
 }
 
+import { useProduct } from '../hooks/useProduct';
+
 export default function OphthalmologyProductDetail() {
   const { productSlug } = useParams();
-  const product = getOphthalmologyProductBySlug(productSlug);
+  const staticProduct = getOphthalmologyProductBySlug(productSlug);
+  const { product: cmsProduct } = useProduct(productSlug);
+  const product = cmsProduct || staticProduct;
 
   useEffect(() => {
     if (product) {

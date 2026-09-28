@@ -292,14 +292,24 @@ const categoryData = {
   }
 };
 
+import { useAreaDetail } from '../hooks/useAreaDetail';
+
 export default function AreaOfCareDetail() {
   const { slug } = useParams();
   const [searchQuery, setSearchQuery] = useState('');
+  const { area: dynamicArea } = useAreaDetail(slug);
 
   const currentCategory = useMemo(() => {
     if (!slug) return null;
-    return categoryData[slug.toLowerCase().trim()] || null;
-  }, [slug]);
+    const base = categoryData[slug.toLowerCase().trim()] || null;
+    if (!base) return null;
+    if (!dynamicArea) return base;
+    return {
+      ...base,
+      description: dynamicArea.description || base.description,
+      image: dynamicArea.image_url || dynamicArea.image || base.image,
+    };
+  }, [slug, dynamicArea]);
 
   useEffect(() => {
     if (currentCategory) {

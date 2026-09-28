@@ -7,65 +7,40 @@ import {
   File,
   CheckCircle2,
   X,
+  Search,
 } from 'lucide-react';
 import AdminLayout from '../../components/admin/AdminLayout';
 import { AdminCard } from '../../components/admin/AdminCard';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 
 export default function AdminMedia() {
-  const { token, isEditor } = useAdminAuth();
-  const [mediaList, setMediaList] = useState([
-    {
-      id: 1,
-      filename: 'hero_healthcare.jpg',
-      original_name: 'hero_healthcare.jpg',
-      file_path: '/uploads/hero_healthcare.jpg',
-      mime_type: 'image/jpeg',
-      size_bytes: 384000,
-      created_at: new Date().toISOString(),
-    },
-    {
-      id: 2,
-      filename: 'patients_caregivers.jpg',
-      original_name: 'patients_caregivers.jpg',
-      file_path: '/uploads/patients_caregivers.jpg',
-      mime_type: 'image/jpeg',
-      size_bytes: 412000,
-      created_at: new Date().toISOString(),
-    },
-    {
-      id: 3,
-      filename: 'hcp_clinical.jpg',
-      original_name: 'hcp_clinical.jpg',
-      file_path: '/uploads/hcp_clinical.jpg',
-      mime_type: 'image/jpeg',
-      size_bytes: 356000,
-      created_at: new Date().toISOString(),
-    },
-  ]);
-
+  const { token } = useAdminAuth();
+  const [mediaList, setMediaList] = useState([]);
+  const [search, setSearch] = useState('');
   const [uploading, setUploading] = useState(false);
   const [notification, setNotification] = useState(null);
+  const [previewItem, setPreviewItem] = useState(null);
 
   useEffect(() => {
     document.title = 'Media Library | Onecore Admin';
-    const fetchMedia = async () => {
-      try {
-        const res = await fetch('/api/admin/media', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (res.ok) {
-          const data = await res.json();
-          if (data.success && data.data && data.data.length > 0) {
-            setMediaList(data.data);
-          }
-        }
-      } catch (err) {
-        console.warn('Using seeded media list:', err);
-      }
-    };
     fetchMedia();
   }, [token]);
+
+  const fetchMedia = async () => {
+    try {
+      const res = await fetch('/api/admin/media', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && Array.isArray(data.data)) {
+          setMediaList(data.data);
+        }
+      }
+    } catch {
+      // Keep empty or current
+    }
+  };
 
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
@@ -86,8 +61,8 @@ export default function AdminMedia() {
 
       const data = await res.json();
       if (res.ok && data.success) {
-        setNotification({ type: 'success', message: 'File uploaded successfully.' });
-        setMediaList((prev) => [data.data, ...prev]);
+        setNotification({ type: 'success', message: 'Asset uploaded to server successfully.' });
+        fetchMedia();
       } else {
         setNotification({ type: 'error', message: data.message || 'Upload failed.' });
       }
@@ -99,86 +74,157 @@ export default function AdminMedia() {
     }
   };
 
+  const handleDeleteMedia = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this media file?')) return;
+    try {
+      const res = await fetch(`/api/admin/media/${id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setNotification({ type: 'success', message: 'Asset removed from library.' });
+        setMediaList((prev) => prev.filter((m) => m.id !== id));
+        if (previewItem?.id === id) setPreviewItem(null);
+      } else {
+        setNotification({ type: 'error', message: data.message || 'Delete failed.' });
+      }
+    } catch (err) {
+      setNotification({ type: 'error', message: err.message });
+    }
+  };
+
+  const filtered = mediaList.filter(
+    (m) =>
+      !search ||
+      (m.original_name || m.original_filename || '').toLowerCase().includes(search.toLowerCase()) ||
+      (m.filename || '').toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <AdminLayout
-      title="Media Library"
-      subtitle="Controlled image and document uploads (JPEG, PNG, WebP, PDF)"
+      title="Media Asset Library"
+      subtitle="Upload, catalog, and manage website images, product packshots, and documentation assets"
     >
       {notification && (
         <div
-          className={`p-4 rounded-xl border text-xs flex items-center justify-between ${
+          className={`p-4 rounded-xl border flex items-center justify-between text-xs ${
             notification.type === 'success'
-              ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-300'
-              : 'bg-red-500/10 border-red-500/20 text-red-300'
+              ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
+              : 'bg-rose-50 border-rose-200 text-rose-800'
           }`}
         >
           <span>{notification.message}</span>
-          <button onClick={() => setNotification(null)} className="text-white/60 hover:text-white">
+          <button onClick={() => setNotification(null)}>
             <X size={14} />
           </button>
         </div>
       )}
 
-      {/* Upload Box */}
-      <div className="bg-brand-navy border border-dashed border-white/20 hover:border-brand-teal/50 rounded-2xl p-8 text-center transition-all">
-        <div className="w-12 h-12 rounded-2xl bg-brand-teal/10 text-brand-teal flex items-center justify-center mx-auto mb-3">
-          <Upload size={22} />
-        </div>
-        <h3 className="text-sm font-medium text-white mb-1">Upload New Media Asset</h3>
-        <p className="text-xs text-brand-slate font-light mb-4 max-w-sm mx-auto">
-          Supported file formats: JPEG, PNG, WebP, SVG, and PDF. Maximum size: 10MB.
-        </p>
-
-        <label className="inline-block px-4 py-2 bg-brand-teal hover:bg-brand-teal/90 text-white rounded-lg text-xs font-medium cursor-pointer transition-colors shadow-sm">
-          <span>{uploading ? 'Uploading...' : 'Select File from Computer'}</span>
-          <input
-            type="file"
-            onChange={handleFileUpload}
-            disabled={uploading}
-            accept="image/jpeg,image/png,image/webp,image/svg+xml,application/pdf"
-            className="hidden"
-          />
-        </label>
-      </div>
-
-      {/* Media Grid */}
       <AdminCard
-        title="Asset Library"
-        subtitle={`${mediaList.length} media assets recorded in database`}
-      >
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-          {mediaList.map((media) => (
-            <div
-              key={media.id}
-              className="bg-brand-navy-dark/60 border border-white/10 rounded-xl p-3 flex flex-col justify-between group hover:border-brand-teal/40 transition-all"
-            >
-              <div className="h-32 bg-brand-navy-light/40 rounded-lg flex items-center justify-center overflow-hidden mb-3 border border-white/5">
-                {media.mime_type?.startsWith('image/') ? (
-                  <img
-                    src={media.file_path}
-                    alt={media.original_name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    onError={(e) => {
-                      e.target.style.display = 'none';
-                    }}
-                  />
-                ) : (
-                  <File size={32} className="text-brand-slate" />
-                )}
-              </div>
-
-              <div className="space-y-1">
-                <p className="text-xs font-medium text-white truncate" title={media.original_filename || media.original_name}>
-                  {media.original_filename || media.original_name}
-                </p>
-                <div className="flex items-center justify-between text-[10px] text-brand-slate/70 font-mono">
-                  <span>{((media.file_size || media.size_bytes || 0) / 1024).toFixed(1)} KB</span>
-                  <span>{new Date(media.created_at).toLocaleDateString()}</span>
-                </div>
-              </div>
+        title={`Uploaded Assets (${filtered.length})`}
+        subtitle="Public media files stored in MySQL and local upload storage"
+        action={
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search assets..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="bg-white border border-slate-200 rounded-lg px-3 py-1.5 pl-8 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#0D5C75] focus:ring-1 focus:ring-[#0D5C75]"
+              />
+              <Search size={13} className="absolute left-2.5 top-2.5 text-slate-400 pointer-events-none" />
             </div>
-          ))}
-        </div>
+            <label className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#1B365D] hover:bg-[#152a48] text-white text-xs font-semibold rounded-lg cursor-pointer transition-all shadow-xs">
+              <Upload size={13} />
+              <span>{uploading ? 'Uploading...' : 'Upload Asset'}</span>
+              <input
+                type="file"
+                accept="image/*,video/*,.pdf"
+                className="hidden"
+                onChange={handleFileUpload}
+                disabled={uploading}
+              />
+            </label>
+          </div>
+        }
+      >
+        {filtered.length === 0 ? (
+          <div className="py-16 text-center text-slate-400 text-xs">
+            <ImageIcon size={36} className="mx-auto mb-2 text-slate-300" />
+            <p className="font-semibold text-slate-700">No media assets cataloged yet.</p>
+            <p className="text-[11px] text-slate-400 mt-1">
+              Click "Upload Asset" above to add product packshots, photos, or documents.
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            {filtered.map((item) => {
+              const filePath = item.file_path || `/uploads/${item.filename}`;
+              const isImg = item.mime_type ? item.mime_type.startsWith('image/') : true;
+
+              return (
+                <div
+                  key={item.id}
+                  className="bg-white border border-slate-200 rounded-xl overflow-hidden hover:border-slate-400 hover:shadow-xs transition-all group flex flex-col justify-between"
+                >
+                  <div
+                    className="aspect-square bg-slate-50 flex items-center justify-center overflow-hidden relative cursor-pointer"
+                    onClick={() => setPreviewItem(item)}
+                  >
+                    {isImg ? (
+                      <img
+                        src={filePath}
+                        alt={item.alt_text || item.filename}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                        }}
+                      />
+                    ) : (
+                      <File size={36} className="text-slate-400" />
+                    )}
+                  </div>
+
+                  <div className="p-3 border-t border-slate-100 bg-[#FAFAFC]">
+                    <p className="text-xs font-semibold text-slate-800 truncate" title={item.original_name || item.filename}>
+                      {item.original_name || item.filename}
+                    </p>
+                    <p className="text-[10px] font-mono text-slate-400 truncate mt-0.5">
+                      {filePath}
+                    </p>
+                    <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-100">
+                      <span className="text-[10px] font-mono text-slate-500">
+                        {item.size_bytes ? `${Math.round(item.size_bytes / 1024)} KB` : 'Asset'}
+                      </span>
+                      <div className="flex items-center gap-1.5">
+                        <a
+                          href={filePath}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-1 text-slate-400 hover:text-slate-800 rounded"
+                          title="Open URL"
+                        >
+                          <ExternalLink size={13} />
+                        </a>
+                        <button
+                          onClick={() => handleDeleteMedia(item.id)}
+                          className="p-1 text-slate-400 hover:text-rose-600 rounded"
+                          title="Delete Asset"
+                        >
+                          <Trash2 size={13} />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </AdminCard>
     </AdminLayout>
   );

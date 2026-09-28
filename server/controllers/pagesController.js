@@ -90,6 +90,7 @@ export const createPageSection = async (req, res, next) => {
       secondary_cta_text,
       secondary_cta_url,
       image_url,
+      video_url,
       display_order,
       is_active,
     } = req.body;
@@ -107,8 +108,8 @@ export const createPageSection = async (req, res, next) => {
 
     const result = await query(`
       INSERT INTO page_sections 
-        (page_id, section_key, section_type, eyebrow, heading, subheading, body, items_json, cta_text, cta_url, secondary_cta_text, secondary_cta_url, image_url, display_order, is_active)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (page_id, section_key, section_type, eyebrow, heading, subheading, body, items_json, cta_text, cta_url, secondary_cta_text, secondary_cta_url, image_url, video_url, display_order, is_active)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `, [
       pageId,
       section_key.trim().toLowerCase().replace(/\s+/g, '_'),
@@ -123,6 +124,7 @@ export const createPageSection = async (req, res, next) => {
       secondary_cta_text || null,
       secondary_cta_url || null,
       image_url || null,
+      video_url || null,
       order,
       is_active !== undefined ? (is_active ? 1 : 0) : 1
     ]);
@@ -151,6 +153,7 @@ export const updatePageSection = async (req, res, next) => {
       secondary_cta_text,
       secondary_cta_url,
       image_url,
+      video_url,
       is_active,
       display_order,
       section_type,
@@ -169,6 +172,7 @@ export const updatePageSection = async (req, res, next) => {
     if (secondary_cta_text !== undefined) { updates.push('secondary_cta_text = ?'); params.push(secondary_cta_text); }
     if (secondary_cta_url !== undefined) { updates.push('secondary_cta_url = ?'); params.push(secondary_cta_url); }
     if (image_url !== undefined) { updates.push('image_url = ?'); params.push(image_url); }
+    if (video_url !== undefined) { updates.push('video_url = ?'); params.push(video_url); }
     if (is_active !== undefined) { updates.push('is_active = ?'); params.push(is_active ? 1 : 0); }
     if (display_order !== undefined) { updates.push('display_order = ?'); params.push(display_order); }
     if (section_type !== undefined) { updates.push('section_type = ?'); params.push(section_type); }

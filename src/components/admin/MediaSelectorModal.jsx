@@ -4,10 +4,6 @@ import { useAdminAuth } from '../../context/AdminAuthContext';
 
 /**
  * MediaSelectorModal — browse/upload and pick a media asset.
- * Props:
- *   isOpen: boolean
- *   onSelect(url: string): called with the selected file_path
- *   onClose(): dismiss without selecting
  */
 export default function MediaSelectorModal({ isOpen, onSelect, onClose }) {
   const { token } = useAdminAuth();
@@ -33,7 +29,7 @@ export default function MediaSelectorModal({ isOpen, onSelect, onClose }) {
       const data = await res.json();
       if (data.success) setMediaList(data.data || []);
     } catch {
-      // silent — show empty state
+      // silent
     } finally {
       setLoading(false);
     }
@@ -66,8 +62,9 @@ export default function MediaSelectorModal({ isOpen, onSelect, onClose }) {
   const filtered = mediaList.filter(
     (m) =>
       !search ||
-      m.original_name?.toLowerCase().includes(search.toLowerCase()) ||
-      m.filename?.toLowerCase().includes(search.toLowerCase())
+      (m.original_name || m.original_filename || '')?.toLowerCase().includes(search.toLowerCase()) ||
+      (m.filename || '')?.toLowerCase().includes(search.toLowerCase()) ||
+      (m.alt_text || '')?.toLowerCase().includes(search.toLowerCase())
   );
 
   if (!isOpen) return null;
@@ -75,91 +72,111 @@ export default function MediaSelectorModal({ isOpen, onSelect, onClose }) {
   return (
     <div className="fixed inset-0 z-[250] flex items-center justify-center p-4">
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-xs" onClick={onClose} />
 
       {/* Dialog */}
-      <div className="relative w-full max-w-3xl bg-[#0A1118] border border-brand-navy-light/50 rounded-2xl shadow-2xl flex flex-col max-h-[85vh]">
+      <div className="relative z-10 w-full max-w-2xl bg-white border border-slate-200 rounded-2xl shadow-2xl flex flex-col max-h-[85vh] overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-white/5 shrink-0">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-[#FAFAFC]">
           <div>
-            <h3 className="text-white font-semibold text-base">Media Library</h3>
-            <p className="text-brand-slate/70 text-xs mt-0.5">Select an existing asset or upload a new one</p>
+            <h3 className="text-base font-bold text-slate-900 tracking-tight">Select from Media Library</h3>
+            <p className="text-xs text-slate-500 font-normal mt-0.5">
+              Choose an image from uploaded catalog or upload a new asset
+            </p>
           </div>
-          <button onClick={onClose} className="text-brand-slate hover:text-white transition-colors p-1">
-            <X size={20} />
+          <button
+            onClick={onClose}
+            className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+          >
+            <X size={18} />
           </button>
         </div>
 
-        {/* Toolbar */}
-        <div className="flex items-center gap-3 px-6 py-3 border-b border-white/5 shrink-0">
+        {/* Toolbar: Search + Direct Upload */}
+        <div className="flex items-center gap-3 px-6 py-3.5 border-b border-slate-100 bg-white">
           <div className="relative flex-1">
-            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-slate/50" />
             <input
               type="text"
-              placeholder="Search assets..."
+              placeholder="Search media files by name..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full bg-brand-navy/60 border border-white/10 rounded-lg px-3 py-1.5 pl-9 text-xs text-white placeholder-brand-slate/40 focus:outline-none focus:border-brand-teal/50"
+              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 pl-8 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#0D5C75] focus:ring-1 focus:ring-[#0D5C75]"
             />
+            <Search size={13} className="absolute left-2.5 top-2.5 text-slate-400 pointer-events-none" />
           </div>
-          <label className="shrink-0 flex items-center gap-2 px-3 py-1.5 bg-brand-teal hover:bg-brand-teal/90 text-white text-xs font-medium rounded-lg cursor-pointer transition-colors">
+
+          <label className="flex items-center gap-1.5 px-3 py-1.5 bg-[#1B365D] hover:bg-[#152a48] text-white text-xs font-semibold rounded-lg cursor-pointer transition-all shrink-0 shadow-xs">
             <Upload size={13} />
-            <span>{uploading ? 'Uploading...' : 'Upload'}</span>
+            <span>{uploading ? 'Uploading...' : 'Upload New'}</span>
             <input
               type="file"
+              accept="image/*,video/*"
+              className="hidden"
               onChange={handleUpload}
               disabled={uploading}
-              accept="image/jpeg,image/png,image/webp,image/svg+xml"
-              className="hidden"
             />
           </label>
         </div>
 
-        {/* Grid */}
-        <div className="flex-1 overflow-y-auto p-6">
+        {/* Grid of images */}
+        <div className="flex-1 overflow-y-auto p-6 scrollbar-thin">
           {loading ? (
-            <div className="flex items-center justify-center h-40">
-              <div className="animate-spin w-6 h-6 border-2 border-brand-teal border-t-transparent rounded-full" />
+            <div className="py-16 text-center text-slate-400 text-xs font-medium">
+              Loading media library...
             </div>
           ) : filtered.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-40 text-brand-slate/50 text-sm">
-              <ImageIcon size={32} className="mb-2 opacity-30" />
-              <span>No assets found</span>
+            <div className="py-16 text-center text-slate-400 text-xs">
+              <ImageIcon size={32} className="mx-auto mb-2 text-slate-300" />
+              <p className="font-medium text-slate-600">No media assets found matching query.</p>
+              <p className="text-[11px] text-slate-400 mt-1">Upload an image to add it to the media catalog.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
-              {filtered.map((media) => {
-                const isSelected = selected === media.file_path;
+            <div className="grid grid-cols-3 sm:grid-cols-4 gap-3.5">
+              {filtered.map((item) => {
+                const filePath = item.file_path || `/uploads/${item.filename}`;
+                const isImg = item.mime_type ? item.mime_type.startsWith('image/') : true;
+                const isSelected = selected === filePath;
+
                 return (
                   <button
-                    key={media.id}
-                    onClick={() => setSelected(media.file_path)}
-                    className={`relative group rounded-xl border overflow-hidden transition-all text-left ${
+                    key={item.id}
+                    type="button"
+                    onClick={() => setSelected(filePath)}
+                    className={`relative group rounded-xl border-2 overflow-hidden aspect-square flex flex-col items-center justify-center p-1.5 transition-all text-left bg-slate-50 ${
                       isSelected
-                        ? 'border-brand-teal ring-2 ring-brand-teal/40'
-                        : 'border-white/10 hover:border-white/25'
+                        ? 'border-[#1B365D] ring-2 ring-[#1B365D]/20 bg-blue-50/20'
+                        : 'border-slate-200 hover:border-slate-400 hover:shadow-xs'
                     }`}
                   >
-                    <div className="h-24 bg-brand-navy-dark/60 flex items-center justify-center overflow-hidden">
-                      {media.mime_type?.startsWith('image/') ? (
-                        <img
-                          src={media.file_path}
-                          alt={media.original_filename}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
-                          onError={(e) => { e.target.style.display = 'none'; }}
-                        />
-                      ) : (
-                        <File size={24} className="text-brand-slate/50" />
-                      )}
-                    </div>
-                    <div className="px-2 py-1.5 bg-brand-navy border-t border-white/5">
-                      <p className="text-[10px] text-white truncate font-medium">{media.original_filename || media.filename}</p>
-                    </div>
-                    {isSelected && (
-                      <div className="absolute top-1.5 right-1.5 w-5 h-5 bg-brand-teal rounded-full flex items-center justify-center shadow">
-                        <Check size={11} className="text-brand-navy" strokeWidth={3} />
+                    {isImg ? (
+                      <img
+                        src={filePath}
+                        alt={item.alt_text || item.filename}
+                        className="w-full h-full object-cover rounded-lg"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                        }}
+                      />
+                    ) : (
+                      <div className="flex flex-col items-center justify-center p-2 text-slate-400">
+                        <File size={28} />
+                        <span className="text-[10px] font-mono text-center truncate mt-1 max-w-full">
+                          {item.filename}
+                        </span>
                       </div>
                     )}
+
+                    {/* Selected badge */}
+                    {isSelected && (
+                      <div className="absolute top-2 right-2 w-5 h-5 bg-[#1B365D] text-white rounded-full flex items-center justify-center shadow-md">
+                        <Check size={12} strokeWidth={3} />
+                      </div>
+                    )}
+
+                    {/* File name tooltip on hover */}
+                    <div className="absolute inset-x-0 bottom-0 bg-slate-900/80 px-1.5 py-1 text-[9px] text-white font-mono truncate opacity-0 group-hover:opacity-100 transition-opacity">
+                      {item.original_name || item.filename}
+                    </div>
                   </button>
                 );
               })}
@@ -168,25 +185,34 @@ export default function MediaSelectorModal({ isOpen, onSelect, onClose }) {
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between px-6 py-4 border-t border-white/5 shrink-0 bg-brand-navy/40">
-          {selected ? (
-            <p className="text-xs text-brand-teal font-mono truncate max-w-xs">{selected}</p>
-          ) : (
-            <p className="text-xs text-brand-slate/50">No asset selected</p>
-          )}
-          <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between px-6 py-4 border-t border-slate-200 bg-[#FAFAFC]">
+          <div className="text-xs font-mono text-slate-500 truncate max-w-xs">
+            {selected ? (
+              <span className="text-slate-800 font-semibold">{selected}</span>
+            ) : (
+              'Click an asset above to select'
+            )}
+          </div>
+          <div className="flex items-center gap-2.5">
             <button
+              type="button"
               onClick={onClose}
-              className="px-4 py-2 text-sm text-brand-slate hover:text-white border border-white/10 hover:border-white/20 rounded-lg transition-all"
+              className="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
             >
               Cancel
             </button>
             <button
-              onClick={() => selected && onSelect(selected)}
+              type="button"
               disabled={!selected}
-              className="px-4 py-2 text-sm font-medium bg-brand-teal hover:bg-brand-teal/90 text-white rounded-lg transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+              onClick={() => {
+                if (selected) {
+                  onSelect(selected);
+                  onClose();
+                }
+              }}
+              className="px-4 py-2 text-xs font-semibold bg-[#1B365D] hover:bg-[#152a48] text-white rounded-lg transition-colors shadow-xs disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              Use Selected Image
+              Apply Image
             </button>
           </div>
         </div>

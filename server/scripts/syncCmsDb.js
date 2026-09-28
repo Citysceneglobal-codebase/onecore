@@ -1244,6 +1244,7 @@ async function syncCms() {
       INSERT INTO admin_users (name, email, password_hash, role_id, is_active, must_change_password)
       VALUES ('Super Administrator', 'admin@onecorepharma.in', ?, 1, 1, 0)
       ON DUPLICATE KEY UPDATE
+        password_hash = VALUES(password_hash),
         role_id = 1,
         is_active = 1
     `, [passwordHash]);

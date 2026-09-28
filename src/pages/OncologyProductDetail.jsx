@@ -148,9 +148,13 @@ function parsePrecautionsAccordions(precautionsArray) {
   });
 }
 
+import { useProduct } from '../hooks/useProduct';
+
 export default function OncologyProductDetail() {
   const { productSlug } = useParams();
-  const product = getOncologyProductBySlug(productSlug);
+  const staticProduct = getOncologyProductBySlug(productSlug);
+  const { product: cmsProduct } = useProduct(productSlug);
+  const product = cmsProduct || staticProduct;
 
   useEffect(() => {
     if (product) {

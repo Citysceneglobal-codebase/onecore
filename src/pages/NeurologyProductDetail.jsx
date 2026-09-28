@@ -154,9 +154,13 @@ function parsePrecautionsAccordions(precautionsArray) {
   });
 }
 
+import { useProduct } from '../hooks/useProduct';
+
 export default function NeurologyProductDetail() {
   const { productSlug } = useParams();
-  const product = getNeurologyProductBySlug(productSlug);
+  const staticProduct = getNeurologyProductBySlug(productSlug);
+  const { product: cmsProduct } = useProduct(productSlug);
+  const product = cmsProduct || staticProduct;
 
   useEffect(() => {
     if (product) {

@@ -158,9 +158,13 @@ function parsePrecautionsAccordions(precautionsArray) {
   });
 }
 
+import { useProduct } from '../hooks/useProduct';
+
 export default function GeneralMedicineProductDetail() {
   const { productSlug } = useParams();
-  const product = getGeneralMedicineProductBySlug(productSlug);
+  const staticProduct = getGeneralMedicineProductBySlug(productSlug);
+  const { product: cmsProduct } = useProduct(productSlug);
+  const product = cmsProduct || staticProduct;
 
   useEffect(() => {
     if (product) {

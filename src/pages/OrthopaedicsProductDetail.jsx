@@ -153,9 +153,13 @@ function parsePrecautionsAccordions(precautionsArray) {
   });
 }
 
+import { useProduct } from '../hooks/useProduct';
+
 export default function OrthopaedicsProductDetail() {
   const { productSlug } = useParams();
-  const product = getOrthopaedicsProductBySlug(productSlug);
+  const staticProduct = getOrthopaedicsProductBySlug(productSlug);
+  const { product: cmsProduct } = useProduct(productSlug);
+  const product = cmsProduct || staticProduct;
 
   useEffect(() => {
     if (product) {

@@ -6,22 +6,22 @@ import { AdminCard } from '../../components/admin/AdminCard';
 import ToastNotification from '../../components/admin/ToastNotification';
 import MediaSelectorModal from '../../components/admin/MediaSelectorModal';
 import { useAdminAuth } from '../../context/AdminAuthContext';
+import { newsArticles } from '../../data/news';
 
 const CATEGORIES = [
-  'Corporate Update',
-  'Research & Formulation',
-  'Clinical Care',
-  'Sustainability',
-  'Regulatory',
-  'Scientific Collaboration',
-  'Community & Access',
+  'RESEARCH & FORMULATION',
+  'CLINICAL PRACTICE',
+  'SUSTAINABILITY',
+  'CORPORATE UPDATE',
+  'REGULATORY & QUALITY',
+  'SCIENTIFIC DIALOGUE',
 ];
 
 function FieldLabel({ children, required }) {
   return (
-    <label className="block text-[11px] font-mono uppercase tracking-wider text-brand-slate/70 mb-1.5">
+    <label className="block text-[11px] font-mono uppercase tracking-wider text-slate-600 font-medium mb-1.5">
       {children}
-      {required && <span className="text-red-400 ml-1">*</span>}
+      {required && <span className="text-rose-600 ml-1">*</span>}
     </label>
   );
 }
@@ -42,12 +42,12 @@ export default function AdminNewsEditor() {
   const [form, setForm] = useState({
     title: '',
     slug: '',
-    category: 'Corporate Update',
+    category: 'RESEARCH & FORMULATION',
     excerpt: '',
     content: '',
     featured_image_url: '',
     status: 'published',
-    read_time: '',
+    read_time: '4 min read',
   });
 
   const set = (key) => (e) => setForm((prev) => ({ ...prev, [key]: e.target.value }));
@@ -79,15 +79,28 @@ export default function AdminNewsEditor() {
           setForm({
             title: a.title || '',
             slug: a.slug || '',
-            category: a.category || 'Corporate Update',
+            category: a.category || 'RESEARCH & FORMULATION',
             excerpt: a.excerpt || '',
-            content: a.content || '',
+            content: a.content || a.excerpt || '',
             featured_image_url: a.featured_image_url || '',
             status: a.status || 'published',
-            read_time: a.read_time || '',
+            read_time: a.read_time || '4 min read',
           });
         } else {
-          showToast('error', 'Article not found.');
+          // Check static news
+          const found = newsArticles.find((n) => String(n.id) === id || n.slug === id);
+          if (found) {
+            setForm({
+              title: found.title,
+              slug: found.slug || id,
+              category: found.category || 'RESEARCH & FORMULATION',
+              excerpt: found.excerpt,
+              content: found.excerpt,
+              featured_image_url: found.image || '',
+              status: 'published',
+              read_time: '4 min read',
+            });
+          }
         }
       })
       .catch(() => showToast('error', 'Failed to load article.'))
@@ -95,215 +108,215 @@ export default function AdminNewsEditor() {
   }, [id, isNew, token]);
 
   const handleSave = async () => {
-    if (!form.title.trim()) { showToast('error', 'Title is required.'); return; }
-    if (!form.excerpt.trim()) { showToast('error', 'Excerpt is required.'); return; }
+    if (!form.title.trim()) {
+      showToast('error', 'Title is required.');
+      return;
+    }
+    if (!form.excerpt.trim()) {
+      showToast('error', 'Excerpt is required.');
+      return;
+    }
 
     setSaving(true);
+    const method = isNew ? 'POST' : 'PUT';
+    const endpoint = isNew ? '/api/news' : `/api/news/${id}`;
+
     try {
-      const url = isNew ? '/api/news' : `/api/news/${id}`;
-      const method = isNew ? 'POST' : 'PUT';
-
-      const payload = { ...form };
-      if (isNew && !payload.slug) {
-        payload.slug = payload.title.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').slice(0, 80);
-      }
-
-      const res = await fetch(url, {
+      const res = await fetch(endpoint, {
         method,
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify(payload),
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(form),
       });
+
       const data = await res.json();
-      if (data.success) {
-        showToast('success', isNew ? 'Article created successfully.' : 'Article saved successfully.');
+      if (res.ok && data.success) {
+        showToast('success', isNew ? 'Article published.' : 'Article updated.');
         if (isNew && data.data?.id) {
-          setTimeout(() => navigate(`/admin/news/${data.data.id}`), 1500);
+          navigate(`/admin/news/${data.data.id}`, { replace: true });
         }
       } else {
-        showToast('error', data.message || 'Save failed.');
+        showToast('error', data.message || 'Failed to save article.');
       }
-    } catch {
-      showToast('error', 'Network error. Please try again.');
+    } catch (err) {
+      showToast('error', err.message);
     } finally {
       setSaving(false);
     }
   };
 
-  if (loading) {
-    return (
-      <AdminLayout title="Article Editor" subtitle="Loading...">
-        <div className="flex items-center justify-center h-64">
-          <div className="animate-spin w-8 h-8 border-2 border-brand-teal border-t-transparent rounded-full" />
-        </div>
-      </AdminLayout>
-    );
-  }
-
   return (
     <AdminLayout
-      title={isNew ? 'New Article' : `Editing: ${form.title || 'Untitled'}`}
-      subtitle={isNew ? 'Write a new corporate update or press release' : `Status: ${form.status} • ${form.category}`}
+      title={isNew ? 'New News Article' : `Edit: ${form.title || id}`}
+      subtitle="Publish corporate releases, research insights, and perspectives"
     >
-      {/* Back */}
-      <div className="flex items-center justify-between">
-        <Link to="/admin/news" className="flex items-center gap-2 text-xs text-brand-slate hover:text-white transition-colors">
-          <ChevronLeft size={14} />
-          Back to News
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <Link
+          to="/admin/news"
+          className="flex items-center gap-1 text-xs font-semibold text-slate-500 hover:text-slate-800 transition-colors"
+        >
+          <ChevronLeft size={16} />
+          <span>Back to News & Releases</span>
         </Link>
-        {!isNew && (
+
+        <div className="flex items-center gap-2.5">
           <a
             href="/news"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1.5 text-xs text-brand-teal hover:underline"
+            className="flex items-center gap-1.5 px-3 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-semibold rounded-lg transition-all shadow-xs"
           >
+            <span>View News Section</span>
             <ExternalLink size={13} />
-            View News Page
           </a>
-        )}
-      </div>
-
-      {/* Core Details */}
-      <AdminCard title="Article Details" subtitle="Title, category, status, and publication settings">
-        <div className="space-y-4">
-          <div>
-            <FieldLabel required>Article Title</FieldLabel>
-            <input
-              type="text"
-              value={form.title}
-              onChange={handleTitleChange}
-              placeholder="Enter article headline..."
-              className="w-full bg-brand-navy-dark/60 border border-white/10 rounded-lg px-3 py-2.5 text-sm text-white placeholder-brand-slate/30 focus:outline-none focus:border-brand-teal/50"
-            />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <FieldLabel>URL Slug</FieldLabel>
-              <input
-                type="text"
-                value={form.slug}
-                onChange={set('slug')}
-                placeholder="auto-generated"
-                className="w-full bg-brand-navy-dark/60 border border-white/10 rounded-lg px-3 py-2 text-xs text-white placeholder-brand-slate/30 focus:outline-none focus:border-brand-teal/50"
-              />
-            </div>
-            <div>
-              <FieldLabel>Category</FieldLabel>
-              <select
-                value={form.category}
-                onChange={set('category')}
-                className="w-full bg-brand-navy-dark/60 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-brand-teal/50"
-              >
-                {CATEGORIES.map((c) => (
-                  <option key={c} value={c}>{c}</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <FieldLabel>Status</FieldLabel>
-              <select
-                value={form.status}
-                onChange={set('status')}
-                className="w-full bg-brand-navy-dark/60 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-brand-teal/50"
-              >
-                <option value="published">Published</option>
-                <option value="draft">Draft</option>
-              </select>
-            </div>
-          </div>
-
-          <div>
-            <FieldLabel required>Excerpt / Summary</FieldLabel>
-            <textarea
-              value={form.excerpt}
-              onChange={set('excerpt')}
-              rows={3}
-              placeholder="Brief 1–2 sentence summary shown in news listings..."
-              className="w-full bg-brand-navy-dark/60 border border-white/10 rounded-lg px-3 py-2 text-xs text-white placeholder-brand-slate/30 focus:outline-none focus:border-brand-teal/50 resize-y"
-            />
-          </div>
-
-          <div>
-            <FieldLabel>Read Time</FieldLabel>
-            <input
-              type="text"
-              value={form.read_time}
-              onChange={set('read_time')}
-              placeholder="e.g. 4 min read"
-              className="w-full max-w-xs bg-brand-navy-dark/60 border border-white/10 rounded-lg px-3 py-2 text-xs text-white placeholder-brand-slate/30 focus:outline-none focus:border-brand-teal/50"
-            />
-          </div>
-        </div>
-      </AdminCard>
-
-      {/* Featured Image */}
-      <AdminCard title="Featured Image" subtitle="Hero image displayed on the news listing card">
-        <div className="flex items-start gap-4">
-          <div className="flex-1">
-            <FieldLabel>Image URL or Path</FieldLabel>
-            <div className="flex gap-2">
-              <input
-                type="text"
-                value={form.featured_image_url}
-                onChange={set('featured_image_url')}
-                placeholder="/assets/article-image.jpg"
-                className="flex-1 bg-brand-navy-dark/60 border border-white/10 rounded-lg px-3 py-2 text-xs text-white placeholder-brand-slate/30 focus:outline-none focus:border-brand-teal/50"
-              />
-              <button
-                type="button"
-                onClick={() => setMediaOpen(true)}
-                className="shrink-0 flex items-center gap-1.5 px-3 py-2 bg-brand-navy border border-white/10 hover:border-brand-teal/40 rounded-lg text-xs text-brand-slate hover:text-white transition-all"
-              >
-                <ImageIcon size={13} />
-                Library
-              </button>
-            </div>
-          </div>
-          {form.featured_image_url && (
-            <div className="w-32 h-20 rounded-xl overflow-hidden border border-white/10 shrink-0">
-              <img src={form.featured_image_url} alt="" className="w-full h-full object-cover" />
-            </div>
-          )}
-        </div>
-      </AdminCard>
-
-      {/* Full Content */}
-      <AdminCard title="Full Article Content" subtitle="Full article body. Supports plain text or HTML markup.">
-        <FieldLabel>Article Body</FieldLabel>
-        <textarea
-          value={form.content}
-          onChange={set('content')}
-          rows={16}
-          placeholder="Write the full article content here. HTML tags are supported for formatting."
-          className="w-full bg-brand-navy-dark/60 border border-white/10 rounded-lg px-4 py-3 text-sm text-white/90 placeholder-brand-slate/30 focus:outline-none focus:border-brand-teal/50 resize-y font-mono leading-relaxed"
-        />
-        <p className="text-[10px] text-brand-slate/40 mt-2 font-mono">
-          {(form.content || '').length.toLocaleString()} characters
-        </p>
-      </AdminCard>
-
-      {/* Save Bar */}
-      <div className="sticky bottom-4 z-20">
-        <div className="bg-brand-navy/90 backdrop-blur-md border border-white/10 rounded-2xl px-6 py-4 flex items-center justify-between shadow-xl">
-          <div className="text-xs text-brand-slate/70">
-            {isNew ? 'New article will be created' : `Editing: ${form.title}`}
-          </div>
           <button
+            type="button"
             onClick={handleSave}
             disabled={saving}
-            className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium bg-brand-teal hover:bg-brand-teal/90 text-white rounded-xl transition-all disabled:opacity-60 shadow-lg"
+            className="flex items-center gap-1.5 px-4 py-2 bg-[#1B365D] hover:bg-[#152a48] text-white text-xs font-semibold rounded-lg transition-all shadow-xs disabled:opacity-50"
           >
-            <Save size={15} />
-            {saving ? 'Saving...' : isNew ? 'Publish Article' : 'Save Changes'}
+            <Save size={14} />
+            <span>{saving ? 'Saving...' : 'Save Article'}</span>
           </button>
         </div>
       </div>
 
+      {loading ? (
+        <div className="py-12 text-center text-slate-400 text-xs">
+          Loading article data from MySQL...
+        </div>
+      ) : (
+        <AdminCard
+          title="Article Content & Metadata"
+          subtitle="Headline, excerpt, editorial body, category, and featured image"
+        >
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="md:col-span-2">
+                <FieldLabel required>Article Headline / Title</FieldLabel>
+                <input
+                  type="text"
+                  required
+                  value={form.title}
+                  onChange={handleTitleChange}
+                  placeholder="e.g. Aligning formulation chemistry with real-world patient adherence"
+                  className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#0D5C75] focus:ring-1 focus:ring-[#0D5C75] font-medium"
+                />
+              </div>
+
+              <div>
+                <FieldLabel required>Category</FieldLabel>
+                <select
+                  value={form.category}
+                  onChange={set('category')}
+                  className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-[#0D5C75] focus:ring-1 focus:ring-[#0D5C75]"
+                >
+                  {CATEGORIES.map((c) => (
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="md:col-span-2">
+                <FieldLabel required>URL Slug</FieldLabel>
+                <input
+                  type="text"
+                  required
+                  value={form.slug}
+                  onChange={set('slug')}
+                  placeholder="e.g. aligning-formulation-chemistry-with-patient-adherence"
+                  className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 font-mono focus:outline-none focus:border-[#0D5C75] focus:ring-1 focus:ring-[#0D5C75]"
+                />
+              </div>
+
+              <div>
+                <FieldLabel>Status</FieldLabel>
+                <select
+                  value={form.status}
+                  onChange={set('status')}
+                  className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-[#0D5C75] focus:ring-1 focus:ring-[#0D5C75]"
+                >
+                  <option value="published">Published</option>
+                  <option value="draft">Draft</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Excerpt */}
+            <div>
+              <FieldLabel required>Article Excerpt / Summary</FieldLabel>
+              <textarea
+                rows={3}
+                required
+                value={form.excerpt}
+                onChange={set('excerpt')}
+                placeholder="Short 2-3 sentence overview displayed on news cards..."
+                className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#0D5C75] focus:ring-1 focus:ring-[#0D5C75] resize-y leading-relaxed"
+              />
+            </div>
+
+            {/* Editorial Body */}
+            <div>
+              <FieldLabel>Full Editorial Body Content</FieldLabel>
+              <textarea
+                rows={8}
+                value={form.content}
+                onChange={set('content')}
+                placeholder="Full article body paragraphs, clinical dialogue, references..."
+                className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#0D5C75] focus:ring-1 focus:ring-[#0D5C75] resize-y leading-relaxed"
+              />
+            </div>
+
+            {/* Featured Image */}
+            <div>
+              <FieldLabel>Featured Image URL</FieldLabel>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={form.featured_image_url}
+                  onChange={set('featured_image_url')}
+                  placeholder="/assets/news-1.jpg"
+                  className="flex-1 bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#0D5C75] focus:ring-1 focus:ring-[#0D5C75]"
+                />
+                <button
+                  type="button"
+                  onClick={() => setMediaOpen(true)}
+                  className="shrink-0 flex items-center gap-1.5 px-3 py-2 bg-slate-50 border border-slate-200 hover:bg-slate-100 rounded-lg text-xs font-semibold text-slate-700 transition-all"
+                >
+                  <ImageIcon size={14} />
+                  <span>Choose Media</span>
+                </button>
+              </div>
+              {form.featured_image_url && (
+                <div className="mt-3 flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-lg">
+                  <img
+                    src={form.featured_image_url}
+                    alt="Article Featured"
+                    className="w-20 h-12 object-cover rounded border border-slate-200 bg-white"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
+                  />
+                  <span className="text-xs text-slate-600 font-mono truncate">{form.featured_image_url}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        </AdminCard>
+      )}
+
+      {/* Media Selector Modal */}
       <MediaSelectorModal
         isOpen={mediaOpen}
-        onSelect={(url) => { setForm((p) => ({ ...p, featured_image_url: url })); setMediaOpen(false); }}
         onClose={() => setMediaOpen(false)}
+        onSelect={(url) => {
+          setForm((p) => ({ ...p, featured_image_url: url }));
+          setMediaOpen(false);
+        }}
       />
 
       <ToastNotification toast={toast} onDismiss={() => setToast(null)} />

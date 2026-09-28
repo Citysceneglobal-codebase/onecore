@@ -14,14 +14,19 @@ import {
 import AdminLayout from '../../components/admin/AdminLayout';
 import { AdminCard } from '../../components/admin/AdminCard';
 import AdminTable from '../../components/admin/AdminTable';
+import ConfirmModal from '../../components/admin/ConfirmModal';
+import ToastNotification from '../../components/admin/ToastNotification';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 
 export default function AdminUsers() {
   const { token, user: currentUser } = useAdminAuth();
   const [users, setUsers] = useState([]);
+  const [roles, setRoles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [notification, setNotification] = useState(null);
+  const [editingUser, setEditingUser] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [toast, setToast] = useState(null);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -31,10 +36,7 @@ export default function AdminUsers() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
-    document.title = 'Admin Users | Onecore Admin';
-    fetchUsers();
-  }, [token]);
+  const showToast = (type, message) => setToast({ type, message });
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -47,15 +49,22 @@ export default function AdminUsers() {
       if (res.ok) {
         const data = await res.json();
         if (data.success && data.data) {
-          setUsers(data.data);
+          const userList = Array.isArray(data.data) ? data.data : (data.data.users || []);
+          setUsers(userList);
+          if (data.data.roles) setRoles(data.data.roles);
         }
       }
-    } catch (err) {
-      console.warn('Could not fetch admin users:', err);
+    } catch {
+      // Keep state
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    document.title = 'Admin Users | Onecore Admin';
+    fetchUsers();
+  }, [token]);
 
   const handleCreateUser = async (e) => {
     e.preventDefault();
@@ -73,285 +82,261 @@ export default function AdminUsers() {
 
       const data = await res.json();
       if (res.ok && data.success) {
-        setNotification({ type: 'success', message: 'Admin account created successfully.' });
+        showToast('success', 'Admin user created successfully.');
         setShowCreateModal(false);
         setFormData({ name: '', email: '', password: '', roleId: 2 });
         fetchUsers();
       } else {
-        setNotification({ type: 'error', message: data.message || 'Failed to create account.' });
+        showToast('error', data.message || 'Failed to create user.');
       }
     } catch (err) {
-      setNotification({ type: 'error', message: err.message });
+      showToast('error', err.message);
     } finally {
       setIsSubmitting(false);
-      setTimeout(() => setNotification(null), 3500);
     }
   };
 
-  const handleToggleActive = async (user) => {
-    if (user.id === currentUser?.id) {
-      alert('You cannot deactivate your own account.');
-      return;
-    }
+  const handleUpdateUser = async (e) => {
+    e.preventDefault();
+    if (!editingUser) return;
+    setIsSubmitting(true);
 
     try {
-      const res = await fetch(`/api/admin/users/${user.id}`, {
+      const res = await fetch(`/api/admin/users/${editingUser.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          isActive: !user.is_active,
+          name: editingUser.name,
+          roleId: editingUser.role_id,
+          isActive: editingUser.is_active,
+          password: editingUser.new_password || undefined,
         }),
       });
 
-      if (res.ok) {
-        setNotification({
-          type: 'success',
-          message: `User ${user.is_active ? 'deactivated' : 'activated'}.`,
-        });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        showToast('success', 'User updated successfully.');
+        setEditingUser(null);
         fetchUsers();
+      } else {
+        showToast('error', data.message || 'Failed to update user.');
       }
     } catch (err) {
-      setNotification({ type: 'error', message: err.message });
+      showToast('error', err.message);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const handleDeleteUser = async (user) => {
-    if (user.id === currentUser?.id) {
-      alert('You cannot delete your own account.');
-      return;
-    }
-
-    if (!window.confirm(`Are you sure you want to permanently delete user "${user.name}"?`)) {
-      return;
-    }
-
+  const handleDeleteUser = async () => {
+    if (!deleteTarget) return;
     try {
-      const res = await fetch(`/api/admin/users/${user.id}`, {
+      const res = await fetch(`/api/admin/users/${deleteTarget}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      if (res.ok) {
-        setNotification({ type: 'success', message: 'User account removed.' });
-        fetchUsers();
+      const data = await res.json();
+      if (res.ok && data.success) {
+        showToast('success', 'Administrator removed.');
+        setUsers((prev) => prev.filter((u) => u.id !== deleteTarget));
+      } else {
+        showToast('error', data.message || 'Delete failed.');
       }
     } catch (err) {
-      setNotification({ type: 'error', message: err.message });
+      showToast('error', err.message);
+    } finally {
+      setDeleteTarget(null);
+    }
+  };
+
+  const getRoleBadge = (roleName) => {
+    switch (roleName) {
+      case 'Super Admin':
+        return (
+          <span className="px-2 py-0.5 rounded-full text-[10px] font-mono uppercase font-bold bg-[#1B365D]/10 text-[#1B365D] border border-[#1B365D]/20">
+            Super Admin
+          </span>
+        );
+      case 'Admin':
+        return (
+          <span className="px-2 py-0.5 rounded-full text-[10px] font-mono uppercase font-bold bg-[#0D5C75]/10 text-[#0D5C75] border border-[#0D5C75]/20">
+            Admin
+          </span>
+        );
+      case 'Editor':
+      default:
+        return (
+          <span className="px-2 py-0.5 rounded-full text-[10px] font-mono uppercase font-semibold bg-slate-100 text-slate-700 border border-slate-200">
+            Editor
+          </span>
+        );
     }
   };
 
   return (
     <AdminLayout
-      title="Admin Users & Roles"
-      subtitle="Super Administrator Control Panel for team accounts and role permissions"
+      title="Admin Users & Role Permissions"
+      subtitle="Manage authorized staff access, administrative credentials, and role-based permissions (Super Admin Only)"
     >
-      {notification && (
-        <div
-          className={`p-4 rounded-xl border text-xs flex items-center justify-between ${
-            notification.type === 'success'
-              ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-300'
-              : 'bg-red-500/10 border-red-500/20 text-red-300'
-          }`}
-        >
-          <span>{notification.message}</span>
-          <button onClick={() => setNotification(null)} className="text-white/60 hover:text-white">
-            <X size={14} />
-          </button>
-        </div>
-      )}
-
       <AdminCard
-        title="Active Administrative Accounts"
-        subtitle="Control panel accounts with access to the custom CMS"
+        title={`Administrators (${users.length})`}
+        subtitle="Accounts provisioned with access to the Onecore Pharma CMS"
         action={
           <button
+            type="button"
             onClick={() => setShowCreateModal(true)}
-            className="px-3.5 py-2 bg-brand-teal hover:bg-brand-teal/90 text-white rounded-lg text-xs font-medium flex items-center gap-2 transition-colors shadow-xs"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-[#1B365D] hover:bg-[#152a48] text-white rounded-lg transition-all shadow-xs"
           >
-            <UserPlus size={14} />
-            <span>Add New User</span>
+            <UserPlus size={13} />
+            <span>Add Admin User</span>
           </button>
         }
       >
         {loading ? (
-          <div className="py-12 text-center text-brand-slate/60 text-xs">
-            <div className="w-6 h-6 border-2 border-brand-teal border-t-transparent rounded-full animate-spin mx-auto mb-2" />
-            <p>Loading user list from MySQL...</p>
+          <div className="py-12 text-center text-slate-400 text-xs">
+            Loading administrator accounts...
           </div>
-        ) : users.length > 0 ? (
+        ) : (
           <AdminTable
-            headers={['Administrator', 'Email', 'Role', 'Status', 'Last Login', 'Actions']}
+            headers={['Administrator', 'Email Address', 'Role Permission', 'Account Status', 'Last Login', 'Actions']}
           >
             {users.map((u) => (
-              <tr key={u.id} className="hover:bg-white/[0.02] transition-colors">
-                <td className="py-3 px-4 font-medium text-white">
+              <tr key={u.id} className="hover:bg-slate-50 transition-colors">
+                <td className="py-3 px-4 font-semibold text-slate-900">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-7 h-7 rounded-full bg-brand-navy-light border border-white/10 flex items-center justify-center text-[11px] font-mono text-white">
-                      {u.name.charAt(0).toUpperCase()}
+                    <div className="w-7 h-7 rounded-full bg-slate-100 border border-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center">
+                      {u.name?.charAt(0).toUpperCase()}
                     </div>
                     <span>{u.name}</span>
                   </div>
                 </td>
-                <td className="py-3 px-4">{u.email}</td>
+                <td className="py-3 px-4 text-xs text-slate-600 font-mono">
+                  {u.email}
+                </td>
+                <td className="py-3 px-4">
+                  {getRoleBadge(u.role_name)}
+                </td>
                 <td className="py-3 px-4">
                   <span
-                    className={`px-2 py-0.5 rounded-full text-[10px] font-mono uppercase font-semibold border ${
-                      u.role_name === 'Super Admin'
-                        ? 'bg-purple-500/10 text-purple-400 border-purple-500/20'
-                        : u.role_name === 'Admin'
-                        ? 'bg-brand-teal/10 text-brand-teal border-brand-teal/20'
-                        : 'bg-sky-500/10 text-sky-400 border-sky-500/20'
+                    className={`inline-flex items-center gap-1 text-xs font-semibold ${
+                      u.is_active === 1 ? 'text-emerald-700' : 'text-slate-400'
                     }`}
                   >
-                    {u.role_name}
+                    {u.is_active === 1 ? <CheckCircle2 size={13} /> : <XCircle size={13} />}
+                    <span>{u.is_active === 1 ? 'Active' : 'Disabled'}</span>
                   </span>
                 </td>
-                <td className="py-3 px-4">
-                  <button
-                    onClick={() => handleToggleActive(u)}
-                    className={`px-2 py-0.5 rounded-full text-[10px] font-mono uppercase font-semibold border flex items-center gap-1 ${
-                      u.is_active
-                        ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
-                        : 'bg-red-500/10 text-red-400 border-red-500/20'
-                    }`}
-                  >
-                    {u.is_active ? (
-                      <>
-                        <CheckCircle2 size={10} />
-                        <span>Active</span>
-                      </>
-                    ) : (
-                      <>
-                        <XCircle size={10} />
-                        <span>Disabled</span>
-                      </>
-                    )}
-                  </button>
-                </td>
-                <td className="py-3 px-4 font-mono text-[11px]">
-                  {u.last_login ? new Date(u.last_login).toLocaleDateString() : 'Never'}
+                <td className="py-3 px-4 font-mono text-[11px] text-slate-500">
+                  {u.last_login_at ? new Date(u.last_login_at).toLocaleDateString() : 'Never'}
                 </td>
                 <td className="py-3 px-4">
-                  {u.id !== currentUser?.id && (
+                  <div className="flex items-center gap-2">
                     <button
-                      onClick={() => handleDeleteUser(u)}
-                      className="p-1.5 text-brand-slate hover:text-red-400 hover:bg-red-500/10 rounded transition-colors"
-                      title="Delete User"
+                      type="button"
+                      onClick={() => setEditingUser({ ...u, new_password: '' })}
+                      className="px-2.5 py-1 text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg transition-all"
                     >
-                      <Trash2 size={14} />
+                      <Edit2 size={12} className="inline mr-1" />
+                      Edit
                     </button>
-                  )}
+                    {u.id !== currentUser?.id && (
+                      <button
+                        type="button"
+                        onClick={() => setDeleteTarget(u.id)}
+                        className="p-1 text-slate-400 hover:text-rose-600 rounded"
+                        title="Delete User"
+                      >
+                        <Trash2 size={13} />
+                      </button>
+                    )}
+                  </div>
                 </td>
               </tr>
             ))}
           </AdminTable>
-        ) : (
-          <div className="py-12 text-center text-brand-slate/60 text-xs">
-            <Users size={32} className="mx-auto mb-2 text-brand-slate/40" />
-            <p>No admin users found.</p>
-          </div>
         )}
       </AdminCard>
 
       {/* Create User Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 backdrop-blur-xs">
-          <div className="bg-brand-navy border border-white/10 rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
-            <button
-              onClick={() => setShowCreateModal(false)}
-              className="absolute top-5 right-5 text-brand-slate hover:text-white p-1 rounded-lg"
-            >
-              <X size={18} />
-            </button>
-
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-3 rounded-xl bg-brand-teal/10 text-brand-teal">
-                <UserPlus size={20} />
-              </div>
-              <div>
-                <h3 className="text-base font-medium text-white">Create Admin Account</h3>
-                <p className="text-xs text-brand-slate font-light">
-                  Provision new team credentials with role permissions.
-                </p>
-              </div>
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-xs" onClick={() => setShowCreateModal(false)} />
+          <div className="relative z-10 w-full max-w-md bg-white border border-slate-200 rounded-2xl p-6 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <h3 className="text-base font-bold text-slate-900">Add Administrator User</h3>
+              <button onClick={() => setShowCreateModal(false)} className="text-slate-400 hover:text-slate-700">
+                <X size={18} />
+              </button>
             </div>
 
-            <form onSubmit={handleCreateUser} className="space-y-4">
+            <form onSubmit={handleCreateUser} className="space-y-3.5">
               <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-brand-slate mb-1">
-                  Full Name
-                </label>
+                <label className="block text-xs font-mono uppercase text-slate-600 font-medium mb-1">Full Name *</label>
                 <input
                   type="text"
                   required
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="e.g., Sarah Chen"
-                  className="w-full bg-brand-navy-dark/60 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:outline-hidden focus:border-brand-teal"
+                  placeholder="e.g. Dr. Rajesh Sharma"
+                  className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-[#0D5C75] focus:ring-1 focus:ring-[#0D5C75]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-brand-slate mb-1">
-                  Email Address
-                </label>
+                <label className="block text-xs font-mono uppercase text-slate-600 font-medium mb-1">Email Address *</label>
                 <input
                   type="email"
                   required
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  placeholder="e.g., sarah@onecorepharma.com"
-                  className="w-full bg-brand-navy-dark/60 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:outline-hidden focus:border-brand-teal"
+                  placeholder="name@onecorepharma.in"
+                  className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-[#0D5C75] focus:ring-1 focus:ring-[#0D5C75]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-brand-slate mb-1">
-                  Initial Password
-                </label>
+                <label className="block text-xs font-mono uppercase text-slate-600 font-medium mb-1">Initial Password *</label>
                 <input
                   type="password"
                   required
-                  minLength={8}
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   placeholder="Minimum 8 characters"
-                  className="w-full bg-brand-navy-dark/60 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:outline-hidden focus:border-brand-teal"
+                  className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-[#0D5C75] focus:ring-1 focus:ring-[#0D5C75]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-brand-slate mb-1">
-                  Role Assignment
-                </label>
+                <label className="block text-xs font-mono uppercase text-slate-600 font-medium mb-1">Role Permission *</label>
                 <select
                   value={formData.roleId}
-                  onChange={(e) => setFormData({ ...formData, roleId: Number(e.target.value) })}
-                  className="w-full bg-brand-navy-dark/60 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:outline-hidden focus:border-brand-teal"
+                  onChange={(e) => setFormData({ ...formData, roleId: parseInt(e.target.value, 10) })}
+                  className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-[#0D5C75] focus:ring-1 focus:ring-[#0D5C75]"
                 >
-                  <option value={2}>Admin (Content & Enquiries Management)</option>
-                  <option value={3}>Editor (Content & Media updates)</option>
-                  <option value={1}>Super Admin (Full Access & User Management)</option>
+                  <option value={1}>Super Admin (Full system control, users & security)</option>
+                  <option value={2}>Admin (Content, media, products, enquiries)</option>
+                  <option value={3}>Editor (Content & products editing only)</option>
                 </select>
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-3">
+              <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100">
                 <button
                   type="button"
                   onClick={() => setShowCreateModal(false)}
-                  className="px-4 py-2 bg-white/5 hover:bg-white/10 text-white rounded-lg text-xs"
+                  className="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-900 bg-slate-100 rounded-lg"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-4 py-2 bg-brand-teal hover:bg-brand-teal/90 text-white rounded-lg text-xs font-medium"
+                  className="px-4 py-2 text-xs font-semibold bg-[#1B365D] hover:bg-[#152a48] text-white rounded-lg shadow-xs disabled:opacity-50"
                 >
                   {isSubmitting ? 'Creating...' : 'Create Account'}
                 </button>
@@ -360,6 +345,100 @@ export default function AdminUsers() {
           </div>
         </div>
       )}
+
+      {/* Edit User Modal */}
+      {editingUser && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-xs" onClick={() => setEditingUser(null)} />
+          <div className="relative z-10 w-full max-w-md bg-white border border-slate-200 rounded-2xl p-6 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <h3 className="text-base font-bold text-slate-900">Edit Administrator: {editingUser.name}</h3>
+              <button onClick={() => setEditingUser(null)} className="text-slate-400 hover:text-slate-700">
+                <X size={18} />
+              </button>
+            </div>
+
+            <form onSubmit={handleUpdateUser} className="space-y-3.5">
+              <div>
+                <label className="block text-xs font-mono uppercase text-slate-600 font-medium mb-1">Full Name</label>
+                <input
+                  type="text"
+                  required
+                  value={editingUser.name}
+                  onChange={(e) => setEditingUser({ ...editingUser, name: e.target.value })}
+                  className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-[#0D5C75] focus:ring-1 focus:ring-[#0D5C75]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-mono uppercase text-slate-600 font-medium mb-1">Role Permission</label>
+                <select
+                  value={editingUser.role_id}
+                  onChange={(e) => setEditingUser({ ...editingUser, role_id: parseInt(e.target.value, 10) })}
+                  className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-[#0D5C75] focus:ring-1 focus:ring-[#0D5C75]"
+                >
+                  <option value={1}>Super Admin</option>
+                  <option value={2}>Admin</option>
+                  <option value={3}>Editor</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-mono uppercase text-slate-600 font-medium mb-1">Account Active Status</label>
+                <select
+                  value={editingUser.is_active}
+                  onChange={(e) => setEditingUser({ ...editingUser, is_active: parseInt(e.target.value, 10) })}
+                  className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-[#0D5C75] focus:ring-1 focus:ring-[#0D5C75]"
+                >
+                  <option value={1}>Active</option>
+                  <option value={0}>Disabled</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-mono uppercase text-slate-600 font-medium mb-1">Reset Password (Optional)</label>
+                <input
+                  type="password"
+                  value={editingUser.new_password || ''}
+                  onChange={(e) => setEditingUser({ ...editingUser, new_password: e.target.value })}
+                  placeholder="Leave blank to keep existing password"
+                  className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-[#0D5C75] focus:ring-1 focus:ring-[#0D5C75]"
+                />
+              </div>
+
+              <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => setEditingUser(null)}
+                  className="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-900 bg-slate-100 rounded-lg"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="px-4 py-2 text-xs font-semibold bg-[#1B365D] hover:bg-[#152a48] text-white rounded-lg shadow-xs disabled:opacity-50"
+                >
+                  {isSubmitting ? 'Saving...' : 'Save Changes'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Modal */}
+      <ConfirmModal
+        isOpen={!!deleteTarget}
+        title="Delete Administrator"
+        message="Are you sure you want to permanently delete this administrator account?"
+        confirmLabel="Delete User"
+        onConfirm={handleDeleteUser}
+        onCancel={() => setDeleteTarget(null)}
+        dangerous
+      />
+
+      <ToastNotification toast={toast} onDismiss={() => setToast(null)} />
     </AdminLayout>
   );
 }

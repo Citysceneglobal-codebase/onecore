@@ -8,11 +8,11 @@ export default function ProtectedRoute({ children, allowedRoles }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-brand-navy flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-10 h-10 border-2 border-brand-teal border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-brand-slate text-sm font-light tracking-wide">
-            Authenticating Onecore Portal...
+      <div className="min-h-screen bg-[#F8F9FA] flex items-center justify-center font-sans">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-8 h-8 border-2 border-[#1B365D] border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-slate-500 text-xs font-medium tracking-wide">
+            Authenticating Onecore Admin Session...
           </p>
         </div>
       </div>
@@ -25,15 +25,15 @@ export default function ProtectedRoute({ children, allowedRoles }) {
 
   if (allowedRoles && !hasRole(allowedRoles)) {
     return (
-      <div className="min-h-screen bg-brand-navy flex items-center justify-center p-6">
-        <div className="bg-brand-navy-light border border-red-500/30 rounded-xl p-8 max-w-md text-center">
-          <h2 className="text-xl font-medium text-white mb-2">Access Denied</h2>
-          <p className="text-brand-slate text-sm mb-6 font-light">
-            Your account ({user.role_name}) does not have permission to view this section.
+      <div className="min-h-screen bg-[#F8F9FA] flex items-center justify-center p-6 font-sans">
+        <div className="bg-white border border-rose-200 rounded-2xl p-8 max-w-md text-center shadow-lg">
+          <h2 className="text-lg font-bold text-slate-900 mb-2">Access Restricted</h2>
+          <p className="text-slate-600 text-xs mb-6 font-normal">
+            Your role (<strong className="font-semibold">{user.role_name}</strong>) does not have permission to view or manage this system section.
           </p>
           <a
             href="/admin"
-            className="inline-block px-5 py-2.5 bg-brand-teal text-white rounded text-sm font-medium hover:bg-brand-teal/90 transition-colors"
+            className="inline-block px-5 py-2.5 bg-[#1B365D] hover:bg-[#152a48] text-white rounded-lg text-xs font-semibold transition-colors shadow-xs"
           >
             Return to Dashboard
           </a>
