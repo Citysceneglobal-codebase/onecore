@@ -184,7 +184,7 @@ export default function Home() {
           {/* Hero Content Block */}
           <div className="relative z-10 max-w-5xl mx-auto w-full space-y-6 sm:space-y-8">
             <ScrollReveal>
-              <h1 className="text-4xl sm:text-6xl lg:text-7xl xl:text-8xl font-black text-white tracking-tightest leading-[1.04] max-w-4xl">
+              <h1 className="text-4xl sm:text-6xl lg:text-7xl xl:text-8xl font-serif font-light text-white tracking-tight leading-[1.04] max-w-4xl">
                 {heroSec.title || 'Prescribing a better tomorrow'}
               </h1>
             </ScrollReveal>
@@ -239,7 +239,7 @@ export default function Home() {
               {/* Pillar 1 */}
               <ScrollReveal delay={0.1}>
                 <div className="flex flex-col h-full space-y-4 p-2 border-t border-stone-200 pt-6">
-                  <h3 className="text-2xl font-bold text-[#121212] tracking-tight">
+                  <h3 className="text-2xl font-serif font-medium text-[#121212] tracking-tight">
                     Purposeful Formulations
                   </h3>
                   <p className="text-sm sm:text-base text-[#4B5563] leading-relaxed flex-1">
@@ -260,7 +260,7 @@ export default function Home() {
               {/* Pillar 2 */}
               <ScrollReveal delay={0.15}>
                 <div className="flex flex-col h-full space-y-4 p-2 border-t border-stone-200 pt-6">
-                  <h3 className="text-2xl font-bold text-[#121212] tracking-tight">
+                  <h3 className="text-2xl font-serif font-medium text-[#121212] tracking-tight">
                     Dependable Quality
                   </h3>
                   <p className="text-sm sm:text-base text-[#4B5563] leading-relaxed flex-1">
@@ -281,7 +281,7 @@ export default function Home() {
               {/* Pillar 3 */}
               <ScrollReveal delay={0.2}>
                 <div className="flex flex-col h-full space-y-4 p-2 border-t border-stone-200 pt-6">
-                  <h3 className="text-2xl font-bold text-[#121212] tracking-tight">
+                  <h3 className="text-2xl font-serif font-medium text-[#121212] tracking-tight">
                     Patient & Doctor Focus
                   </h3>
                   <p className="text-sm sm:text-base text-[#4B5563] leading-relaxed flex-1">
@@ -371,7 +371,7 @@ export default function Home() {
                         <span className="text-xs font-bold uppercase tracking-wider text-red-300">
                           {item.name}
                         </span>
-                        <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-white leading-snug">
+                        <h3 className="text-2xl sm:text-3xl font-serif font-medium tracking-tight text-white leading-snug">
                           {item.specialty}
                         </h3>
                         <p className="text-xs sm:text-sm text-white/80 line-clamp-2 leading-relaxed font-normal">
@@ -559,7 +559,7 @@ export default function Home() {
               {sustainabilitySec.items.map((col, idx) => (
                 <ScrollReveal key={col.title || idx} delay={0.05 + idx * 0.05}>
                   <div className="p-8 sm:p-10 rounded-3xl bg-white border border-stone-200/80 shadow-sm flex flex-col h-full space-y-4 group">
-                    <h3 className="text-xl sm:text-2xl font-bold text-[#121212] tracking-tight">
+                    <h3 className="text-xl sm:text-2xl font-serif font-medium text-[#121212] tracking-tight">
                       {col.title}
                     </h3>
                     <p className="text-sm text-[#4B5563] leading-relaxed flex-1">
@@ -608,7 +608,7 @@ export default function Home() {
                 {lookingAheadSec.items.map((item, idx) => (
                   <ScrollReveal key={item.title || idx} delay={idx * 0.08}>
                     <div className="py-6 sm:py-7 space-y-2 group hover:bg-[#FAF9F6] transition-colors px-4 -mx-4 rounded-2xl">
-                      <h3 className="text-lg sm:text-xl font-bold text-[#121212] tracking-tight group-hover:text-[#D52B1E] transition-colors">
+                      <h3 className="text-lg sm:text-xl font-serif font-medium text-[#121212] tracking-tight group-hover:text-[#D52B1E] transition-colors">
                         {item.title}
                       </h3>
                       <p className="text-sm text-[#4B5563] leading-relaxed">
@@ -671,7 +671,7 @@ export default function Home() {
                       <time dateTime={article.date}>{article.date}</time>
                     </div>
 
-                    <h3 className="text-lg sm:text-xl font-bold text-[#121212] group-hover:text-[#D52B1E] transition-colors leading-snug">
+                    <h3 className="text-lg sm:text-xl font-serif font-medium text-[#121212] group-hover:text-[#D52B1E] transition-colors leading-snug">
                       <Link to="/news">
                         {article.title}
                       </Link>
