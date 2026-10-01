@@ -106,21 +106,12 @@ export default function AreasOfCare() {
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
             <div className="max-w-3xl space-y-4">
-              {heroSection?.eyebrow && (
-                <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#D52B1E] block">
-                  {heroSection.eyebrow}
-                </span>
-              )}
               <h1 className="text-4xl sm:text-6xl lg:text-7xl font-serif font-light text-[#121212] tracking-tight leading-[1.05]">
-                {heroSection?.heading || (
-                  <>
-                    Our medicines & <br />
-                    <span className="italic font-normal text-[#D52B1E]">areas of care.</span>
-                  </>
-                )}
+                Our medicines & <br />
+                <span className="italic font-normal text-[#D52B1E]">areas of care.</span>
               </h1>
               <p className="text-base sm:text-xl text-[#555555] font-light leading-relaxed max-w-2xl font-sans">
-                {heroSection?.subheading || heroSection?.body || 'Explore Onecore’s 9 specialized therapeutic divisions and over 60 clinically engineered prescription medicines, supportive therapies, and micronutrient formulations.'}
+                Explore Onecore’s 9 specialized therapeutic divisions and over 60 clinically engineered prescription medicines, supportive therapies, and micronutrient formulations.
               </p>
             </div>
 

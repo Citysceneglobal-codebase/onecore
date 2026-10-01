@@ -78,11 +78,6 @@ export default function DistributionPartnerships() {
         <div className="max-w-7xl mx-auto space-y-8">
           
           <div className="max-w-4xl space-y-6">
-            {heroSection?.eyebrow && (
-              <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#D52B1E] block">
-                {heroSection.eyebrow}
-              </span>
-            )}
             <h1 className="text-4xl sm:text-6xl lg:text-7xl font-serif font-light text-[#121212] tracking-tight leading-[1.05]">
               {heroSection?.heading || 'Distribution & Franchise Partnerships'}
             </h1>
@@ -137,11 +132,6 @@ export default function DistributionPartnerships() {
       <section className="py-12 sm:py-16 px-4 sm:px-8 max-w-7xl mx-auto space-y-8 sm:space-y-10">
         <div className="max-w-3xl space-y-4">
           <ScrollReveal>
-            {pillarsSection?.eyebrow && (
-              <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#D52B1E] block">
-                {pillarsSection.eyebrow}
-              </span>
-            )}
             <h2 className="text-3xl sm:text-5xl font-serif font-light text-[#121212] tracking-tight leading-tight">
               {pillarsSection?.heading || 'Why partner with Onecore'}
             </h2>

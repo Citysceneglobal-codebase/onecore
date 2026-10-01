@@ -301,9 +301,9 @@ async function syncAllCmsSections() {
       'Specialized therapeutic formulations across 9 divisions'
     );
     await upsertSection(areasPageId, 'hero', 'hero', {
-      eyebrow: 'THERAPEUTIC DIVISIONS',
+      eyebrow: '',
       heading: 'Our medicines & areas of care.',
-      subheading: 'Explore Onecore’s 9 specialized therapeutic divisions and over 60 clinically engineered prescription medicines.',
+      subheading: 'Explore Onecore’s 9 specialized therapeutic divisions and over 60 clinically engineered prescription medicines, supportive therapies, and micronutrient formulations.',
       display_order: 0,
     });
     await upsertSection(areasPageId, 'portfolio_intro', 'editorial', {

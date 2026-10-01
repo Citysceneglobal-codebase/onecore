@@ -18,17 +18,19 @@ export function useTherapeuticAreas() {
           // Normalize items with fallback fields
           const merged = result.data.map((area, idx) => {
             const fallback = fallbackAreas.find(
-              (f) => f.slug === area.slug || f.id === area.id || f.title?.toLowerCase() === area.name?.toLowerCase()
+              (f) => f.slug === area.slug || f.id === area.id || f.title?.toLowerCase() === area.name?.toLowerCase() || f.divisionName?.toLowerCase() === area.name?.toLowerCase()
             ) || fallbackAreas[idx] || {};
 
             return {
               ...fallback,
               ...area,
-              id: area.id || fallback.id,
+              id: fallback.id || area.slug || area.id,
+              divisionName: fallback.divisionName || area.name,
+              therapeuticArea: fallback.therapeuticArea || area.heading,
               num: area.number_label || fallback.num || String(idx + 1).padStart(2, '0'),
-              title: area.name || fallback.title,
-              name: area.name || fallback.title,
-              slug: area.slug || fallback.slug,
+              title: fallback.title || area.name,
+              name: fallback.title || area.name,
+              slug: fallback.slug || area.slug,
               focusTitle: area.heading || area.focus_title || fallback.focusTitle || fallback.heading,
               heading: area.heading || fallback.focusTitle || fallback.heading,
               description: area.description || fallback.description,
@@ -36,7 +38,7 @@ export function useTherapeuticAreas() {
               image_url: area.image_url || fallback.image,
               tags: area.tags && area.tags.length > 0 ? area.tags : fallback.tags || [],
               sampleProducts: fallback.sampleProducts || [],
-              route: fallback.route || `/areas-of-care/${area.slug}`,
+              route: fallback.route || `/areas-of-care/${fallback.slug || area.slug}`,
             };
           });
 
