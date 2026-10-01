@@ -2,6 +2,59 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ==========================================================================
+   Ampersand Typography Override for Playfair Display
+   Replaces the ornate calligraphic swash ligature of '&' in Playfair Display
+   with a classic, balanced, upright serif ampersand across all headings.
+   ========================================================================== */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Georgia'), local('Times New Roman'), url('https://fonts.gstatic.com/l/font?kit=co3umX5slCNuHLi8bLeY9MK7whWMhyjypVO7abI26QOD_v86GnPcjtU&skey=a863d1376a24bd7a&v=v21') format('truetype');
+  unicode-range: U+0026;
+}
+
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 500;
+  src: local('Georgia'), local('Times New Roman'), url('https://fonts.gstatic.com/l/font?kit=co3umX5slCNuHLi8bLeY9MK7whWMhyjypVO7abI26QOD_s06GnPcjtU&skey=a863d1376a24bd7a&v=v21') format('truetype');
+  unicode-range: U+0026;
+}
+
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 600;
+  src: local('Georgia Bold'), local('Georgia'), local('Times New Roman Bold'), url('https://fonts.gstatic.com/l/font?kit=co3umX5slCNuHLi8bLeY9MK7whWMhyjypVO7abI26QOD_iE9GnPcjtU&skey=a863d1376a24bd7a&v=v21') format('truetype');
+  unicode-range: U+0026;
+}
+
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Georgia Bold'), local('Georgia'), local('Times New Roman Bold'), url('https://fonts.gstatic.com/l/font?kit=co3umX5slCNuHLi8bLeY9MK7whWMhyjypVO7abI26QOD_hg9GnPcjtU&skey=a863d1376a24bd7a&v=v21') format('truetype');
+  unicode-range: U+0026;
+}
+
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: italic;
+  font-weight: 400;
+  src: local('Georgia Italic'), local('Georgia'), local('Times New Roman Italic'), url('https://fonts.gstatic.com/l/font?kit=co3umX5slCNuHLi8bLeY9MK7whWMhyjypVO7abI26QOD_v86GnPcjtU&skey=a863d1376a24bd7a&v=v21') format('truetype');
+  unicode-range: U+0026;
+}
+
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: italic;
+  font-weight: 700;
+  src: local('Georgia Bold Italic'), local('Georgia Bold'), local('Georgia Italic'), local('Georgia'), local('Times New Roman Bold Italic'), url('https://fonts.gstatic.com/l/font?kit=co3umX5slCNuHLi8bLeY9MK7whWMhyjypVO7abI26QOD_hg9GnPcjtU&skey=a863d1376a24bd7a&v=v21') format('truetype');
+  unicode-range: U+0026;
+}
+
 @layer base {
   :root {
     --color-ivory: #FAF9F5;

@@ -125,8 +125,8 @@ export default function About() {
           SECTION 1 — EDITORIAL HERO
           Spacious, dignified, human-scale typography (The Lilly Model)
           ========================================================================= */}
-      <section className="pt-28 sm:pt-36 pb-16 sm:pb-24 px-4 sm:px-8 border-b border-[#E5E3DC]/80 bg-[#FAF9F6]/50 backdrop-blur-[1px]">
-        <div className="max-w-7xl mx-auto space-y-12">
+      <section className="pt-20 sm:pt-24 pb-10 sm:pb-14 px-4 sm:px-8 border-b border-[#E5E3DC]/80 bg-transparent">
+        <div className="max-w-7xl mx-auto space-y-8">
           
           <div className="max-w-4xl space-y-6">
             <h1 className="text-4xl sm:text-6xl lg:text-7xl font-serif font-light text-[#121212] tracking-tight leading-[1.05]">
@@ -155,8 +155,8 @@ export default function About() {
           SECTION 2 — AUTHENTIC VISION & MISSION CARDS (STRICTLY 2 CARDS)
           Crimson accent styling matching the black, white, and red brand palette
           ========================================================================= */}
-      <section className="py-16 sm:py-24 px-4 sm:px-8 max-w-7xl mx-auto">
-        <div className="space-y-8">
+      <section className="py-10 sm:py-14 px-4 sm:px-8 max-w-7xl mx-auto">
+        <div className="space-y-6">
           <div className="text-center space-y-3 max-w-2xl mx-auto">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-light text-[#121212] tracking-tight">
               Vision & Mission
@@ -166,7 +166,7 @@ export default function About() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 pt-4">
             {authenticVisionMission.map((item, idx) => (
               <ScrollReveal key={item.title || idx} delay={idx * 0.1}>
-                <div className="p-8 sm:p-12 rounded-3xl bg-white border border-[#E5E3DC] border-l-[4px] border-l-[#D52B1E] shadow-xs hover:shadow-md transition-all duration-300 space-y-4 h-full flex flex-col justify-center">
+                <div className="p-8 sm:p-12 rounded-3xl bg-white/80 backdrop-blur-xs border border-[#E5E3DC] border-l-[4px] border-l-[#D52B1E] shadow-xs hover:shadow-md transition-all duration-300 space-y-4 h-full flex flex-col justify-center">
                   <h3 className="text-2xl sm:text-3xl font-serif font-bold tracking-tight text-[#121212]">
                     {item.title}
                   </h3>
@@ -184,8 +184,8 @@ export default function About() {
           SECTION 3 — STRATEGIC FOUNDATION & LABORATORY SCIENCE (RICH VISUALS)
           ========================================================================= */}
       {foundationSec.is_active && (
-        <section className="py-20 sm:py-28 bg-[#FAF9F6]/60 backdrop-blur-[2px] border-y border-[#E5E3DC]/80">
-          <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-16">
+        <section className="py-12 sm:py-16 bg-transparent border-y border-[#E5E3DC]/80">
+          <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-8 sm:space-y-10">
             
             <div className="space-y-8">
               <ScrollReveal>
@@ -236,7 +236,7 @@ export default function About() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t border-[#E5E3DC]">
               {foundationSec.items.map((statItem, idx) => (
                 <ScrollReveal key={statItem.title || idx} delay={idx * 0.08}>
-                  <div className="p-8 rounded-3xl bg-[#FAF9F6] border border-[#E5E3DC] space-y-3 h-full flex flex-col justify-between">
+                  <div className="p-8 rounded-3xl bg-white/80 backdrop-blur-xs border border-[#E5E3DC] space-y-3 h-full flex flex-col justify-between">
                     <div>
                       <span className="text-4xl sm:text-5xl font-serif font-light text-[#D52B1E] block mb-2">
                         {statItem.stat || statItem.num}
@@ -261,7 +261,7 @@ export default function About() {
           SECTION 4 — FOUNDATIONAL PRINCIPLES WITH CLINICAL DIALOGUE IMAGERY
           ========================================================================= */}
       {principlesSec.is_active && (
-        <section className="py-20 sm:py-28 px-4 sm:px-8 max-w-7xl mx-auto space-y-16">
+        <section className="py-12 sm:py-16 px-4 sm:px-8 max-w-7xl mx-auto space-y-8 sm:space-y-10">
           
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
             
@@ -293,7 +293,7 @@ export default function About() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {principlesSec.items.map((pillar, idx) => (
               <ScrollReveal key={pillar.title || idx} delay={idx * 0.08}>
-                <div className="bg-white p-8 sm:p-10 rounded-3xl border border-[#E5E3DC] hover:border-[#121212] transition-all duration-300 h-full flex flex-col justify-between space-y-6 shadow-xs hover:shadow-md">
+                <div className="bg-white/80 backdrop-blur-xs p-8 sm:p-10 rounded-3xl border border-[#E5E3DC] hover:border-[#121212] transition-all duration-300 h-full flex flex-col justify-between space-y-6 shadow-xs hover:shadow-md">
                   <div className="space-y-3">
                     <span className="text-xs font-mono text-[#D52B1E] font-semibold block">
                       0{idx + 1}
@@ -322,8 +322,8 @@ export default function About() {
           SECTION 5 — DISCIPLINED COMMITMENTS (RICH PATIENT PERSPECTIVE)
           ========================================================================= */}
       {commitmentsSec.is_active && (
-        <section className="py-20 sm:py-28 bg-white border-t border-[#E5E3DC]">
-          <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-16">
+        <section className="py-12 sm:py-16 bg-transparent border-t border-[#E5E3DC]">
+          <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-8 sm:space-y-10">
             
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
               
@@ -354,7 +354,7 @@ export default function About() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {commitmentsSec.items.map((item, idx) => (
                 <ScrollReveal key={item.title || idx} delay={idx * 0.08}>
-                  <div className="p-8 sm:p-10 rounded-3xl bg-[#FAF9F6] border border-[#E5E3DC] space-y-3 h-full flex flex-col justify-between">
+                  <div className="p-8 sm:p-10 rounded-3xl bg-white/80 backdrop-blur-xs border border-[#E5E3DC] space-y-3 h-full flex flex-col justify-between">
                     <div className="space-y-2">
                       <h4 className="text-xl font-serif font-medium text-[#121212] tracking-tight">
                         {item.title}
@@ -375,7 +375,7 @@ export default function About() {
       {/* =========================================================================
           SECTION 6 — STATELY EDITORIAL CTA
           ========================================================================= */}
-      <section className="py-20 sm:py-28 bg-[#121212] text-white text-center">
+      <section className="py-12 sm:py-16 bg-[#121212] text-white text-center">
         <div className="max-w-4xl mx-auto px-4 sm:px-8 space-y-6">
           <h2 className="text-3xl sm:text-5xl font-serif font-light text-white tracking-tight leading-tight text-balance">
             Explore our therapeutic specialties <br className="hidden sm:inline" />and quality disciplines.

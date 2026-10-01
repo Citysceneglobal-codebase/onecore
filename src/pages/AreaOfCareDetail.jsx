@@ -366,10 +366,10 @@ export default function AreaOfCareDetail() {
   };
 
   return (
-    <div className="w-full bg-[#FAF9F6] text-[#121212] min-h-screen">
+    <div className="w-full bg-transparent text-[#121212] min-h-screen">
       
       {/* 1. Breadcrumbs Context Bar */}
-      <div className="pt-24 sm:pt-28 pb-4 border-b border-[#E5E3DC] bg-white">
+      <div className="pt-24 sm:pt-28 pb-4 border-b border-[#E5E3DC] bg-white/80 backdrop-blur-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 flex flex-col sm:flex-row justify-between items-start sm:items-center text-xs text-[#777777] gap-2">
           <div className="flex items-center gap-2 flex-wrap">
             <Link to="/areas-of-care" className="hover:text-[#121212] transition-colors font-medium">
@@ -382,7 +382,7 @@ export default function AreaOfCareDetail() {
       </div>
 
       {/* 2. Hero Section */}
-      <section className="py-12 sm:py-16 px-4 sm:px-8 bg-white border-b border-[#E5E3DC]">
+      <section className="py-12 sm:py-16 px-4 sm:px-8 bg-transparent border-b border-[#E5E3DC]">
         <div className="max-w-7xl mx-auto space-y-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
             
@@ -440,7 +440,7 @@ export default function AreaOfCareDetail() {
       {/* 3. Product Cards Grid */}
       <section className="py-12 sm:py-16 px-4 sm:px-8 max-w-7xl mx-auto space-y-8">
         {filteredProducts.length === 0 ? (
-          <div className="py-16 text-center bg-white border border-[#E5E3DC] rounded-3xl p-8 space-y-3 max-w-lg mx-auto">
+          <div className="py-16 text-center bg-white/80 backdrop-blur-xs border border-[#E5E3DC] rounded-3xl p-8 space-y-3 max-w-lg mx-auto">
             <p className="text-base text-[#121212] font-serif font-bold">No formulations match your search.</p>
             <p className="text-xs text-[#555555]">Try searching with a generic chemical name or active ingredient.</p>
             <button
@@ -460,7 +460,7 @@ export default function AreaOfCareDetail() {
                 <Link
                   key={product.slug || index}
                   to={productUrl}
-                  className="bg-white border border-[#E5E3DC] hover:border-[#D52B1E] rounded-3xl overflow-hidden flex flex-col group shadow-xs hover:shadow-md transition-all duration-300 block cursor-pointer"
+                  className="bg-white/80 backdrop-blur-xs border border-[#E5E3DC] hover:border-[#D52B1E] rounded-3xl overflow-hidden flex flex-col group shadow-xs hover:shadow-md transition-all duration-300 block cursor-pointer"
                 >
                   {/* Product Packshot / Image — Flush to top, left, and right with no padding */}
                   <div className="w-full aspect-[4/3] bg-[#FAF9F6] overflow-hidden">

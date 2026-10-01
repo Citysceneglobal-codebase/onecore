@@ -102,7 +102,7 @@ export default function AreasOfCare() {
           SECTION 1 — EDITORIAL HERO
           Inspired by Lilly's bold, quiet confidence and spacious typography
           ========================================================================= */}
-      <section className="pt-28 sm:pt-36 pb-12 sm:pb-16 px-4 sm:px-8 border-b border-[#E5E3DC]/80 bg-[#FAF9F6]/50 backdrop-blur-[1px]">
+      <section className="pt-20 sm:pt-24 pb-8 sm:pb-10 px-4 sm:px-8 border-b border-[#E5E3DC]/80 bg-[#FAF9F6]/50 backdrop-blur-[1px]">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
             <div className="max-w-3xl space-y-4">
@@ -191,7 +191,7 @@ export default function AreasOfCare() {
           ACTIVE SEARCH RESULTS (Displayed directly when user searches)
           ========================================================================= */}
       {searchQuery.trim() && (
-        <section className="bg-white border-b border-[#E5E3DC] py-10 px-4 sm:px-8">
+        <section className="bg-transparent border-b border-[#E5E3DC] py-10 px-4 sm:px-8">
           <div className="max-w-7xl mx-auto space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[#E5E3DC]">
               <div className="flex items-center gap-2">
@@ -237,7 +237,7 @@ export default function AreasOfCare() {
                     <Link
                       key={product.division + product.slug + product.name}
                       to={product.productUrl}
-                      className="bg-white border border-[#E5E3DC] hover:border-[#D52B1E] transition-all duration-300 rounded-3xl overflow-hidden flex flex-col group shadow-xs hover:shadow-md block cursor-pointer"
+                      className="bg-white/80 backdrop-blur-xs border border-[#E5E3DC] hover:border-[#D52B1E] transition-all duration-300 rounded-3xl overflow-hidden flex flex-col group shadow-xs hover:shadow-md block cursor-pointer"
                     >
                       {/* Product Image — Flush to top, left, and right */}
                       <div className="w-full aspect-[4/3] bg-[#FAF9F6] overflow-hidden">
@@ -301,7 +301,7 @@ export default function AreasOfCare() {
       {/* =========================================================================
           SECTION 2 — THE 9 SPECIALTY DIVISIONS (ALTERNATING EDITORIAL SHOWCASE)
           ========================================================================= */}
-      <section className="py-12 sm:py-20 px-4 sm:px-8 max-w-7xl mx-auto space-y-24 sm:space-y-32">
+      <section className="py-8 sm:py-12 px-4 sm:px-8 max-w-7xl mx-auto space-y-12 sm:space-y-16">
         {areasList.map((area, index) => {
           const isEven = index % 2 === 0;
           const divisionSlug = (area.divisionName || area.slug || area.id || '').toLowerCase();
@@ -399,7 +399,7 @@ export default function AreasOfCare() {
       {/* =========================================================================
           SECTION 3 — INSTITUTIONAL PRODUCT DOSSIER INQUIRY
           ========================================================================= */}
-      <section className="py-20 sm:py-28 bg-white border-t border-[#E5E3DC]">
+      <section className="py-12 sm:py-16 bg-transparent border-t border-[#E5E3DC]/80">
         <div className="max-w-4xl mx-auto px-4 sm:px-8 space-y-12">
           
           <div className="text-center space-y-3">
@@ -414,7 +414,7 @@ export default function AreasOfCare() {
             </p>
           </div>
 
-          <div className="bg-[#FAF9F6] border border-[#E5E3DC] p-6 sm:p-12 rounded-3xl shadow-xs">
+          <div className="bg-white/80 backdrop-blur-xs border border-[#E5E3DC] p-6 sm:p-12 rounded-3xl shadow-xs">
             {formSubmitted ? (
               <div className="py-12 text-center space-y-4">
                 <div className="w-14 h-14 rounded-full bg-white border border-[#E5E3DC] text-[#00A859] flex items-center justify-center mx-auto shadow-xs">

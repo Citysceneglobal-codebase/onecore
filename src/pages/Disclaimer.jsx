@@ -8,14 +8,14 @@ export default function Disclaimer() {
   }, []);
 
   return (
-    <div className="w-full bg-brand-ivory text-brand-text">
+    <div className="w-full bg-transparent text-brand-text">
       <PageBanner
         title="Disclaimer"
         imageUrl="/assets/hero-healthcare.jpg"
         imageAlt="Disclaimer - Onecore Pharma"
       />
 
-      <section className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto space-y-12">
+      <section className="py-10 sm:py-14 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto space-y-10">
         <ScrollReveal>
           <div className="space-y-6 text-brand-muted text-base sm:text-lg leading-relaxed">
             <h2 className="editorial-heading text-2xl font-medium text-brand-dark">Medical Information Notice</h2>

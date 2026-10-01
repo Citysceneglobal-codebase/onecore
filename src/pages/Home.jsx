@@ -215,8 +215,8 @@ export default function Home() {
           Pure typography, generous white space, stately Cormorant Garamond serif
           ========================================================================= */}
       {aboutSec.is_active && (
-        <section className="py-20 sm:py-28 lg:py-32 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-          <div className="space-y-16 sm:space-y-20">
+        <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+          <div className="space-y-8 sm:space-y-10">
 
             {/* Editorial Title with Italicized Punchline */}
             <div className="max-w-4xl mx-auto text-center space-y-6">
@@ -310,8 +310,8 @@ export default function Home() {
           Generous rounded-[28px] cards, horizontal scroll controls, authentic photography
           ========================================================================= */}
       {areasSec.is_active && (
-        <section className="py-20 sm:py-28 bg-[#FAF9F6]/60 backdrop-blur-[2px] border-y border-[#E5E7EB]/80">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+        <section className="py-12 sm:py-16 bg-transparent border-y border-[#E5E7EB]/80">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 sm:space-y-8">
 
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
@@ -393,8 +393,8 @@ export default function Home() {
           High-stature numbers, clean horizontal hairline dividers
           ========================================================================= */}
       {purposeSec.is_active && (
-        <section className="py-24 sm:py-32 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-          <div className="space-y-16 sm:space-y-20">
+        <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+          <div className="space-y-8 sm:space-y-10">
 
             {/* Header */}
             <div className="max-w-4xl mx-auto text-center space-y-6">
@@ -485,7 +485,7 @@ export default function Home() {
           Full-page sized authentic imagery with dignified typography overlay
           ========================================================================= */}
       {qualitySec.is_active && (
-        <section className="relative min-h-[640px] sm:min-h-[720px] flex items-center py-20 sm:py-28 text-white overflow-hidden">
+        <section className="relative min-h-[460px] sm:min-h-[520px] flex items-center py-12 sm:py-16 text-white overflow-hidden">
           {/* Full-bleed background imagery */}
           <div className="absolute inset-0 z-0">
             <img
@@ -539,8 +539,8 @@ export default function Home() {
           Clean editorial cards, pure typography, signature red underline links
           ========================================================================= */}
       {sustainabilitySec.is_active && (
-        <section className="py-24 sm:py-32 bg-[#FAF9F6]/60 backdrop-blur-[2px] border-b border-[#E5E7EB]/80">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+        <section className="py-12 sm:py-16 bg-transparent border-b border-[#E5E7EB]/80">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 sm:space-y-10">
 
             {/* Header */}
             <div className="max-w-3xl space-y-4">
@@ -558,7 +558,7 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10 pt-4">
               {sustainabilitySec.items.map((col, idx) => (
                 <ScrollReveal key={col.title || idx} delay={0.05 + idx * 0.05}>
-                  <div className="p-8 sm:p-10 rounded-3xl bg-white border border-stone-200/80 shadow-sm flex flex-col h-full space-y-4 group">
+                  <div className="p-8 sm:p-10 rounded-3xl bg-white/80 backdrop-blur-xs border border-stone-200/90 shadow-sm flex flex-col h-full space-y-4 group hover:bg-white/95 transition-all">
                     <h3 className="text-xl sm:text-2xl font-serif font-medium text-[#121212] tracking-tight">
                       {col.title}
                     </h3>
@@ -587,8 +587,8 @@ export default function Home() {
           SECTION 7 — LOOKING AHEAD (ONECORE STRATEGIC ROADMAP)
           ========================================================================= */}
       {lookingAheadSec.is_active && (
-        <section className="py-24 sm:py-32 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
+        <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
 
             {/* Left Header */}
             <div className="lg:col-span-5 space-y-6">
@@ -628,8 +628,8 @@ export default function Home() {
           SECTION 8 — NEWS PREVIEW
           ========================================================================= */}
       {newsSec.is_active && (
-        <section className="py-24 sm:py-32 bg-[#FAF9F6]/60 backdrop-blur-[2px] border-t border-[#E5E7EB]/80">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+        <section className="py-12 sm:py-16 bg-transparent border-t border-[#E5E7EB]/80">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 sm:space-y-10">
 
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
@@ -703,8 +703,8 @@ export default function Home() {
           SECTION 9 — FINAL CTA
           ========================================================================= */}
       {finalCtaSec.is_active && (
-        <section className="py-24 sm:py-32 bg-[#FAF9F6]/75 backdrop-blur-[2px] border-t border-[#E5E7EB]/80 text-center">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        <section className="py-12 sm:py-16 bg-transparent border-t border-[#E5E7EB]/80 text-center">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
             <ScrollReveal>
               <h2 className="lilly-serif text-3xl sm:text-5xl lg:text-6xl text-[#121212] tracking-tight leading-tight text-balance">
                 Purposeful healthcare, <br className="hidden sm:inline" />across every area we serve.

@@ -209,7 +209,7 @@ export default function OphthalmologyProductDetail() {
   };
 
   return (
-    <div className="w-full bg-white text-[#232126] font-sans antialiased">
+    <div className="w-full bg-transparent text-[#232126] font-sans antialiased">
 
       {/* 3. PRODUCT HERO (SPLIT SCREEN 43% / 57%) */}
       <div id="overview" className="w-full bg-[#f7f5f1] grid grid-cols-1 lg:grid-cols-12 min-h-[640px] scroll-mt-24">

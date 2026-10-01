@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { ArrowUpRight } from 'lucide-react';
 import { useSettings } from '../hooks/useSettings';
 import { assetUrl } from '../utils/assetUrl';
+import TechnicalGridBackground from './TechnicalGridBackground';
 
 export default function Footer() {
   const location = useLocation();
@@ -49,12 +50,20 @@ export default function Footer() {
   return (
     <footer className="bg-[#C42115] text-white pt-10 sm:pt-14 pb-8 sm:pb-10 relative overflow-hidden selection:bg-white/20 selection:text-white">
       
+      {/* Precision Blueprint Drafting Grid Overlay for Footer */}
+      <TechnicalGridBackground
+        isFixed={false}
+        variant="crimson"
+        className="absolute inset-0 z-0"
+        showCompassGuides={true}
+      />
+
       {/* Massive Centered "onecore" Text Watermark */}
       <div 
-        className="absolute inset-x-0 top-0 bottom-20 sm:bottom-28 flex items-center justify-center pointer-events-none select-none z-0 overflow-hidden"
+        className="absolute inset-x-0 top-0 bottom-20 sm:bottom-28 flex items-center justify-center pointer-events-none select-none z-[1] overflow-hidden"
         aria-hidden="true"
       >
-        <span className="text-[16vw] sm:text-[18vw] lg:text-[220px] font-black tracking-tighter leading-none text-[#650800]/35 whitespace-nowrap select-none -translate-y-3 sm:-translate-y-6">
+        <span className="text-[25vw] min-[400px]:text-[26vw] sm:text-[20vw] md:text-[22vw] lg:text-[220px] xl:text-[250px] font-black tracking-tighter leading-none text-[#500600]/35 sm:text-[#650800]/35 whitespace-nowrap select-none -translate-y-2 sm:-translate-y-6">
           onecore
         </span>
       </div>

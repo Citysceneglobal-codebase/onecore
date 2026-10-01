@@ -14,14 +14,37 @@ import React from 'react';
 export default function TechnicalGridBackground({ 
   className = '', 
   gridSize = 72,
-  opacity = 'opacity-85',
-  showCompassGuides = true 
+  opacity = 'opacity-100',
+  showCompassGuides = true,
+  isFixed = true,
+  variant = 'light', // 'light' | 'crimson' | 'dark'
+  patternId,
 }) {
   const half = gridSize / 2;
+  const isCrimson = variant === 'crimson';
+  const effectivePatternId = patternId || (isCrimson ? 'technical-blueprint-grid-crimson' : 'technical-blueprint-grid');
+
+  // Palette tuning based on background tone
+  const minorStroke = isCrimson ? '#FFFFFF' : '#64748B';
+  const minorOpacity = isCrimson ? 0.08 : 0.15;
+
+  const majorStroke = isCrimson ? '#FFFFFF' : '#475569';
+  const majorOpacity = isCrimson ? 0.14 : 0.22;
+
+  const crosshairStroke = isCrimson ? '#FFFFFF' : '#334155';
+  const crosshairOpacity = isCrimson ? 0.24 : 0.32;
+
+  const dotFill = isCrimson ? '#FFFFFF' : '#475569';
+  const dotOpacity = isCrimson ? 0.18 : 0.18;
+
+  const compassStroke = isCrimson ? '#FFFFFF' : '#64748B';
+  const compassOpacity = isCrimson ? 0.08 : 0.12;
+
+  const positionClass = isFixed ? 'fixed' : 'absolute';
 
   return (
     <div
-      className={`fixed inset-0 pointer-events-none z-0 overflow-hidden select-none ${opacity} ${className}`}
+      className={`${positionClass} inset-0 pointer-events-none z-0 overflow-hidden select-none ${opacity} ${className}`}
       aria-hidden="true"
     >
       {/* Background SVG Grid Canvas */}
@@ -34,94 +57,82 @@ export default function TechnicalGridBackground({
         <defs>
           {/* Main Blueprint / Cutting Mat Pattern Tile */}
           <pattern
-            id="technical-blueprint-grid"
+            id={effectivePatternId}
             width={gridSize}
             height={gridSize}
             patternUnits="userSpaceOnUse"
           >
-            {/* Minor Subdividing Dashed Lines (Halfway at 36px) — Soft, dull & quiet */}
+            {/* Minor Subdividing Dashed Lines (Halfway at 36px) */}
             <line
               x1={half}
               y1="0"
               x2={half}
               y2={gridSize}
-              stroke="#64748B"
+              stroke={minorStroke}
               strokeWidth="0.65"
               strokeDasharray="2 3"
-              opacity="0.08"
+              opacity={minorOpacity}
             />
             <line
               x1="0"
               y1={half}
               x2={gridSize}
               y2={half}
-              stroke="#64748B"
+              stroke={minorStroke}
               strokeWidth="0.65"
               strokeDasharray="2 3"
-              opacity="0.08"
+              opacity={minorOpacity}
             />
 
-            {/* Major Solid Grid Lines — Muted & Subtle */}
+            {/* Major Solid Grid Lines */}
             <line
               x1="0"
               y1="0"
               x2={gridSize}
               y2="0"
-              stroke="#475569"
+              stroke={majorStroke}
               strokeWidth="0.75"
-              opacity="0.13"
+              opacity={majorOpacity}
             />
             <line
               x1="0"
               y1="0"
               x2="0"
               y2={gridSize}
-              stroke="#475569"
+              stroke={majorStroke}
               strokeWidth="0.75"
-              opacity="0.13"
+              opacity={majorOpacity}
             />
 
-            {/* Major Intersection Crosshairs (+) — Refined & Non-flashy */}
+            {/* Major Intersection Crosshairs (+) — Technical precision */}
             <path
-              d={`M -3.5 0 L 3.5 0 M 0 -3.5 L 0 3.5`}
-              stroke="#334155"
-              strokeWidth="0.8"
-              opacity="0.22"
+              d={`M -4 0 L 4 0 M 0 -4 L 0 4`}
+              stroke={crosshairStroke}
+              strokeWidth="0.85"
+              opacity={crosshairOpacity}
             />
 
             {/* Subtle Center Intersection Dot */}
             <circle
               cx={half}
               cy={half}
-              r="0.75"
-              fill="#475569"
-              opacity="0.10"
+              r="0.8"
+              fill={dotFill}
+              opacity={dotOpacity}
             />
           </pattern>
-
-          {/* Radial mask for gentle depth and smooth edges */}
-          <radialGradient id="grid-vignette" cx="50%" cy="30%" r="75%">
-            <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.85" />
-            <stop offset="60%" stopColor="#FFFFFF" stopOpacity="0.65" />
-            <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0.40" />
-          </radialGradient>
-          
-          <mask id="grid-mask">
-            <rect width="100%" height="100%" fill="url(#grid-vignette)" />
-          </mask>
         </defs>
 
-        {/* The Repeating Grid Layer */}
+        {/* The Repeating Grid Layer (Consistent across entire viewport) */}
         <rect
           width="100%"
           height="100%"
-          fill="url(#technical-blueprint-grid)"
-          mask="url(#grid-mask)"
+          fill={`url(#${effectivePatternId})`}
         />
 
-        {/* Ambient Technical Drafting Circles — Very faint & subtle */}
+        {/* Ambient Technical Drafting Guides — Subtle drafting compass arcs */}
         {showCompassGuides && (
-          <g stroke="#475569" fill="none" opacity="0.08">
+          <g stroke={compassStroke} fill="none" opacity={compassOpacity}>
             {/* Top Right Drafting Arc System */}
             <circle
               cx="85%"
@@ -155,23 +166,20 @@ export default function TechnicalGridBackground({
             {/* Left Ambient Arc */}
             <circle
               cx="10%"
-              cy="75%"
+              cy="65%"
               r="340"
               strokeWidth="0.75"
               strokeDasharray="3 5"
             />
             <circle
               cx="10%"
-              cy="75%"
+              cy="65%"
               r="220"
               strokeWidth="0.6"
             />
           </g>
         )}
       </svg>
-
-      {/* Gentle Frosted Diffusion Wash: gives the grid that soft, calm, slightly blurry elegance even in empty spaces */}
-      <div className="absolute inset-0 bg-[#FAF9F6]/30 backdrop-blur-[0.5px]" />
     </div>
   );
 }

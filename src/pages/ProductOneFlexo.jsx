@@ -154,10 +154,10 @@ export default function ProductOneFlexo() {
   const packshotUrl = product?.packshot_url || '/assets/products/oneflexo-packshot.png';
 
   return (
-    <div className="w-full bg-[#FAF9F6] text-[#121212]">
+    <div className="w-full bg-transparent text-[#121212]">
       
       {/* 1. Breadcrumbs Context Bar */}
-      <div className="pt-24 sm:pt-28 pb-4 border-b border-[#E5E3DC] bg-white">
+      <div className="pt-24 sm:pt-28 pb-4 border-b border-[#E5E3DC] bg-white/80 backdrop-blur-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 flex flex-col sm:flex-row justify-between items-start sm:items-center text-xs text-[#777777] gap-2">
           <div className="flex items-center gap-2 flex-wrap">
             <Link to="/areas-of-care" className="hover:text-[#121212] transition-colors font-medium">
@@ -177,7 +177,7 @@ export default function ProductOneFlexo() {
       </div>
 
       {/* 2. Editorial Product Hero */}
-      <section className="py-12 sm:py-16 px-4 sm:px-8 bg-white border-b border-[#E5E3DC]">
+      <section className="py-12 sm:py-16 px-4 sm:px-8 bg-transparent border-b border-[#E5E3DC]">
         <div className="max-w-7xl mx-auto space-y-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
             
@@ -277,7 +277,7 @@ export default function ProductOneFlexo() {
       </section>
 
       {/* 5. Section: Composition */}
-      <section id="composition" className="py-16 sm:py-24 px-4 sm:px-8 bg-white border-y border-[#E5E3DC] scroll-mt-24">
+      <section id="composition" className="py-12 sm:py-16 px-4 sm:px-8 bg-transparent border-y border-[#E5E3DC] scroll-mt-24">
         <div className="max-w-7xl mx-auto space-y-12">
           <div className="max-w-3xl space-y-3">
             <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#D52B1E] block">
@@ -294,7 +294,7 @@ export default function ProductOneFlexo() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {compositionItems.map((item, idx) => (
               <ScrollReveal key={item.name} delay={idx * 0.08}>
-                <div className="bg-[#FAF9F6] border border-[#E5E3DC] p-8 rounded-3xl h-full flex flex-col justify-between space-y-6 hover:border-[#121212] transition-all duration-300 shadow-xs">
+                <div className="bg-white/80 backdrop-blur-xs border border-[#E5E3DC] p-8 rounded-3xl h-full flex flex-col justify-between space-y-6 hover:border-[#121212] transition-all duration-300 shadow-xs">
                   <div className="space-y-4">
                     <span className="text-3xl font-serif font-light text-[#888888] block">
                       {item.num}
@@ -339,7 +339,7 @@ export default function ProductOneFlexo() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {benefitItems.map((item, idx) => (
             <ScrollReveal key={item.title} delay={idx * 0.08}>
-              <div className="p-8 bg-white border border-[#E5E3DC] rounded-3xl space-y-4 h-full flex flex-col justify-between shadow-xs hover:border-[#121212] transition-colors">
+              <div className="p-8 bg-white/80 backdrop-blur-xs border border-[#E5E3DC] rounded-3xl space-y-4 h-full flex flex-col justify-between shadow-xs hover:border-[#121212] transition-colors">
                 <div className="space-y-2">
                   <span className="text-xs font-mono font-semibold uppercase tracking-wider text-[#777777]">
                     BENEFIT // {item.num}
@@ -358,7 +358,7 @@ export default function ProductOneFlexo() {
       </section>
 
       {/* 7. Section: Dosage & Guidelines */}
-      <section id="dosage" className="py-16 sm:py-24 px-4 sm:px-8 bg-white border-y border-[#E5E3DC] scroll-mt-24">
+      <section id="dosage" className="py-12 sm:py-16 px-4 sm:px-8 bg-transparent border-y border-[#E5E3DC] scroll-mt-24">
         <div className="max-w-7xl mx-auto space-y-10">
           <div className="max-w-3xl space-y-3">
             <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#D52B1E] block">
@@ -370,7 +370,7 @@ export default function ProductOneFlexo() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
-            <div className="bg-[#FAF9F6] p-8 sm:p-10 border border-[#E5E3DC] rounded-3xl flex flex-col justify-between space-y-4 shadow-xs">
+            <div className="bg-white/80 backdrop-blur-xs p-8 sm:p-10 border border-[#E5E3DC] rounded-3xl flex flex-col justify-between space-y-4 shadow-xs">
               <div className="space-y-3">
                 <span className="text-xs font-mono uppercase tracking-wider text-[#777777] font-semibold">
                   STANDARD REGIMEN
@@ -384,7 +384,7 @@ export default function ProductOneFlexo() {
               </div>
             </div>
 
-            <div className="bg-[#FAF9F6] p-8 sm:p-10 border border-[#E5E3DC] rounded-3xl flex flex-col justify-between space-y-4 shadow-xs">
+            <div className="bg-white/80 backdrop-blur-xs p-8 sm:p-10 border border-[#E5E3DC] rounded-3xl flex flex-col justify-between space-y-4 shadow-xs">
               <div className="space-y-3">
                 <span className="text-xs font-mono uppercase tracking-wider text-[#777777] font-semibold">
                   CLINICAL GUIDELINES
@@ -423,7 +423,7 @@ export default function ProductOneFlexo() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {safetyCategories.map((item, idx) => (
             <ScrollReveal key={item.title} delay={idx * 0.05}>
-              <div className="bg-white p-6 sm:p-8 border border-[#E5E3DC] rounded-2xl space-y-2 hover:border-[#121212] transition-colors shadow-xs">
+              <div className="bg-white/80 backdrop-blur-xs p-6 sm:p-8 border border-[#E5E3DC] rounded-2xl space-y-2 hover:border-[#121212] transition-colors shadow-xs">
                 <h3 className="text-xs font-bold uppercase tracking-wider text-[#121212]">
                   {item.title}
                 </h3>

@@ -198,7 +198,7 @@ export default function QualityManufacturing() {
           SECTION 2 — FOUNDATIONAL PRINCIPLES (4 Cards)
           ========================================================================= */}
       {principlesSec.is_active && (
-        <section id="principles" className="py-20 sm:py-28 px-4 sm:px-8 max-w-7xl mx-auto space-y-14">
+        <section id="principles" className="py-12 sm:py-16 px-4 sm:px-8 max-w-7xl mx-auto space-y-8 sm:space-y-10">
           <div className="max-w-3xl space-y-3">
             <ScrollReveal>
               <h2 className="text-3xl sm:text-5xl font-serif font-light text-[#121212] tracking-tight leading-tight">
@@ -213,7 +213,7 @@ export default function QualityManufacturing() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {principlesSec.items.map((item, idx) => (
               <ScrollReveal key={item.title || idx} delay={idx * 0.08}>
-                <div className="bg-white border border-[#E5E3DC] hover:border-[#121212] p-8 rounded-3xl h-full flex flex-col justify-between space-y-4 shadow-xs hover:shadow-md transition-all duration-300">
+                <div className="bg-white/80 backdrop-blur-xs border border-[#E5E3DC] hover:border-[#121212] p-8 rounded-3xl h-full flex flex-col justify-between space-y-4 shadow-xs hover:shadow-md transition-all duration-300">
                   <div className="space-y-3">
                     <span className="text-xs font-mono text-[#D52B1E] font-bold block">
                       0{idx + 1}
@@ -237,7 +237,7 @@ export default function QualityManufacturing() {
           Client-provided manufacturing process video embed
           ========================================================================= */}
       {manufacturingSec.is_active && (
-        <section className="py-20 sm:py-28 bg-[#FAF9F6]/60 backdrop-blur-[2px] border-y border-[#E5E3DC]/80 px-4 sm:px-8">
+        <section className="py-12 sm:py-16 bg-transparent border-y border-[#E5E3DC]/80 px-4 sm:px-8">
           <div className="max-w-7xl mx-auto space-y-12">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
               
@@ -272,7 +272,7 @@ export default function QualityManufacturing() {
                   <ScrollReveal delay={0.15}>
                     <div className="pt-4 border-t border-[#E5E3DC] space-y-4">
                       {manufacturingSec.items.map((bullet, idx) => (
-                        <div key={bullet.title || idx} className="flex items-start gap-3.5 p-4 rounded-2xl bg-[#FAF9F6] border border-[#E5E3DC]">
+                        <div key={bullet.title || idx} className="flex items-start gap-3.5 p-4 rounded-2xl bg-white/80 backdrop-blur-xs border border-[#E5E3DC]">
                           <CheckCircle2 className="w-5 h-5 text-[#00A859] shrink-0 mt-0.5" />
                           <div>
                             <h4 className="text-sm font-bold text-[#121212]">{bullet.title}</h4>
@@ -294,7 +294,7 @@ export default function QualityManufacturing() {
           SECTION 4 — QUALITY ASSURANCE (6-Step Lifecycle Grid)
           ========================================================================= */}
       {assuranceSec.is_active && (
-        <section className="py-20 sm:py-28 px-4 sm:px-8 max-w-7xl mx-auto space-y-14">
+        <section className="py-12 sm:py-16 px-4 sm:px-8 max-w-7xl mx-auto space-y-8 sm:space-y-10">
           <div className="max-w-3xl space-y-3">
             <ScrollReveal>
               <h2 className="text-3xl sm:text-5xl font-serif font-light text-[#121212] tracking-tight leading-tight">
@@ -309,7 +309,7 @@ export default function QualityManufacturing() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {assuranceSec.items.map((step, idx) => (
               <ScrollReveal key={step.title || idx} delay={idx * 0.06}>
-                <div className="bg-white border border-[#E5E3DC] hover:border-[#121212] p-8 rounded-3xl h-full flex flex-col justify-between space-y-4 shadow-xs hover:shadow-md transition-all duration-300">
+                <div className="bg-white/80 backdrop-blur-xs border border-[#E5E3DC] hover:border-[#121212] p-8 rounded-3xl h-full flex flex-col justify-between space-y-4 shadow-xs hover:shadow-md transition-all duration-300">
                   <div className="space-y-3">
                     <span className="text-xs font-mono text-[#D52B1E] font-bold block">
                       Stage 0{idx + 1}
@@ -332,7 +332,7 @@ export default function QualityManufacturing() {
           SECTION 5 — FINAL CTA
           ========================================================================= */}
       {finalCtaSec.is_active && (
-        <section className="py-20 sm:py-28 bg-[#121212] text-white">
+        <section className="py-12 sm:py-16 bg-[#121212] text-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center justify-between">
               

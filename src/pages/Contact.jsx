@@ -277,14 +277,14 @@ export default function Contact() {
   };
 
   return (
-    <div className="w-full bg-[#FAF9F6] text-[#121212]">
+    <div className="w-full bg-transparent text-[#121212]">
 
       {/* =========================================================================
           SECTION 1 — EDITORIAL HERO
           Spacious, dignified, human-scale typography (The Lilly Model)
           ========================================================================= */}
       {heroSec.is_active && (
-        <section className="pt-28 sm:pt-36 pb-16 sm:pb-24 px-4 sm:px-8 border-b border-[#E5E3DC] bg-white">
+        <section className="pt-20 sm:pt-24 pb-10 sm:pb-14 px-4 sm:px-8 border-b border-[#E5E3DC]/80 bg-transparent">
           <div className="max-w-7xl mx-auto space-y-6">
             <h1 className="text-4xl sm:text-6xl lg:text-7xl font-serif font-light text-[#121212] tracking-tight leading-[1.05]">
               {heroSec.title || 'Contact'}. <br />
@@ -330,8 +330,8 @@ export default function Contact() {
           SECTION 2 — GET IN TOUCH / DIRECT CHANNELS
           ========================================================================= */}
       {channelsSec.is_active && (
-        <section id="contact-details" className="py-20 sm:py-28 px-4 sm:px-8 border-b border-[#E5E3DC] scroll-mt-24">
-          <div className="max-w-7xl mx-auto space-y-16">
+        <section id="contact-details" className="py-12 sm:py-16 px-4 sm:px-8 border-b border-[#E5E3DC]/80 scroll-mt-24">
+          <div className="max-w-7xl mx-auto space-y-8 sm:space-y-10">
 
             <div className="max-w-3xl space-y-3">
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-light text-[#121212] tracking-tight">
@@ -352,7 +352,7 @@ export default function Contact() {
 
                 return (
                   <ScrollReveal key={channelName} delay={0.08 * (idx + 1)}>
-                    <div className="bg-white p-8 sm:p-10 border border-[#E5E3DC] rounded-3xl h-full flex flex-col justify-between space-y-6 group hover:border-[#121212] transition-all duration-300 shadow-xs hover:shadow-md">
+                    <div className="bg-white/80 backdrop-blur-xs p-8 sm:p-10 border border-[#E5E3DC] rounded-3xl h-full flex flex-col justify-between space-y-6 group hover:border-[#121212] transition-all duration-300 shadow-xs hover:shadow-md">
                       <div className="space-y-4">
                         <div className="flex items-center justify-between">
                           <span className="text-xs font-mono font-semibold uppercase tracking-wider text-[#777777]">
@@ -416,7 +416,7 @@ export default function Contact() {
           Clean editorial layout matching Lilly aesthetic and client brief
           ========================================================================= */}
       {partnershipSec.is_active && (
-        <section className="py-20 sm:py-28 px-4 sm:px-8 max-w-7xl mx-auto space-y-16">
+        <section className="py-12 sm:py-16 px-4 sm:px-8 max-w-7xl mx-auto space-y-8 sm:space-y-10">
 
           {/* Header & Strategic Mission */}
           <div className="max-w-4xl space-y-6">
@@ -510,8 +510,8 @@ export default function Contact() {
           SECTION 4 — SEND AN ENQUIRY (Clean Editorial Form)
           ========================================================================= */}
       {formIntroSec.is_active && (
-        <section id="enquiry-form" className="py-20 sm:py-28 bg-white border-t border-[#E5E3DC] scroll-mt-20">
-          <div className="max-w-4xl mx-auto px-4 sm:px-8 space-y-12">
+        <section id="enquiry-form" className="py-12 sm:py-16 bg-transparent border-t border-[#E5E3DC] scroll-mt-20">
+          <div className="max-w-4xl mx-auto px-4 sm:px-8 space-y-8 sm:space-y-10">
 
             {/* Header */}
             <div className="text-center space-y-3">
@@ -804,7 +804,7 @@ export default function Contact() {
           SECTION 5 — PATIENT SAFETY REPORTING
           ========================================================================= */}
       {safetySec.is_active && (
-        <section className="py-20 sm:py-28 px-4 sm:px-8 max-w-7xl mx-auto space-y-12">
+        <section className="py-12 sm:py-16 px-4 sm:px-8 max-w-7xl mx-auto space-y-8 sm:space-y-10">
           <div className="max-w-4xl space-y-3">
             <ScrollReveal>
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-light text-[#121212] tracking-tight text-balance">
@@ -832,7 +832,7 @@ export default function Contact() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
             {safetySec.items.map((card, idx) => (
               <ScrollReveal key={card.title || idx} delay={idx * 0.08}>
-                <div className="bg-white p-8 sm:p-10 border border-[#E5E3DC] rounded-3xl h-full flex flex-col justify-between space-y-8 hover:border-[#121212] transition-all duration-300 shadow-xs hover:shadow-md">
+                <div className="bg-white/80 backdrop-blur-xs p-8 sm:p-10 border border-[#E5E3DC] rounded-3xl h-full flex flex-col justify-between space-y-8 hover:border-[#121212] transition-all duration-300 shadow-xs hover:shadow-md">
                   <div className="space-y-3">
                     <h4 className="text-2xl font-serif font-medium text-[#121212] tracking-tight">
                       {card.title}

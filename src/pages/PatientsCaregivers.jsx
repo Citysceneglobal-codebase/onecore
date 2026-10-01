@@ -181,14 +181,14 @@ export default function PatientsCaregivers() {
   });
 
   return (
-    <div className="w-full bg-[#FAF9F6] text-[#121212]">
+    <div className="w-full bg-transparent text-[#121212]">
       
       {/* =========================================================================
           SECTION 1 — EDITORIAL HERO
           Spacious, dignified typography with signature crimson accent
           ========================================================================= */}
-      <section className="pt-28 sm:pt-36 pb-16 sm:pb-24 px-4 sm:px-8 border-b border-[#E5E3DC] bg-white">
-        <div className="max-w-7xl mx-auto space-y-12">
+      <section className="pt-20 sm:pt-24 pb-10 sm:pb-14 px-4 sm:px-8 border-b border-[#E5E3DC]/80 bg-transparent">
+        <div className="max-w-7xl mx-auto space-y-8">
           
           <div className="max-w-4xl space-y-6">
             <h1 className="text-4xl sm:text-6xl lg:text-7xl font-serif font-light text-[#121212] tracking-tight leading-[1.05]">
@@ -245,7 +245,7 @@ export default function PatientsCaregivers() {
           Clean two-column editorial narrative
           ========================================================================= */}
       {perspectivesSec.is_active && (
-        <section className="py-20 sm:py-28 px-4 sm:px-8 max-w-7xl mx-auto">
+        <section className="py-12 sm:py-16 px-4 sm:px-8 max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             
             <div className="lg:col-span-6 space-y-6">
@@ -288,8 +288,8 @@ export default function PatientsCaregivers() {
           SECTION 3 — OUR ROLE (3 Distinct Editorial Pillars)
           ========================================================================= */}
       {roleSec.is_active && (
-        <section className="py-20 sm:py-28 bg-white border-y border-[#E5E3DC] px-4 sm:px-8">
-          <div className="max-w-7xl mx-auto space-y-14">
+        <section className="py-12 sm:py-16 bg-transparent border-y border-[#E5E3DC]/80 px-4 sm:px-8">
+          <div className="max-w-7xl mx-auto space-y-8 sm:space-y-10">
             <div className="max-w-3xl space-y-3">
               <ScrollReveal>
                 <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#D52B1E] block">
@@ -304,7 +304,7 @@ export default function PatientsCaregivers() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {roleSec.items.map((block, idx) => (
                 <ScrollReveal key={block.title || idx} delay={idx * 0.08}>
-                  <div className="bg-[#FAF9F6] p-8 sm:p-10 rounded-3xl border border-[#E5E3DC] hover:border-[#121212] transition-all duration-300 h-full flex flex-col justify-between space-y-6">
+                  <div className="bg-white/80 backdrop-blur-xs p-8 sm:p-10 rounded-3xl border border-[#E5E3DC] hover:border-[#121212] transition-all duration-300 h-full flex flex-col justify-between space-y-6">
                     <div className="space-y-3">
                       <span className="text-xs font-mono text-[#D52B1E] font-bold block">
                         0{idx + 1}
@@ -333,7 +333,7 @@ export default function PatientsCaregivers() {
           SECTION 4 — FOR PATIENTS AND CAREGIVERS
           ========================================================================= */}
       {forPatientsSec.is_active && (
-        <section id="for-patients" className="py-20 sm:py-28 px-4 sm:px-8 max-w-7xl mx-auto space-y-16 scroll-mt-24">
+        <section id="for-patients" className="py-12 sm:py-16 px-4 sm:px-8 max-w-7xl mx-auto space-y-8 sm:space-y-10 scroll-mt-24">
           <div className="max-w-3xl space-y-4">
             <ScrollReveal>
               <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#D52B1E] block">
@@ -354,7 +354,7 @@ export default function PatientsCaregivers() {
             <div className="lg:col-span-7 space-y-4">
               {forPatientsSec.items.map((item, idx) => (
                 <ScrollReveal key={item.title || idx} delay={idx * 0.06}>
-                  <div className="p-6 sm:p-8 rounded-2xl bg-white border border-[#E5E3DC] hover:border-[#121212] transition-colors space-y-2">
+                  <div className="p-6 sm:p-8 rounded-2xl bg-white/80 backdrop-blur-xs border border-[#E5E3DC] hover:border-[#121212] transition-colors space-y-2">
                     <h3 className="text-lg sm:text-xl font-serif font-bold text-[#121212]">
                       {item.title}
                     </h3>
@@ -405,8 +405,8 @@ export default function PatientsCaregivers() {
           SECTION 5 — FOR HEALTHCARE PROFESSIONALS (Signature Lilly Dark Onyx)
           ========================================================================= */}
       {forProfessionalsSec.is_active && (
-        <section id="for-professionals" className="py-20 sm:py-28 bg-[#121212] text-white scroll-mt-24">
-          <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-16">
+        <section id="for-professionals" className="py-12 sm:py-16 bg-[#121212] text-white scroll-mt-24">
+          <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-8 sm:space-y-10">
             
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
               <div className="lg:col-span-7 space-y-6">
@@ -484,7 +484,7 @@ export default function PatientsCaregivers() {
           SECTION 6 — THE TREATMENT JOURNEY (Progressive 4 Stages)
           ========================================================================= */}
       {treatmentJourneySec.is_active && (
-        <section className="py-20 sm:py-28 px-4 sm:px-8 max-w-7xl mx-auto space-y-14">
+        <section className="py-12 sm:py-16 px-4 sm:px-8 max-w-7xl mx-auto space-y-8 sm:space-y-10">
           <div className="max-w-3xl space-y-4">
             <ScrollReveal>
               <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#D52B1E] block">
@@ -503,7 +503,7 @@ export default function PatientsCaregivers() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {treatmentJourneySec.items.map((step, idx) => (
               <ScrollReveal key={step.title || idx} delay={idx * 0.06}>
-                <div className="p-8 rounded-3xl bg-white border border-[#E5E3DC] hover:border-[#121212] transition-colors space-y-4 h-full flex flex-col justify-between shadow-xs">
+                <div className="p-8 rounded-3xl bg-white/80 backdrop-blur-xs border border-[#E5E3DC] hover:border-[#121212] transition-colors space-y-4 h-full flex flex-col justify-between shadow-xs">
                   <div className="space-y-3">
                     <span className="text-xs font-mono text-[#D52B1E] font-bold block">
                       Stage {step.stage || `0${idx + 1}`}
@@ -536,8 +536,8 @@ export default function PatientsCaregivers() {
           SECTION 7 — PATIENT SAFETY & PHARMACOVIGILANCE
           ========================================================================= */}
       {safetySec.is_active && (
-        <section id="patient-safety" className="py-20 sm:py-28 bg-[#F0EFEB] border-t border-[#E5E3DC] scroll-mt-24 px-4 sm:px-8">
-          <div className="max-w-7xl mx-auto space-y-12">
+        <section id="patient-safety" className="py-12 sm:py-16 bg-transparent border-t border-[#E5E3DC]/80 scroll-mt-24 px-4 sm:px-8">
+          <div className="max-w-7xl mx-auto space-y-8">
             
             <div className="max-w-3xl space-y-3">
               <ScrollReveal>
@@ -556,7 +556,7 @@ export default function PatientsCaregivers() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {safetySec.items.map((card, idx) => (
                 <ScrollReveal key={card.title || idx} delay={idx * 0.08}>
-                  <div className="bg-white p-8 sm:p-12 rounded-[28px] border border-[#E5E3DC] shadow-sm h-full flex flex-col justify-between space-y-8">
+                  <div className="bg-white/80 backdrop-blur-xs p-8 sm:p-12 rounded-[28px] border border-[#E5E3DC] shadow-sm h-full flex flex-col justify-between space-y-8">
                     <div className="space-y-3">
                       <span className="text-xs font-semibold uppercase tracking-wider text-[#D52B1E] block">
                         {card.eyebrow}

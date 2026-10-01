@@ -74,8 +74,8 @@ export default function DistributionPartnerships() {
       {/* =========================================================================
           SECTION 1 — HERO
           ========================================================================= */}
-      <section className="pt-28 sm:pt-36 pb-16 sm:pb-24 px-4 sm:px-8 border-b border-[#E5E3DC]/80 bg-[#FAF9F6]/50 backdrop-blur-[1px]">
-        <div className="max-w-7xl mx-auto space-y-10">
+      <section className="pt-20 sm:pt-24 pb-10 sm:pb-14 px-4 sm:px-8 border-b border-[#E5E3DC]/80 bg-transparent">
+        <div className="max-w-7xl mx-auto space-y-8">
           
           <div className="max-w-4xl space-y-6">
             {heroSection?.eyebrow && (
@@ -134,7 +134,7 @@ export default function DistributionPartnerships() {
       {/* =========================================================================
           SECTION 2 — WHY PARTNER WITH ONECORE (4 PILLARS)
           ========================================================================= */}
-      <section className="py-20 sm:py-28 px-4 sm:px-8 max-w-7xl mx-auto space-y-14">
+      <section className="py-12 sm:py-16 px-4 sm:px-8 max-w-7xl mx-auto space-y-8 sm:space-y-10">
         <div className="max-w-3xl space-y-4">
           <ScrollReveal>
             {pillarsSection?.eyebrow && (
@@ -156,7 +156,7 @@ export default function DistributionPartnerships() {
             const IconComp = partnerAdvantages[idx % partnerAdvantages.length]?.icon || TrendingUp;
             return (
               <ScrollReveal key={pillar.title || idx} delay={idx * 0.08}>
-                <div className="bg-white border border-[#E5E3DC] hover:border-[#121212] p-8 rounded-3xl h-full flex flex-col justify-between space-y-6 shadow-xs hover:shadow-md transition-all duration-300">
+                <div className="bg-white/80 backdrop-blur-xs border border-[#E5E3DC] hover:border-[#121212] p-8 rounded-3xl h-full flex flex-col justify-between space-y-6 shadow-xs hover:shadow-md transition-all duration-300">
                   <div className="space-y-4">
                     <div className="w-12 h-12 rounded-2xl bg-[#D52B1E]/10 flex items-center justify-center text-[#D52B1E]">
                       <IconComp className="w-6 h-6" />
@@ -178,8 +178,8 @@ export default function DistributionPartnerships() {
       {/* =========================================================================
           SECTION 2.5 — COMMERCIAL SYNERGY & ETHICAL BUSINESS PARTNERSHIP
           ========================================================================= */}
-      <section className="py-20 sm:py-28 bg-white border-t border-[#E5E3DC] px-4 sm:px-8">
-        <div className="max-w-7xl mx-auto space-y-16">
+      <section className="py-12 sm:py-16 bg-transparent border-t border-[#E5E3DC]/80 px-4 sm:px-8">
+        <div className="max-w-7xl mx-auto space-y-10 sm:space-y-12">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             
             {/* Left Narrative Column */}
@@ -264,7 +264,7 @@ export default function DistributionPartnerships() {
       {/* =========================================================================
           SECTION 2.7 — LOGISTICS & INFRASTRUCTURE SHOWCASE
           ========================================================================= */}
-      <section className="py-20 sm:py-28 px-4 sm:px-8 max-w-7xl mx-auto space-y-14">
+      <section className="py-12 sm:py-16 px-4 sm:px-8 max-w-7xl mx-auto space-y-8 sm:space-y-10">
         <div className="max-w-3xl space-y-3">
           <ScrollReveal>
             <span className="text-xs font-mono font-semibold uppercase tracking-wider text-[#D52B1E]">
@@ -283,7 +283,7 @@ export default function DistributionPartnerships() {
           
           {/* Card 1: Warehouse / Cold-Chain Logistics */}
           <ScrollReveal delay={0.08}>
-            <div className="bg-white border border-[#E5E3DC] rounded-3xl overflow-hidden shadow-xs hover:shadow-md transition-shadow group flex flex-col h-full">
+            <div className="bg-white/80 backdrop-blur-xs border border-[#E5E3DC] rounded-3xl overflow-hidden shadow-xs hover:shadow-md transition-shadow group flex flex-col h-full">
               <div className="relative aspect-[16/10] overflow-hidden bg-stone-100">
                 <img
                   src={assetUrl('/assets/internet/distribution-logistics.jpg')}
@@ -310,7 +310,7 @@ export default function DistributionPartnerships() {
 
           {/* Card 2: Packaging Integrity & Serialization */}
           <ScrollReveal delay={0.16}>
-            <div className="bg-white border border-[#E5E3DC] rounded-3xl overflow-hidden shadow-xs hover:shadow-md transition-shadow group flex flex-col h-full">
+            <div className="bg-white/80 backdrop-blur-xs border border-[#E5E3DC] rounded-3xl overflow-hidden shadow-xs hover:shadow-md transition-shadow group flex flex-col h-full">
               <div className="relative aspect-[16/10] overflow-hidden bg-stone-100">
                 <img
                   src={assetUrl('/assets/internet/pharma-packaging.jpg')}
@@ -341,7 +341,7 @@ export default function DistributionPartnerships() {
       {/* =========================================================================
           SECTION 3 — PARTNERSHIP INQUIRY FORM
           ========================================================================= */}
-      <section id="partner-form" className="py-20 sm:py-28 bg-white border-t border-[#E5E3DC] px-4 sm:px-8">
+      <section id="partner-form" className="py-12 sm:py-16 bg-transparent border-t border-[#E5E3DC] px-4 sm:px-8">
         <div className="max-w-4xl mx-auto space-y-12">
           
           <div className="text-center space-y-3">
@@ -372,7 +372,7 @@ export default function DistributionPartnerships() {
               </button>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="p-8 sm:p-12 rounded-3xl bg-[#FAF9F6] border border-[#E5E3DC] space-y-6 shadow-xs">
+            <form onSubmit={handleSubmit} className="p-8 sm:p-12 rounded-3xl bg-white/80 backdrop-blur-xs border border-[#E5E3DC] space-y-6 shadow-xs">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-xs font-semibold uppercase tracking-wider text-[#333333] mb-2">
@@ -514,7 +514,7 @@ export default function DistributionPartnerships() {
           )}
 
           {/* Quick Direct Desk */}
-          <div className="p-6 rounded-2xl bg-white border border-[#E5E3DC] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs text-[#555555]">
+          <div className="p-6 rounded-2xl bg-white/80 backdrop-blur-xs border border-[#E5E3DC] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs text-[#555555]">
             <div className="flex items-center gap-2">
               <Building2 className="w-4 h-4 text-[#D52B1E]" />
               <span className="font-semibold text-[#121212]">Corporate Distribution Desk:</span>
@@ -533,7 +533,7 @@ export default function DistributionPartnerships() {
       {/* =========================================================================
           SECTION 4 — FINAL CTA
           ========================================================================= */}
-      <section className="py-20 sm:py-28 bg-[#121212] text-white text-center">
+      <section className="py-12 sm:py-16 bg-[#121212] text-white text-center">
         <div className="max-w-4xl mx-auto px-4 sm:px-8 space-y-6">
           <h2 className="text-3xl sm:text-5xl font-serif font-light text-white tracking-tight leading-tight text-balance">
             Building Long-Term Commercial Relationships.
