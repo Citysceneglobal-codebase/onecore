@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getOrthopaedicsProductBySlug } from '../data/orthopaedicsProducts';
 import { assetUrl } from '../utils/assetUrl';
+import ProductImageGallery from '../components/ProductImageGallery';
 
 // Helper to parse Mechanism into 3 steps for the dark flow section
 function parseMechanismSteps(mechanismText) {
@@ -215,11 +216,26 @@ export default function OrthopaedicsProductDetail() {
       <div id="overview" className="w-full bg-[#f7f5f1] grid grid-cols-1 lg:grid-cols-12 min-h-[640px] scroll-mt-24">
         {/* LEFT 43% - Packshot Presentation */}
         <div className="lg:col-span-5 bg-gradient-to-br from-[#e9e5df] to-[#f1eee9] p-8 sm:p-14 lg:p-16 flex flex-col items-center justify-center relative min-h-[420px]">
-          {isOneFlexo ? (
+          {(product.images && product.images.length > 0) ? (
+            <ProductImageGallery
+              images={product.images}
+              fallbackImage={product.image || product.packshot_url}
+              brandName={product.name}
+              className="max-w-[340px]"
+            />
+          ) : isOneFlexo ? (
             <div className="w-full max-w-[280px] flex flex-col items-center justify-center">
               <img
                 src={assetUrl(product.image)}
                 alt="OneFLEXO Packshot"
+                className="max-h-[380px] w-auto object-contain drop-shadow-xl"
+              />
+            </div>
+          ) : (product.image || product.packshot_url) ? (
+            <div className="w-full max-w-[280px] flex flex-col items-center justify-center">
+              <img
+                src={assetUrl(product.image || product.packshot_url)}
+                alt={product.name}
                 className="max-h-[380px] w-auto object-contain drop-shadow-xl"
               />
             </div>

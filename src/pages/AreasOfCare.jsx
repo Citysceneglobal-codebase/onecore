@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { allProducts, searchFormulations } from '../data/allProducts';
 import { useTherapeuticAreas } from '../hooks/useTherapeuticAreas';
+import { useCmsPage } from '../hooks/useCmsPage';
 import { assetUrl } from '../utils/assetUrl';
 
 export default function AreasOfCare() {
@@ -17,6 +18,8 @@ export default function AreasOfCare() {
 
   const { areas: dynamicAreas } = useTherapeuticAreas();
   const areasList = dynamicAreas || [];
+  const { getSection } = useCmsPage('areas-of-care');
+  const heroSection = getSection('hero');
 
   // Local search input
   const [searchQuery, setSearchQuery] = useState(urlQuery);
@@ -103,12 +106,21 @@ export default function AreasOfCare() {
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
             <div className="max-w-3xl space-y-4">
+              {heroSection?.eyebrow && (
+                <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#D52B1E] block">
+                  {heroSection.eyebrow}
+                </span>
+              )}
               <h1 className="text-4xl sm:text-6xl lg:text-7xl font-serif font-light text-[#121212] tracking-tight leading-[1.05]">
-                Our medicines & <br />
-                <span className="italic font-normal text-[#D52B1E]">areas of care.</span>
+                {heroSection?.heading || (
+                  <>
+                    Our medicines & <br />
+                    <span className="italic font-normal text-[#D52B1E]">areas of care.</span>
+                  </>
+                )}
               </h1>
               <p className="text-base sm:text-xl text-[#555555] font-light leading-relaxed max-w-2xl font-sans">
-                Explore Onecore’s 9 specialized therapeutic divisions and over 60 clinically engineered prescription medicines, supportive therapies, and micronutrient formulations.
+                {heroSection?.subheading || heroSection?.body || 'Explore Onecore’s 9 specialized therapeutic divisions and over 60 clinically engineered prescription medicines, supportive therapies, and micronutrient formulations.'}
               </p>
             </div>
 

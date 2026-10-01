@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, CheckCircle2, ArrowDown } from 'lucide-react';
 import ScrollReveal from '../components/ScrollReveal';
 import PrescriptionDisclaimer from '../components/PrescriptionDisclaimer';
+import ProductImageGallery from '../components/ProductImageGallery';
 import { useProduct } from '../hooks/useProduct';
 import { assetUrl } from '../utils/assetUrl';
 
@@ -209,17 +210,12 @@ export default function ProductOneFlexo() {
               </div>
             </div>
 
-            <div className="lg:col-span-5 flex justify-center">
-              <div className="w-full max-w-[340px] aspect-square bg-[#FAF9F6] border border-[#E5E3DC] rounded-3xl p-6 flex items-center justify-center shadow-xs">
-                <img
-                  src={assetUrl(packshotUrl)}
-                  alt={`${brandName} - Onecore Pharma`}
-                  className="w-full h-full object-contain"
-                  onError={(e) => {
-                    e.target.src = assetUrl('/assets/therapeutic-orthopaedics.jpg');
-                  }}
-                />
-              </div>
+            <div className="lg:col-span-5 flex justify-center w-full">
+              <ProductImageGallery
+                images={product?.images || product?.gallery}
+                fallbackImage={packshotUrl}
+                brandName={brandName}
+              />
             </div>
 
           </div>

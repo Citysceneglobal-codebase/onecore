@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getOphthalmologyProductBySlug } from '../data/ophthalmologyProducts';
+import { assetUrl } from '../utils/assetUrl';
+import ProductImageGallery from '../components/ProductImageGallery';
 
 // Helper to parse Mechanism into 3 steps for the dark flow section
 function parseMechanismSteps(mechanismText) {
@@ -213,20 +215,37 @@ export default function OphthalmologyProductDetail() {
       <div id="overview" className="w-full bg-[#f7f5f1] grid grid-cols-1 lg:grid-cols-12 min-h-[640px] scroll-mt-24">
         {/* LEFT 43% - Packshot Presentation */}
         <div className="lg:col-span-5 bg-gradient-to-br from-[#e9e5df] to-[#f1eee9] p-8 sm:p-14 lg:p-16 flex flex-col items-center justify-center relative min-h-[420px]">
-          <div className="w-[220px] sm:w-[260px] bg-white border border-[#d4cfc9] rounded-[16px] shadow-lg p-6 flex flex-col items-center relative min-h-[340px]">
-            <div className="w-full text-center pb-4 border-b border-[#eeeae6]">
-              <span className="text-[10px] tracking-[0.2em] font-bold text-[#5b2a70] uppercase">ONECORE</span>
+          {(product.images && product.images.length > 0) ? (
+            <ProductImageGallery
+              images={product.images}
+              fallbackImage={product.image || product.packshot_url}
+              brandName={product.name}
+              className="max-w-[340px]"
+            />
+          ) : (product.image || product.packshot_url) ? (
+            <div className="w-full max-w-[280px] flex flex-col items-center justify-center">
+              <img
+                src={assetUrl(product.image || product.packshot_url)}
+                alt={product.name}
+                className="max-h-[380px] w-auto object-contain drop-shadow-xl"
+              />
             </div>
-            <div className="my-auto py-8 text-center space-y-2">
-              <h3 className="font-serif text-3xl text-[#232126] font-normal tracking-tight">{product.name}</h3>
-              <p className="text-[11px] text-[#5f5862] leading-relaxed max-w-[200px] mx-auto">
-                {product.composition}
-              </p>
+          ) : (
+            <div className="w-[220px] sm:w-[260px] bg-white border border-[#d4cfc9] rounded-[16px] shadow-lg p-6 flex flex-col items-center relative min-h-[340px]">
+              <div className="w-full text-center pb-4 border-b border-[#eeeae6]">
+                <span className="text-[10px] tracking-[0.2em] font-bold text-[#5b2a70] uppercase">ONECORE</span>
+              </div>
+              <div className="my-auto py-8 text-center space-y-2">
+                <h3 className="font-serif text-3xl text-[#232126] font-normal tracking-tight">{product.name}</h3>
+                <p className="text-[11px] text-[#5f5862] leading-relaxed max-w-[200px] mx-auto">
+                  {product.composition}
+                </p>
+              </div>
+              <div className="w-full pt-3 border-t border-[#eeeae6] text-center">
+                <span className="text-[9px] font-mono uppercase tracking-widest text-[#887e8c]">EYERIX · OPHTHALMOLOGY</span>
+              </div>
             </div>
-            <div className="w-full pt-3 border-t border-[#eeeae6] text-center">
-              <span className="text-[9px] font-mono uppercase tracking-widest text-[#887e8c]">EYERIX · OPHTHALMOLOGY</span>
-            </div>
-          </div>
+          )}
           <div className="absolute bottom-4 left-6 bg-white/90 backdrop-blur-xs px-3 py-1.5 rounded-xs text-[11px] text-[#736d74] border border-[#e5e1dc]">
             Ophthalmic Healthcare Formulation
           </div>

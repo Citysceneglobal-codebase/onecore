@@ -139,6 +139,19 @@ export function useProduct(slugOrId = 'oneflexo') {
 
           const precautionsList = safety.map((s) => s.description || s.content).filter(Boolean);
 
+          const rawImages = apiProd.images || [];
+          let galleryImages = rawImages.map((img) => ({
+            id: img.id,
+            image_url: img.image_url,
+            alt_text: img.alt_text || apiProd.brand_name || '',
+            is_primary: img.is_primary === 1 || img.is_primary === true,
+          }));
+
+          if (galleryImages.length === 0 && (apiProd.packshot_url || fallback?.packshot_url || fallback?.image)) {
+            const fallbackUrl = apiProd.packshot_url || fallback?.packshot_url || fallback?.image;
+            galleryImages = [{ image_url: fallbackUrl, alt_text: apiProd.brand_name || fallback?.name || '', is_primary: true }];
+          }
+
           const normalized = {
             ...fallback,
             ...apiProd,
@@ -155,6 +168,8 @@ export function useProduct(slugOrId = 'oneflexo') {
             precautions: precautionsList.length > 0 ? precautionsList : fallback?.precautions || [],
             packshot_url: apiProd.packshot_url || fallback?.packshot_url || fallback?.image,
             image: apiProd.packshot_url || fallback?.packshot_url || fallback?.image,
+            images: galleryImages,
+            gallery: galleryImages,
             compositions: comps.length > 0 ? comps : fallback?.compositions || [],
             benefits: apiProd.benefits && apiProd.benefits.length > 0 ? apiProd.benefits : fallback?.benefits || [],
             dosage: apiProd.dosage || fallback?.dosage || null,

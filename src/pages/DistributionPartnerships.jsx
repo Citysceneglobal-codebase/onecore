@@ -3,10 +3,14 @@ import { Link } from 'react-router-dom';
 import { CheckCircle2, ArrowRight, ShieldCheck, Building2, MapPin, Mail, Phone, Users, TrendingUp } from 'lucide-react';
 import ScrollReveal from '../components/ScrollReveal';
 import { useSettings } from '../hooks/useSettings';
+import { useCmsPage } from '../hooks/useCmsPage';
 import { assetUrl } from '../utils/assetUrl';
 
 export default function DistributionPartnerships() {
   const { contact } = useSettings();
+  const { getSection } = useCmsPage('partnerships');
+  const heroSection = getSection('hero');
+  const pillarsSection = getSection('pillars');
 
   useEffect(() => {
     document.title = "Distribution & Franchise Partnerships | Onecore Pharma";
@@ -74,20 +78,21 @@ export default function DistributionPartnerships() {
         <div className="max-w-7xl mx-auto space-y-10">
           
           <div className="max-w-4xl space-y-6">
+            {heroSection?.eyebrow && (
+              <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#D52B1E] block">
+                {heroSection.eyebrow}
+              </span>
+            )}
             <h1 className="text-4xl sm:text-6xl lg:text-7xl font-serif font-light text-[#121212] tracking-tight leading-[1.05]">
-              Distribution & Franchise Partnerships
+              {heroSection?.heading || 'Distribution & Franchise Partnerships'}
             </h1>
 
             <p className="text-2xl sm:text-3xl font-serif italic text-[#D52B1E]">
-              Grow with Onecore.
+              {heroSection?.subheading || 'Grow with Onecore.'}
             </p>
 
             <p className="text-lg sm:text-xl text-[#555555] font-light leading-relaxed font-sans max-w-3xl">
-              We are expanding our distribution network across India and are looking to partner with pharmaceutical distributors and franchise partners who understand their markets and want to build for the long term.
-            </p>
-
-            <p className="text-base sm:text-lg text-[#555555] font-light leading-relaxed font-sans max-w-3xl">
-              With a growing portfolio across multiple therapeutic areas, Onecore offers partners access to relevant products, dependable supply, and structured commercial support.
+              {heroSection?.body || 'We are expanding our distribution network across India and are looking to partner with pharmaceutical distributors and franchise partners who understand their markets and want to build for the long term.'}
             </p>
 
             <div className="pt-2 flex flex-wrap items-center gap-4">
@@ -101,15 +106,15 @@ export default function DistributionPartnerships() {
                 }}
                 className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#D52B1E] hover:bg-[#B52015] text-white text-xs font-semibold rounded-full transition-colors shadow-xs cursor-pointer"
               >
-                <span>Apply for Partnership</span>
+                <span>{heroSection?.cta_text || 'Apply for Partnership'}</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
 
               <Link
-                to="/areas-of-care"
+                to={heroSection?.secondary_cta_url || '/areas-of-care'}
                 className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#FAF9F6] hover:bg-[#EBE9E1] text-[#121212] text-xs font-semibold rounded-full transition-colors border border-[#E5E3DC]"
               >
-                <span>View Product Portfolio</span>
+                <span>{heroSection?.secondary_cta_text || 'View Product Portfolio'}</span>
               </Link>
             </div>
           </div>
@@ -117,7 +122,7 @@ export default function DistributionPartnerships() {
           {/* Stately Indian Corporate / Clinical Photo Frame */}
           <div className="relative rounded-[28px] overflow-hidden border border-[#E5E3DC] shadow-sm aspect-[16/9] lg:aspect-[21/9] bg-[#FAF9F6]">
             <img
-              src={assetUrl('/assets/about-facility.jpg')}
+              src={assetUrl(heroSection?.image_url || '/assets/about-facility.jpg')}
               alt="Onecore Pharma pan-India pharmaceutical supply network"
               className="w-full h-full object-cover"
             />
@@ -132,20 +137,25 @@ export default function DistributionPartnerships() {
       <section className="py-20 sm:py-28 px-4 sm:px-8 max-w-7xl mx-auto space-y-14">
         <div className="max-w-3xl space-y-4">
           <ScrollReveal>
+            {pillarsSection?.eyebrow && (
+              <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#D52B1E] block">
+                {pillarsSection.eyebrow}
+              </span>
+            )}
             <h2 className="text-3xl sm:text-5xl font-serif font-light text-[#121212] tracking-tight leading-tight">
-              Why partner with Onecore
+              {pillarsSection?.heading || 'Why partner with Onecore'}
             </h2>
             <p className="text-base sm:text-lg text-[#555555] font-light leading-relaxed">
-              We partner with ethical distributors, PCD franchises, and institutional supply associates who share our vision for medical integrity and clinical excellence.
+              {pillarsSection?.subheading || pillarsSection?.body || 'We partner with ethical distributors, PCD franchises, and institutional supply associates who share our vision for medical integrity and clinical excellence.'}
             </p>
           </ScrollReveal>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {partnerAdvantages.map((pillar, idx) => {
-            const IconComp = pillar.icon;
+          {(pillarsSection?.items && pillarsSection.items.length > 0 ? pillarsSection.items : partnerAdvantages).map((pillar, idx) => {
+            const IconComp = partnerAdvantages[idx % partnerAdvantages.length]?.icon || TrendingUp;
             return (
-              <ScrollReveal key={pillar.title} delay={idx * 0.08}>
+              <ScrollReveal key={pillar.title || idx} delay={idx * 0.08}>
                 <div className="bg-white border border-[#E5E3DC] hover:border-[#121212] p-8 rounded-3xl h-full flex flex-col justify-between space-y-6 shadow-xs hover:shadow-md transition-all duration-300">
                   <div className="space-y-4">
                     <div className="w-12 h-12 rounded-2xl bg-[#D52B1E]/10 flex items-center justify-center text-[#D52B1E]">
@@ -155,7 +165,7 @@ export default function DistributionPartnerships() {
                       {pillar.title}
                     </h3>
                     <p className="text-sm text-[#555555] leading-relaxed font-sans font-light">
-                      {pillar.desc}
+                      {pillar.desc || pillar.description}
                     </p>
                   </div>
                 </div>

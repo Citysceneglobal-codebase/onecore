@@ -12,6 +12,10 @@ import {
   ShieldCheck,
   Activity,
   CheckCircle2,
+  Star,
+  StarOff,
+  ArrowUp,
+  ArrowDown,
 } from 'lucide-react';
 import AdminLayout from '../../components/admin/AdminLayout';
 import { AdminCard } from '../../components/admin/AdminCard';
@@ -99,7 +103,7 @@ function RepeatableListEditor({ items, onChange, fields, addLabel }) {
       <button
         type="button"
         onClick={add}
-        className="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-[#0D5C75] hover:bg-[#0D5C75]/10 border border-dashed border-[#0D5C75]/30 rounded-xl transition-all w-full justify-center"
+        className="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-[#0D5C75] hover:bg-[#0D5C75]/10 border border-dashed border-[#0D5C75]/30 rounded-xl transition-all w-full justify-center cursor-pointer"
       >
         <Plus size={13} />
         {addLabel}
@@ -119,6 +123,7 @@ export default function AdminProductEditor() {
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState(null);
   const [mediaOpen, setMediaOpen] = useState(false);
+  const [mediaTarget, setMediaTarget] = useState('packshot'); // 'packshot' or 'gallery'
 
   const showToast = (type, message) => setToast({ type, message });
 
@@ -133,6 +138,7 @@ export default function AdminProductEditor() {
     display_order: 1,
     seo_title: '',
     seo_description: '',
+    images: [],
     compositions: [],
     benefits: [],
     dosage: { heading: 'How it should be taken.', description: 'Use as directed by a healthcare professional.' },
@@ -182,6 +188,15 @@ export default function AdminProductEditor() {
             display_order: p.display_order || 1,
             seo_title: p.seo_title || '',
             seo_description: p.seo_description || '',
+            images: (Array.isArray(p.images) && p.images.length > 0)
+              ? p.images.map((img, idx) => ({
+                  id: img.id,
+                  image_url: img.image_url || '',
+                  alt_text: img.alt_text || '',
+                  is_primary: img.is_primary ? 1 : (idx === 0 ? 1 : 0),
+                  display_order: img.display_order || idx + 1,
+                }))
+              : (p.packshot_url ? [{ image_url: p.packshot_url, alt_text: p.brand_name || '', is_primary: 1, display_order: 1 }] : []),
             compositions: p.compositions || [],
             benefits: p.benefits || [],
             dosage: p.dosage || { heading: 'How it should be taken.', description: 'Use as directed by a healthcare professional.' },
@@ -203,6 +218,9 @@ export default function AdminProductEditor() {
               display_order: 1,
               seo_title: '',
               seo_description: '',
+              images: fallback.image
+                ? [{ image_url: fallback.image, alt_text: fallback.name || '', is_primary: 1, display_order: 1 }]
+                : [],
               compositions: [
                 { ingredient_name: fallback.composition || fallback.name, ingredient_description: '', strength: '' }
               ],
@@ -257,6 +275,65 @@ export default function AdminProductEditor() {
     } finally {
       setSaving(false);
     }
+  };
+
+  const handleRemoveGalleryImage = (index) => {
+    setForm((prev) => {
+      const removed = prev.images[index];
+      const remaining = prev.images.filter((_, i) => i !== index);
+      let nextPackshot = prev.packshot_url;
+      if (removed?.is_primary && remaining.length > 0) {
+        remaining[0].is_primary = 1;
+        nextPackshot = remaining[0].image_url;
+      } else if (remaining.length === 0) {
+        nextPackshot = '';
+      }
+      return { ...prev, images: remaining, packshot_url: nextPackshot };
+    });
+  };
+
+  const handleSetPrimaryGalleryImage = (index) => {
+    setForm((prev) => {
+      const target = prev.images[index];
+      if (!target) return prev;
+      const updated = prev.images.map((img, i) => ({
+        ...img,
+        is_primary: i === index ? 1 : 0,
+      }));
+      return {
+        ...prev,
+        images: updated,
+        packshot_url: target.image_url || prev.packshot_url,
+      };
+    });
+  };
+
+  const handleUpdateGalleryImage = (index, field, value) => {
+    setForm((prev) => {
+      const updated = prev.images.map((img, i) => {
+        if (i === index) {
+          return { ...img, [field]: value };
+        }
+        return img;
+      });
+      let nextPackshot = prev.packshot_url;
+      if (field === 'image_url' && updated[index]?.is_primary) {
+        nextPackshot = value;
+      }
+      return { ...prev, images: updated, packshot_url: nextPackshot };
+    });
+  };
+
+  const handleMoveGalleryImage = (index, direction) => {
+    setForm((prev) => {
+      const nextImages = [...prev.images];
+      const targetIndex = direction === 'up' ? index - 1 : index + 1;
+      if (targetIndex < 0 || targetIndex >= nextImages.length) return prev;
+      const temp = nextImages[index];
+      nextImages[index] = nextImages[targetIndex];
+      nextImages[targetIndex] = temp;
+      return { ...prev, images: nextImages };
+    });
   };
 
   return (
@@ -375,18 +452,31 @@ export default function AdminProductEditor() {
 
               {/* Packshot Image */}
               <div className="md:col-span-3">
-                <FieldLabel>Product Packshot Image</FieldLabel>
+                <FieldLabel>Product Primary Packshot Image</FieldLabel>
                 <div className="flex gap-2">
                   <TextInput
                     value={form.packshot_url}
-                    onChange={set('packshot_url')}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setForm((prev) => {
+                        const currentImages = prev.images || [];
+                        const updatedImages = currentImages.map((img) => ({
+                          ...img,
+                          is_primary: img.image_url === val ? 1 : (img.is_primary ? 1 : 0),
+                        }));
+                        return { ...prev, packshot_url: val, images: updatedImages };
+                      });
+                    }}
                     placeholder="/assets/products/oneflexo-packshot.png"
                     className="flex-1"
                   />
                   <button
                     type="button"
-                    onClick={() => setMediaOpen(true)}
-                    className="shrink-0 flex items-center gap-1.5 px-3 py-2 bg-slate-50 border border-slate-200 hover:bg-slate-100 rounded-lg text-xs font-semibold text-slate-700 transition-all"
+                    onClick={() => {
+                      setMediaTarget('packshot');
+                      setMediaOpen(true);
+                    }}
+                    className="shrink-0 flex items-center gap-1.5 px-3 py-2 bg-slate-50 border border-slate-200 hover:bg-slate-100 rounded-lg text-xs font-semibold text-slate-700 transition-all cursor-pointer"
                   >
                     <ImageIcon size={14} />
                     <span>Choose Media</span>
@@ -402,10 +492,185 @@ export default function AdminProductEditor() {
                         e.target.style.display = 'none';
                       }}
                     />
-                    <span className="text-xs text-slate-600 font-mono truncate">{form.packshot_url}</span>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-[11px] font-bold text-slate-700 uppercase tracking-wider">Primary Catalog Packshot</div>
+                      <span className="text-xs text-slate-500 font-mono truncate block">{form.packshot_url}</span>
+                    </div>
                   </div>
                 )}
               </div>
+            </div>
+          </AdminCard>
+
+          {/* Section 2: Product Media & Multi-Photo Gallery */}
+          <AdminCard
+            title="Product Images & Multi-Photo Gallery"
+            subtitle="Upload and manage multiple high-resolution product photos, packaging packshots, blister visuals, and clinical mechanism diagrams."
+          >
+            <div className="space-y-4">
+              <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-100">
+                <div className="text-xs text-slate-500">
+                  Total Photos: <span className="font-semibold text-slate-800">{(form.images || []).length}</span>. The photo marked as <span className="font-semibold text-amber-600">Primary Packshot</span> is used across the catalog and hero monograph.
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMediaTarget('gallery');
+                      setMediaOpen(true);
+                    }}
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-[#0D5C75]/10 hover:bg-[#0D5C75]/20 text-[#0D5C75] text-xs font-semibold rounded-lg transition-all cursor-pointer"
+                  >
+                    <ImageIcon size={14} />
+                    <span>Choose from Media Library</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const newImg = {
+                        image_url: '',
+                        alt_text: `${form.brand_name || 'Product'} photo`,
+                        is_primary: (form.images || []).length === 0 ? 1 : 0,
+                        display_order: (form.images || []).length + 1,
+                      };
+                      setForm((prev) => ({
+                        ...prev,
+                        images: [...(prev.images || []), newImg],
+                      }));
+                    }}
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg transition-all cursor-pointer"
+                  >
+                    <Plus size={14} />
+                    <span>Add Photo URL</span>
+                  </button>
+                </div>
+              </div>
+
+              {(!form.images || form.images.length === 0) ? (
+                <div className="text-center py-8 border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50/50">
+                  <ImageIcon size={32} className="mx-auto text-slate-300 mb-2" />
+                  <p className="text-xs font-semibold text-slate-700">No Additional Product Photos Added Yet</p>
+                  <p className="text-[11px] text-slate-400 mt-1 max-w-sm mx-auto">
+                    Add multiple photos to showcase blister packaging, product boxes, formulation angles, and clinical mechanism diagrams.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMediaTarget('gallery');
+                      setMediaOpen(true);
+                    }}
+                    className="mt-3 inline-flex items-center gap-1.5 px-4 py-2 bg-[#0D5C75] text-white text-xs font-semibold rounded-lg hover:bg-[#094356] transition-all cursor-pointer"
+                  >
+                    <Plus size={14} />
+                    <span>Add First Photo</span>
+                  </button>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {form.images.map((img, index) => {
+                    const isPrimary = Boolean(img.is_primary);
+                    return (
+                      <div
+                        key={index}
+                        className={`p-4 rounded-xl border transition-all relative ${
+                          isPrimary
+                            ? 'bg-amber-50/30 border-amber-300 ring-1 ring-amber-200'
+                            : 'bg-white border-slate-200 hover:border-slate-300'
+                        }`}
+                      >
+                        <div className="flex items-start gap-4">
+                          {/* Thumbnail preview */}
+                          <div className="w-20 h-20 shrink-0 bg-slate-50 border border-slate-200 rounded-lg p-1.5 flex items-center justify-center overflow-hidden">
+                            {img.image_url ? (
+                              <img
+                                src={img.image_url}
+                                alt={img.alt_text || 'Product image'}
+                                className="w-full h-full object-contain"
+                                onError={(e) => {
+                                  e.target.style.display = 'none';
+                                }}
+                              />
+                            ) : (
+                              <ImageIcon size={20} className="text-slate-300" />
+                            )}
+                          </div>
+
+                          {/* Image Meta & Controls */}
+                          <div className="flex-1 min-w-0 space-y-2">
+                            <div className="flex items-center justify-between gap-2">
+                              {isPrimary ? (
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300">
+                                  <Star size={11} className="fill-amber-600 text-amber-600" />
+                                  PRIMARY PACKSHOT
+                                </span>
+                              ) : (
+                                <button
+                                  type="button"
+                                  onClick={() => handleSetPrimaryGalleryImage(index)}
+                                  className="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-500 hover:text-amber-700 transition-colors cursor-pointer"
+                                >
+                                  <Star size={12} />
+                                  <span>Set as Primary</span>
+                                </button>
+                              )}
+
+                              {/* Ordering & Delete */}
+                              <div className="flex items-center gap-1">
+                                <button
+                                  type="button"
+                                  disabled={index === 0}
+                                  onClick={() => handleMoveGalleryImage(index, 'up')}
+                                  className="p-1 text-slate-400 hover:text-slate-700 disabled:opacity-30 cursor-pointer disabled:cursor-not-allowed"
+                                  title="Move Up"
+                                >
+                                  <ArrowUp size={13} />
+                                </button>
+                                <button
+                                  type="button"
+                                  disabled={index === form.images.length - 1}
+                                  onClick={() => handleMoveGalleryImage(index, 'down')}
+                                  className="p-1 text-slate-400 hover:text-slate-700 disabled:opacity-30 cursor-pointer disabled:cursor-not-allowed"
+                                  title="Move Down"
+                                >
+                                  <ArrowDown size={13} />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleRemoveGalleryImage(index)}
+                                  className="p-1 text-slate-400 hover:text-rose-600 transition-colors ml-1 cursor-pointer"
+                                  title="Remove Photo"
+                                >
+                                  <Trash2 size={13} />
+                                </button>
+                              </div>
+                            </div>
+
+                            {/* Image URL input */}
+                            <div>
+                              <TextInput
+                                value={img.image_url}
+                                onChange={(e) => handleUpdateGalleryImage(index, 'image_url', e.target.value)}
+                                placeholder="Image URL (e.g. /assets/products/photo.jpg)"
+                                className="text-[11px] py-1.5"
+                              />
+                            </div>
+
+                            {/* Alt Text input */}
+                            <div>
+                              <TextInput
+                                value={img.alt_text}
+                                onChange={(e) => handleUpdateGalleryImage(index, 'alt_text', e.target.value)}
+                                placeholder="Alt text / description for doctors..."
+                                className="text-[11px] py-1.5"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           </AdminCard>
 
@@ -544,7 +809,41 @@ export default function AdminProductEditor() {
         isOpen={mediaOpen}
         onClose={() => setMediaOpen(false)}
         onSelect={(url) => {
-          setForm((p) => ({ ...p, packshot_url: url }));
+          if (mediaTarget === 'gallery') {
+            setForm((prev) => {
+              const currentImages = prev.images || [];
+              const isFirst = currentImages.length === 0;
+              const newImg = {
+                image_url: url,
+                alt_text: `${prev.brand_name || 'Product'} visual ${currentImages.length + 1}`,
+                is_primary: isFirst ? 1 : 0,
+                display_order: currentImages.length + 1,
+              };
+              return {
+                ...prev,
+                images: [...currentImages, newImg],
+                ...(isFirst ? { packshot_url: url } : {}),
+              };
+            });
+            showToast('success', 'Photo added to product gallery.');
+          } else {
+            // packshot selection
+            setForm((prev) => {
+              const currentImages = prev.images || [];
+              const exists = currentImages.some((img) => img.image_url === url);
+              let nextImages = currentImages.map((img) => ({
+                ...img,
+                is_primary: img.image_url === url ? 1 : 0,
+              }));
+              if (!exists) {
+                nextImages = [
+                  { image_url: url, alt_text: prev.brand_name || '', is_primary: 1, display_order: 1 },
+                  ...nextImages.map((img, i) => ({ ...img, is_primary: 0, display_order: i + 2 })),
+                ];
+              }
+              return { ...prev, packshot_url: url, images: nextImages };
+            });
+          }
           setMediaOpen(false);
         }}
       />

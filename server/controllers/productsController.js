@@ -69,6 +69,12 @@ export const getProductByIdOrSlug = async (req, res, next) => {
       [product.id]
     );
 
+    // Gallery Images (Multiple Photos)
+    product.images = await query(
+      'SELECT * FROM product_images WHERE product_id = ? ORDER BY is_primary DESC, display_order ASC, id ASC',
+      [product.id]
+    );
+
     return res.status(200).json({
       success: true,
       data: product,
@@ -95,7 +101,8 @@ export const createProduct = async (req, res, next) => {
       benefits,
       dosage,
       mechanisms,
-      safetySections
+      safetySections,
+      images,
     } = req.body;
 
     if (!brand_name || !brand_name.trim()) {
@@ -129,7 +136,7 @@ export const createProduct = async (req, res, next) => {
     const productId = result.insertId;
 
     // Save nested details
-    await saveNestedProductDetails(productId, { compositions, benefits, dosage, mechanisms, safetySections });
+    await saveNestedProductDetails(productId, { compositions, benefits, dosage, mechanisms, safetySections, images });
 
     return res.status(201).json({
       success: true,
@@ -159,7 +166,8 @@ export const updateProduct = async (req, res, next) => {
       benefits,
       dosage,
       mechanisms,
-      safetySections
+      safetySections,
+      images
     } = req.body;
 
     const updates = [];
@@ -182,7 +190,7 @@ export const updateProduct = async (req, res, next) => {
     }
 
     // Update nested details if present in payload
-    await saveNestedProductDetails(id, { compositions, benefits, dosage, mechanisms, safetySections });
+    await saveNestedProductDetails(id, { compositions, benefits, dosage, mechanisms, safetySections, images });
 
     return res.status(200).json({
       success: true,
@@ -201,6 +209,7 @@ export const deleteProduct = async (req, res, next) => {
     await query('DELETE FROM product_dosage WHERE product_id = ?', [id]);
     await query('DELETE FROM product_mechanisms WHERE product_id = ?', [id]);
     await query('DELETE FROM product_safety_sections WHERE product_id = ?', [id]);
+    await query('DELETE FROM product_images WHERE product_id = ?', [id]);
     await query('DELETE FROM products WHERE id = ?', [id]);
 
     return res.status(200).json({
@@ -232,7 +241,7 @@ export const reorderProducts = async (req, res, next) => {
   }
 };
 
-async function saveNestedProductDetails(productId, { compositions, benefits, dosage, mechanisms, safetySections }) {
+async function saveNestedProductDetails(productId, { compositions, benefits, dosage, mechanisms, safetySections, images }) {
   // Compositions
   if (compositions !== undefined && Array.isArray(compositions)) {
     await query('DELETE FROM product_compositions WHERE product_id = ?', [productId]);
@@ -299,4 +308,126 @@ async function saveNestedProductDetails(productId, { compositions, benefits, dos
       }
     }
   }
+
+  // Multiple Product Photos / Gallery Images
+  if (images !== undefined && Array.isArray(images)) {
+    await query('DELETE FROM product_images WHERE product_id = ?', [productId]);
+    for (let i = 0; i < images.length; i++) {
+      const item = images[i];
+      const imgUrl = typeof item === 'string' ? item : item.image_url;
+      if (imgUrl && imgUrl.trim()) {
+        const isPrimary = (typeof item === 'object' && item.is_primary) ? 1 : (i === 0 ? 1 : 0);
+        const altText = (typeof item === 'object' && item.alt_text) ? item.alt_text : null;
+        await query(`
+          INSERT INTO product_images (product_id, image_url, alt_text, is_primary, display_order)
+          VALUES (?, ?, ?, ?, ?)
+        `, [productId, imgUrl.trim(), altText, isPrimary, i + 1]);
+      }
+    }
+
+    // Synchronize primary photo back into products.packshot_url
+    const primaryImages = await query(
+      'SELECT image_url FROM product_images WHERE product_id = ? ORDER BY is_primary DESC, display_order ASC LIMIT 1',
+      [productId]
+    );
+    if (primaryImages.length > 0 && primaryImages[0].image_url) {
+      await query('UPDATE products SET packshot_url = ? WHERE id = ?', [primaryImages[0].image_url, productId]);
+    }
+  }
 }
+
+export const addProductImage = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { image_url, alt_text, is_primary } = req.body;
+
+    if (!image_url || !image_url.trim()) {
+      return res.status(400).json({ success: false, message: 'image_url is required.' });
+    }
+
+    const [maxOrder] = await query(
+      'SELECT MAX(display_order) as max_order FROM product_images WHERE product_id = ?',
+      [id]
+    );
+    const order = (maxOrder?.max_order || 0) + 1;
+
+    if (is_primary) {
+      await query('UPDATE product_images SET is_primary = 0 WHERE product_id = ?', [id]);
+    }
+
+    const result = await query(
+      `INSERT INTO product_images (product_id, image_url, alt_text, is_primary, display_order)
+       VALUES (?, ?, ?, ?, ?)`,
+      [id, image_url.trim(), alt_text || null, is_primary ? 1 : 0, order]
+    );
+
+    if (is_primary) {
+      await query('UPDATE products SET packshot_url = ? WHERE id = ?', [image_url.trim(), id]);
+    }
+
+    const [newImg] = await query('SELECT * FROM product_images WHERE id = ?', [result.insertId]);
+
+    return res.status(201).json({
+      success: true,
+      message: 'Product image added successfully.',
+      data: newImg,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteProductImage = async (req, res, next) => {
+  try {
+    const { id, imageId } = req.params;
+    const [img] = await query('SELECT * FROM product_images WHERE id = ? AND product_id = ?', [imageId, id]);
+    if (!img) {
+      return res.status(404).json({ success: false, message: 'Image not found.' });
+    }
+
+    await query('DELETE FROM product_images WHERE id = ? AND product_id = ?', [imageId, id]);
+
+    // If deleted image was primary, select the next available image as primary
+    if (img.is_primary) {
+      const [nextImg] = await query(
+        'SELECT * FROM product_images WHERE product_id = ? ORDER BY display_order ASC LIMIT 1',
+        [id]
+      );
+      if (nextImg) {
+        await query('UPDATE product_images SET is_primary = 1 WHERE id = ?', [nextImg.id]);
+        await query('UPDATE products SET packshot_url = ? WHERE id = ?', [nextImg.image_url, id]);
+      } else {
+        await query('UPDATE products SET packshot_url = NULL WHERE id = ?', [id]);
+      }
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: 'Product image deleted successfully.',
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const setPrimaryProductImage = async (req, res, next) => {
+  try {
+    const { id, imageId } = req.params;
+    const [img] = await query('SELECT * FROM product_images WHERE id = ? AND product_id = ?', [imageId, id]);
+    if (!img) {
+      return res.status(404).json({ success: false, message: 'Image not found.' });
+    }
+
+    await query('UPDATE product_images SET is_primary = 0 WHERE product_id = ?', [id]);
+    await query('UPDATE product_images SET is_primary = 1 WHERE id = ?', [imageId]);
+    await query('UPDATE products SET packshot_url = ? WHERE id = ?', [img.image_url, id]);
+
+    return res.status(200).json({
+      success: true,
+      message: 'Primary product image updated successfully.',
+      data: { packshot_url: img.image_url },
+    });
+  } catch (error) {
+    next(error);
+  }
+};

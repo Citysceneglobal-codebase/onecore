@@ -121,10 +121,47 @@ async function runE2ETests() {
     console.log(`✅ Product fetched: ${prodData.data.brand_name}`);
     console.log(`   - Compositions count: ${prodData.data.compositions?.length || 0}`);
     console.log(`   - Benefits count: ${prodData.data.benefits?.length || 0}`);
-    console.log(`   - Safety sections count: ${(prodData.data.safetySections || prodData.data.safety_sections)?.length || 0}\n`);
+    console.log(`   - Safety sections count: ${(prodData.data.safetySections || prodData.data.safety_sections)?.length || 0}`);
+    console.log(`   - Gallery images count: ${prodData.data.images?.length || 0}\n`);
 
-    // 7. Test Contact Form Submission
-    console.log('7️⃣ Testing Contact Submission (/api/contact)...');
+    if (!Array.isArray(prodData.data.images) || prodData.data.images.length === 0) {
+      throw new Error('Expected product to have gallery images array populated.');
+    }
+
+    // 7. Test Multi-Photo Gallery Management API (Add, Primary, Delete)
+    console.log('7️⃣ Testing Product Multi-Photo Management API...');
+    const addImgRes = await fetch(`${API_BASE}/products/${prodData.data.id}/images`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        image_url: '/assets/test-gallery-image.jpg',
+        alt_text: 'Test Clinical Mechanism Angle',
+        is_primary: 0,
+      }),
+    });
+    const addImgData = await addImgRes.json();
+    if (!addImgRes.ok || !addImgData.success || !addImgData.data?.id) {
+      throw new Error(`Failed to add product image: ${JSON.stringify(addImgData)}`);
+    }
+    const addedImageId = addImgData.data.id;
+    console.log(`✅ Product photo added to gallery! Photo ID: ${addedImageId}`);
+
+    // Clean up test image
+    const delImgRes = await fetch(`${API_BASE}/products/${prodData.data.id}/images/${addedImageId}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const delImgData = await delImgRes.json();
+    if (!delImgRes.ok || !delImgData.success) {
+      throw new Error(`Failed to delete product image: ${JSON.stringify(delImgData)}`);
+    }
+    console.log('✅ Cleanly removed test gallery photo from product.\n');
+
+    // 8. Test Contact Form Submission
+    console.log('8️⃣ Testing Contact Submission (/api/contact)...');
     const contactRes = await fetch(`${API_BASE}/contact`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -145,7 +182,7 @@ async function runE2ETests() {
     console.log(`✅ Contact enquiry saved in MySQL! Enquiry ID: ${contactData.data?.enquiryId}\n`);
 
     console.log('====================================================');
-    console.log('🎉 ALL 7/7 END-TO-END PIPELINE TESTS PASSED PERFECTLY!');
+    console.log('🎉 ALL 8/8 END-TO-END PIPELINE TESTS PASSED PERFECTLY!');
     console.log('====================================================');
   } catch (err) {
     console.error('❌ E2E Test Suite Error:', err.message);
