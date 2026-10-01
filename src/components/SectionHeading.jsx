@@ -14,7 +14,7 @@ export default function SectionHeading({
   return (
     <div className={`space-y-4 ${alignmentClasses} ${className}`}>
       <Tag
-        className={`editorial-heading font-light tracking-tight ${
+        className={`editorial-heading font-serif font-light tracking-tight ${
           as === 'h1'
             ? 'text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-light text-brand-text'
             : as === 'h2'
