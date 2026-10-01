@@ -96,13 +96,13 @@ export default function AreasOfCare() {
   };
 
   return (
-    <div className="w-full bg-[#FAF9F6] text-[#121212] min-h-screen overflow-x-hidden">
+    <div className="w-full bg-transparent text-[#121212] min-h-screen overflow-x-hidden">
       
       {/* =========================================================================
           SECTION 1 — EDITORIAL HERO
           Inspired by Lilly's bold, quiet confidence and spacious typography
           ========================================================================= */}
-      <section className="pt-28 sm:pt-36 pb-12 sm:pb-16 px-4 sm:px-8 border-b border-[#E5E3DC] bg-white">
+      <section className="pt-28 sm:pt-36 pb-12 sm:pb-16 px-4 sm:px-8 border-b border-[#E5E3DC]/80 bg-[#FAF9F6]/50 backdrop-blur-[1px]">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
             <div className="max-w-3xl space-y-4">

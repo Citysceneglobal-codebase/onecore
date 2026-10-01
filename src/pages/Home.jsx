@@ -160,7 +160,7 @@ export default function Home() {
     ];
 
   return (
-    <div className="w-full bg-white overflow-hidden">
+    <div className="w-full bg-transparent overflow-hidden">
 
       {/* =========================================================================
           SECTION 1 — HERO BANNER
@@ -310,7 +310,7 @@ export default function Home() {
           Generous rounded-[28px] cards, horizontal scroll controls, authentic photography
           ========================================================================= */}
       {areasSec.is_active && (
-        <section className="py-20 sm:py-28 bg-[#FAF9F6] border-y border-[#E5E7EB]">
+        <section className="py-20 sm:py-28 bg-[#FAF9F6]/60 backdrop-blur-[2px] border-y border-[#E5E7EB]/80">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
 
             {/* Header */}
@@ -539,7 +539,7 @@ export default function Home() {
           Clean editorial cards, pure typography, signature red underline links
           ========================================================================= */}
       {sustainabilitySec.is_active && (
-        <section className="py-24 sm:py-32 bg-[#FAF9F6] border-b border-[#E5E7EB]">
+        <section className="py-24 sm:py-32 bg-[#FAF9F6]/60 backdrop-blur-[2px] border-b border-[#E5E7EB]/80">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
 
             {/* Header */}
@@ -628,7 +628,7 @@ export default function Home() {
           SECTION 8 — NEWS PREVIEW
           ========================================================================= */}
       {newsSec.is_active && (
-        <section className="py-24 sm:py-32 bg-[#FAF9F6] border-t border-[#E5E7EB]">
+        <section className="py-24 sm:py-32 bg-[#FAF9F6]/60 backdrop-blur-[2px] border-t border-[#E5E7EB]/80">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
 
             {/* Header */}
@@ -703,7 +703,7 @@ export default function Home() {
           SECTION 9 — FINAL CTA
           ========================================================================= */}
       {finalCtaSec.is_active && (
-        <section className="py-24 sm:py-32 bg-white border-t border-[#E5E7EB] text-center">
+        <section className="py-24 sm:py-32 bg-[#FAF9F6]/75 backdrop-blur-[2px] border-t border-[#E5E7EB]/80 text-center">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
             <ScrollReveal>
               <h2 className="lilly-serif text-3xl sm:text-5xl lg:text-6xl text-[#121212] tracking-tight leading-tight text-balance">

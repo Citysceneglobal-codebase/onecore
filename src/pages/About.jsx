@@ -119,13 +119,13 @@ export default function About() {
   ).slice(0, 2);
 
   return (
-    <div className="w-full bg-[#FAF9F6] text-[#121212] overflow-x-hidden">
+    <div className="w-full bg-transparent text-[#121212] overflow-x-hidden">
       
       {/* =========================================================================
           SECTION 1 — EDITORIAL HERO
           Spacious, dignified, human-scale typography (The Lilly Model)
           ========================================================================= */}
-      <section className="pt-28 sm:pt-36 pb-16 sm:pb-24 px-4 sm:px-8 border-b border-[#E5E3DC] bg-white">
+      <section className="pt-28 sm:pt-36 pb-16 sm:pb-24 px-4 sm:px-8 border-b border-[#E5E3DC]/80 bg-[#FAF9F6]/50 backdrop-blur-[1px]">
         <div className="max-w-7xl mx-auto space-y-12">
           
           <div className="max-w-4xl space-y-6">
@@ -184,7 +184,7 @@ export default function About() {
           SECTION 3 — STRATEGIC FOUNDATION & LABORATORY SCIENCE (RICH VISUALS)
           ========================================================================= */}
       {foundationSec.is_active && (
-        <section className="py-20 sm:py-28 bg-white border-y border-[#E5E3DC]">
+        <section className="py-20 sm:py-28 bg-[#FAF9F6]/60 backdrop-blur-[2px] border-y border-[#E5E3DC]/80">
           <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-16">
             
             <div className="space-y-8">

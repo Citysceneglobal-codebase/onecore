@@ -121,7 +121,7 @@ export default function QualityManufacturing() {
   });
 
   return (
-    <div className="w-full bg-[#FAF9F6] text-[#121212]">
+    <div className="w-full bg-transparent text-[#121212]">
       
       {/* =========================================================================
           SECTION 1 — CINEMATIC MANUFACTURING VIDEO HERO
@@ -237,7 +237,7 @@ export default function QualityManufacturing() {
           Client-provided manufacturing process video embed
           ========================================================================= */}
       {manufacturingSec.is_active && (
-        <section className="py-20 sm:py-28 bg-white border-y border-[#E5E3DC] px-4 sm:px-8">
+        <section className="py-20 sm:py-28 bg-[#FAF9F6]/60 backdrop-blur-[2px] border-y border-[#E5E3DC]/80 px-4 sm:px-8">
           <div className="max-w-7xl mx-auto space-y-12">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
               

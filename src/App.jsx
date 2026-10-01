@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation, useNavigate, Link, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import TechnicalGridBackground from './components/TechnicalGridBackground';
 import Home from './pages/Home';
 import About from './pages/About';
 import QualityManufacturing from './pages/QualityManufacturing';
@@ -181,67 +182,72 @@ function AdminRoutes() {
 
 function PublicRoutes() {
   return (
-    <div className="flex flex-col min-h-screen bg-[#FAF9F6] text-[#121212]">
-      <Navbar />
-      <main className="flex-grow">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/quality-manufacturing" element={<QualityManufacturing />} />
-          <Route path="/patients-caregivers" element={<PatientsCaregivers />} />
-          <Route path="/areas-of-care" element={<AreasOfCare />} />
-          <Route path="/areas-of-care/femme/:productSlug" element={<FemmeProductDetail />} />
-          <Route path="/areas-of-care/pediaplus/:productSlug" element={<PediatricsProductDetail />} />
-          <Route path="/areas-of-care/pediatrics/:productSlug" element={<PediatricsProductDetail />} />
-          <Route path="/areas-of-care/paediatrics/:productSlug" element={<PediatricsProductDetail />} />
-          <Route path="/areas-of-care/ortheon/oneflexo" element={<ProductOneFlexo />} />
-          <Route path="/areas-of-care/orthopaedics/oneflexo" element={<ProductOneFlexo />} />
-          <Route path="/areas-of-care/ortheon/:productSlug" element={<OrthopaedicsProductDetail />} />
-          <Route path="/areas-of-care/orthopaedics/:productSlug" element={<OrthopaedicsProductDetail />} />
-          <Route path="/areas-of-care/orthopedic/:productSlug" element={<OrthopaedicsProductDetail />} />
-          <Route path="/areas-of-care/orthopedics/:productSlug" element={<OrthopaedicsProductDetail />} />
-          <Route path="/areas-of-care/neurix/:productSlug" element={<NeurologyProductDetail />} />
-          <Route path="/areas-of-care/neurology/:productSlug" element={<NeurologyProductDetail />} />
-          <Route path="/areas-of-care/neuro/:productSlug" element={<NeurologyProductDetail />} />
-          <Route path="/areas-of-care/eyerix/:productSlug" element={<OphthalmologyProductDetail />} />
-          <Route path="/areas-of-care/ophthalmology/:productSlug" element={<OphthalmologyProductDetail />} />
-          <Route path="/areas-of-care/ocular/:productSlug" element={<OphthalmologyProductDetail />} />
-          <Route path="/areas-of-care/eye-care/:productSlug" element={<OphthalmologyProductDetail />} />
-          <Route path="/areas-of-care/vellis/:productSlug" element={<DermatologyProductDetail />} />
-          <Route path="/areas-of-care/dermatology/:productSlug" element={<DermatologyProductDetail />} />
-          <Route path="/areas-of-care/derma/:productSlug" element={<DermatologyProductDetail />} />
-          <Route path="/areas-of-care/skin/:productSlug" element={<DermatologyProductDetail />} />
-          <Route path="/areas-of-care/otira/:productSlug" element={<EntProductDetail />} />
-          <Route path="/areas-of-care/ent/:productSlug" element={<EntProductDetail />} />
-          <Route path="/areas-of-care/ear-nose-throat/:productSlug" element={<EntProductDetail />} />
-          <Route path="/areas-of-care/omnara/:productSlug" element={<GeneralMedicineProductDetail />} />
-          <Route path="/areas-of-care/general-medicine/:productSlug" element={<GeneralMedicineProductDetail />} />
-          <Route path="/areas-of-care/general/:productSlug" element={<GeneralMedicineProductDetail />} />
-          <Route path="/areas-of-care/internal-medicine/:productSlug" element={<GeneralMedicineProductDetail />} />
-          <Route path="/areas-of-care/cytos/:productSlug" element={<OncologyProductDetail />} />
-          <Route path="/areas-of-care/oncology/:productSlug" element={<OncologyProductDetail />} />
-          <Route path="/areas-of-care/cancer-care/:productSlug" element={<OncologyProductDetail />} />
-          <Route path="/areas-of-care/:slug" element={<AreaOfCareDetail />} />
-          <Route path="/news" element={<News />} />
-          <Route path="/partnerships" element={<DistributionPartnerships />} />
-          <Route path="/distribution-partnerships" element={<DistributionPartnerships />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/privacy" element={<Privacy />} />
-          <Route path="/disclaimer" element={<Disclaimer />} />
+    <div className="flex flex-col min-h-screen bg-[#FAF9F6] text-[#121212] relative isolate">
+      {/* Global Precision Technical Blueprint & Cutting-Mat Grid Background */}
+      <TechnicalGridBackground />
+      
+      <div className="relative z-10 flex flex-col min-h-screen">
+        <Navbar />
+        <main className="flex-grow">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/quality-manufacturing" element={<QualityManufacturing />} />
+            <Route path="/patients-caregivers" element={<PatientsCaregivers />} />
+            <Route path="/areas-of-care" element={<AreasOfCare />} />
+            <Route path="/areas-of-care/femme/:productSlug" element={<FemmeProductDetail />} />
+            <Route path="/areas-of-care/pediaplus/:productSlug" element={<PediatricsProductDetail />} />
+            <Route path="/areas-of-care/pediatrics/:productSlug" element={<PediatricsProductDetail />} />
+            <Route path="/areas-of-care/paediatrics/:productSlug" element={<PediatricsProductDetail />} />
+            <Route path="/areas-of-care/ortheon/oneflexo" element={<ProductOneFlexo />} />
+            <Route path="/areas-of-care/orthopaedics/oneflexo" element={<ProductOneFlexo />} />
+            <Route path="/areas-of-care/ortheon/:productSlug" element={<OrthopaedicsProductDetail />} />
+            <Route path="/areas-of-care/orthopaedics/:productSlug" element={<OrthopaedicsProductDetail />} />
+            <Route path="/areas-of-care/orthopedic/:productSlug" element={<OrthopaedicsProductDetail />} />
+            <Route path="/areas-of-care/orthopedics/:productSlug" element={<OrthopaedicsProductDetail />} />
+            <Route path="/areas-of-care/neurix/:productSlug" element={<NeurologyProductDetail />} />
+            <Route path="/areas-of-care/neurology/:productSlug" element={<NeurologyProductDetail />} />
+            <Route path="/areas-of-care/neuro/:productSlug" element={<NeurologyProductDetail />} />
+            <Route path="/areas-of-care/eyerix/:productSlug" element={<OphthalmologyProductDetail />} />
+            <Route path="/areas-of-care/ophthalmology/:productSlug" element={<OphthalmologyProductDetail />} />
+            <Route path="/areas-of-care/ocular/:productSlug" element={<OphthalmologyProductDetail />} />
+            <Route path="/areas-of-care/eye-care/:productSlug" element={<OphthalmologyProductDetail />} />
+            <Route path="/areas-of-care/vellis/:productSlug" element={<DermatologyProductDetail />} />
+            <Route path="/areas-of-care/dermatology/:productSlug" element={<DermatologyProductDetail />} />
+            <Route path="/areas-of-care/derma/:productSlug" element={<DermatologyProductDetail />} />
+            <Route path="/areas-of-care/skin/:productSlug" element={<DermatologyProductDetail />} />
+            <Route path="/areas-of-care/otira/:productSlug" element={<EntProductDetail />} />
+            <Route path="/areas-of-care/ent/:productSlug" element={<EntProductDetail />} />
+            <Route path="/areas-of-care/ear-nose-throat/:productSlug" element={<EntProductDetail />} />
+            <Route path="/areas-of-care/omnara/:productSlug" element={<GeneralMedicineProductDetail />} />
+            <Route path="/areas-of-care/general-medicine/:productSlug" element={<GeneralMedicineProductDetail />} />
+            <Route path="/areas-of-care/general/:productSlug" element={<GeneralMedicineProductDetail />} />
+            <Route path="/areas-of-care/internal-medicine/:productSlug" element={<GeneralMedicineProductDetail />} />
+            <Route path="/areas-of-care/cytos/:productSlug" element={<OncologyProductDetail />} />
+            <Route path="/areas-of-care/oncology/:productSlug" element={<OncologyProductDetail />} />
+            <Route path="/areas-of-care/cancer-care/:productSlug" element={<OncologyProductDetail />} />
+            <Route path="/areas-of-care/:slug" element={<AreaOfCareDetail />} />
+            <Route path="/news" element={<News />} />
+            <Route path="/partnerships" element={<DistributionPartnerships />} />
+            <Route path="/distribution-partnerships" element={<DistributionPartnerships />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/disclaimer" element={<Disclaimer />} />
 
-          {/* Section anchor fallbacks */}
-          <Route path="/principles" element={<Navigate to="/quality-manufacturing#principles" replace />} />
-          <Route path="/partner-form" element={<Navigate to="/partnerships#partner-form" replace />} />
-          <Route path="/enquiry-form" element={<Navigate to="/contact#enquiry-form" replace />} />
-          <Route path="/contact-details" element={<Navigate to="/contact#contact-details" replace />} />
-          <Route path="/for-patients" element={<Navigate to="/patients-caregivers#for-patients" replace />} />
-          <Route path="/for-professionals" element={<Navigate to="/patients-caregivers#for-professionals" replace />} />
-          <Route path="/patient-safety" element={<Navigate to="/patients-caregivers#patient-safety" replace />} />
+            {/* Section anchor fallbacks */}
+            <Route path="/principles" element={<Navigate to="/quality-manufacturing#principles" replace />} />
+            <Route path="/partner-form" element={<Navigate to="/partnerships#partner-form" replace />} />
+            <Route path="/enquiry-form" element={<Navigate to="/contact#enquiry-form" replace />} />
+            <Route path="/contact-details" element={<Navigate to="/contact#contact-details" replace />} />
+            <Route path="/for-patients" element={<Navigate to="/patients-caregivers#for-patients" replace />} />
+            <Route path="/for-professionals" element={<Navigate to="/patients-caregivers#for-professionals" replace />} />
+            <Route path="/patient-safety" element={<Navigate to="/patients-caregivers#patient-safety" replace />} />
 
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </main>
-      <Footer />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </main>
+        <Footer />
+      </div>
     </div>
   );
 }

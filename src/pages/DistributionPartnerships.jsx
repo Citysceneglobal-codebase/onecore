@@ -69,12 +69,12 @@ export default function DistributionPartnerships() {
   ];
 
   return (
-    <div className="w-full bg-[#FAF9F6] text-[#121212]">
+    <div className="w-full bg-transparent text-[#121212]">
 
       {/* =========================================================================
           SECTION 1 — HERO
           ========================================================================= */}
-      <section className="pt-28 sm:pt-36 pb-16 sm:pb-24 px-4 sm:px-8 border-b border-[#E5E3DC] bg-white">
+      <section className="pt-28 sm:pt-36 pb-16 sm:pb-24 px-4 sm:px-8 border-b border-[#E5E3DC]/80 bg-[#FAF9F6]/50 backdrop-blur-[1px]">
         <div className="max-w-7xl mx-auto space-y-10">
           
           <div className="max-w-4xl space-y-6">
