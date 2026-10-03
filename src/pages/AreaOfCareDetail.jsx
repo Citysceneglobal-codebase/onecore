@@ -304,10 +304,31 @@ export default function AreaOfCareDetail() {
     const base = categoryData[slug.toLowerCase().trim()] || null;
     if (!base) return null;
     if (!dynamicArea) return base;
+
+    // Merge static and CMS products
+    const staticProducts = base.products || [];
+    const cmsProductsRaw = dynamicArea.sampleProducts || [];
+    
+    // Normalize CMS products to match static product schema
+    const cmsProducts = cmsProductsRaw.map(p => ({
+      ...p,
+      name: p.brand_name || p.name,
+      composition: p.composition || p.short_description || '',
+      image: p.packshot_url || p.image || base.image,
+    }));
+
+    const productMap = new Map();
+    staticProducts.forEach(p => productMap.set(p.slug, p));
+    cmsProducts.forEach(p => {
+       // Prefer CMS data if slug matches, otherwise append new product
+       productMap.set(p.slug, { ...productMap.get(p.slug), ...p });
+    });
+
     return {
       ...base,
       description: dynamicArea.description || base.description,
       image: dynamicArea.image_url || dynamicArea.image || base.image,
+      products: Array.from(productMap.values())
     };
   }, [slug, dynamicArea]);
 

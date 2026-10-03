@@ -108,6 +108,16 @@ app.use('/api/admin/media', mediaRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/admin/users', adminUsersRoutes);
 
+// Serve Frontend Static Files
+const distPath = path.join(__dirname, '../dist');
+if (fs.existsSync(distPath)) {
+  app.use(express.static(distPath));
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api')) return next();
+    res.sendFile(path.join(distPath, 'index.html'));
+  });
+}
+
 // Error Handling Middleware
 app.use(errorHandler);
 
