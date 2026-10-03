@@ -1,6 +1,7 @@
 export const newsArticles = [
   {
     id: "purposeful-formulations-clinical-needs",
+    slug: "purposeful-formulations-clinical-needs",
     category: "RESEARCH & FORMULATION",
     date: "August 24, 2026",
     title: "Aligning formulation chemistry with real-world patient adherence",
@@ -10,6 +11,7 @@ export const newsArticles = [
   },
   {
     id: "clinical-collaboration-practice",
+    slug: "clinical-collaboration-practice",
     category: "CLINICAL PRACTICE",
     date: "July 18, 2026",
     title: "Connecting medical practice insights to therapeutic portfolio depth",
@@ -19,6 +21,7 @@ export const newsArticles = [
   },
   {
     id: "sustainable-materials-packaging",
+    slug: "sustainable-materials-packaging",
     category: "SUSTAINABILITY",
     date: "June 30, 2026",
     title: "Evaluating material efficiency in pharmaceutical cold-chain and packaging",

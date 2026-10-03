@@ -674,7 +674,7 @@ export default function Home() {
                     </div>
 
                     <h3 className="text-lg sm:text-xl font-serif font-medium text-[#121212] group-hover:text-[#D52B1E] transition-colors leading-snug">
-                      <Link to="/news">
+                      <Link to={`/news/${article.slug || article.id}`}>
                         {article.title}
                       </Link>
                     </h3>
@@ -685,7 +685,7 @@ export default function Home() {
 
                     <div className="pt-2 mt-auto">
                       <Link
-                        to="/news"
+                        to={`/news/${article.slug || article.id}`}
                         className="lilly-red-underline text-xs inline-flex items-center gap-1"
                       >
                         <span>Read article</span>

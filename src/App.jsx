@@ -20,6 +20,7 @@ import GeneralMedicineProductDetail from './pages/GeneralMedicineProductDetail';
 import OncologyProductDetail from './pages/OncologyProductDetail';
 import ProductOneFlexo from './pages/ProductOneFlexo';
 import News from './pages/News';
+import NewsDetail from './pages/NewsDetail';
 import Contact from './pages/Contact';
 import DistributionPartnerships from './pages/DistributionPartnerships';
 import Privacy from './pages/Privacy';
@@ -228,6 +229,7 @@ function PublicRoutes() {
             <Route path="/areas-of-care/cancer-care/:productSlug" element={<OncologyProductDetail />} />
             <Route path="/areas-of-care/:slug" element={<AreaOfCareDetail />} />
             <Route path="/news" element={<News />} />
+            <Route path="/news/:slug" element={<NewsDetail />} />
             <Route path="/partnerships" element={<DistributionPartnerships />} />
             <Route path="/distribution-partnerships" element={<DistributionPartnerships />} />
             <Route path="/contact" element={<Contact />} />
