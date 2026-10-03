@@ -14,8 +14,8 @@ export const entProducts = [
     image: "/assets/therapeutic-ent.jpg"
   },
   {
-    slug: "deftos",
-    name: "Deftos",
+    slug: "deftos-6",
+    name: "Deftos-6",
     composition: "Deflazacort 6 mg tablets",
     description: "A systemic glucocorticoid with anti-inflammatory and immunosuppressive effects.",
     mechanism: "Activates intracellular glucocorticoid receptors, altering gene transcription to suppress inflammatory cytokines and immune-cell activity.",
@@ -25,7 +25,7 @@ export const entProducts = [
       "Can raise glucose and blood pressure, increase infection risk, affect mood/sleep and cause gastric/bone/adrenal effects.",
       "Screen for infection and avoid abrupt cessation after prolonged use."
     ],
-    image: "/assets/therapeutic-ent.jpg"
+    image: "/assets/products/deftos-6.jpeg"
   },
   {
     slug: "flutiriv-ns",
@@ -57,8 +57,8 @@ export const entProducts = [
     image: "/assets/therapeutic-ent.jpg"
   },
   {
-    slug: "mentira-625-1000",
-    name: "Mentira 625/1000",
+    slug: "otomentin-625",
+    name: "Otomentin-625",
     composition: "Amoxicillin + clavulanic acid tablet",
     description: "A broad-spectrum beta-lactam antibiotic plus a beta-lactamase inhibitor.",
     mechanism: "Amoxicillin blocks bacterial cell-wall synthesis. Clavulanate inhibits many beta-lactamases, protecting amoxicillin from enzymatic inactivation.",
@@ -69,7 +69,7 @@ export const entProducts = [
       "Watch for rash, diarrhoea and rare liver injury.",
       "Severe or persistent diarrhoea may indicate C. difficile infection."
     ],
-    image: "/assets/therapeutic-ent.jpg"
+    image: "/assets/products/otomentin-625.jpeg"
   },
   {
     slug: "flutiriv-az",

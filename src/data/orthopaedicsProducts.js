@@ -100,7 +100,7 @@ export const orthopaedicsProducts = [
       "Clinical benefit is gradual rather than immediate.",
       "Review allergy source, pregnancy and concomitant anticoagulant/antiplatelet therapy before long-term use."
     ],
-    image: "/assets/products/oneflexo-packshot.png"
+    image: "/assets/products/oneflexo-packshot.svg"
   },
   {
     slug: "frecox",
@@ -131,8 +131,8 @@ export const orthopaedicsProducts = [
     image: "/assets/therapeutic-orthopaedics.jpg"
   },
   {
-    slug: "brotop",
-    name: "Brotop",
+    slug: "trypcor",
+    name: "Trypcor",
     composition: "Trypsin 48 mg + bromelain 90 mg + rutoside trihydrate 100 mg tablets",
     description: "An oral proteolytic-enzyme/flavonoid combination used as an anti-oedema adjunct in soft-tissue inflammation.",
     mechanism: "Trypsin and bromelain are proteolytic enzymes proposed to reduce inflammatory protein mediators and oedema; rutoside is a flavonoid with antioxidant/capillary-stabilising effects.",
@@ -142,11 +142,11 @@ export const orthopaedicsProducts = [
       "May increase bleeding tendency, especially with anticoagulants/antiplatelets.",
       "Avoid before surgery unless the surgeon approves; pineapple allergy can predict bromelain sensitivity."
     ],
-    image: "/assets/therapeutic-orthopaedics.jpg"
+    image: "/assets/products/trypcor.jpeg"
   },
   {
-    slug: "brotop-d",
-    name: "Brotop-D",
+    slug: "trypcor-br",
+    name: "Trypcor-BR",
     composition: "Trypsin 48 mg + bromelain 90 mg + rutoside trihydrate 100 mg + diclofenac 50 mg tablets",
     description: "A proteolytic-enzyme/rutoside combination plus diclofenac for short-term pain, inflammation and oedema.",
     mechanism: "Diclofenac inhibits COX-mediated prostaglandin synthesis for analgesic/anti-inflammatory effect; trypsin/bromelain are used as anti-oedema adjuncts; rutoside provides flavonoid antioxidant/capillary support.",
@@ -156,7 +156,7 @@ export const orthopaedicsProducts = [
       "Diclofenac carries GI, renal and cardiovascular risk.",
       "Avoid combining with other NSAIDs; enzyme components may add bleeding risk with anticoagulants."
     ],
-    image: "/assets/therapeutic-orthopaedics.jpg"
+    image: "/assets/products/trypcor-br.jpeg"
   }
 ];
 

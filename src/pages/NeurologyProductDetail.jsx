@@ -214,7 +214,7 @@ export default function NeurologyProductDetail() {
     <div className="w-full bg-transparent text-[#232126] font-sans antialiased">
 
       {/* 3. PRODUCT HERO (SPLIT SCREEN 43% / 57%) */}
-      <div id="overview" className="w-full bg-[#f7f5f1] grid grid-cols-1 lg:grid-cols-12 min-h-[640px] scroll-mt-24">
+      <div id="overview" className="w-full bg-transparent grid grid-cols-1 lg:grid-cols-12 min-h-[640px] scroll-mt-24">
         {/* LEFT 43% - Packshot Presentation */}
         <div className="lg:col-span-5 bg-gradient-to-br from-[#e9e5df] to-[#f1eee9] p-8 sm:p-14 lg:p-16 flex flex-col items-center justify-center relative min-h-[420px]">
           {(product.images && product.images.length > 0) ? (
@@ -225,11 +225,11 @@ export default function NeurologyProductDetail() {
               className="max-w-[340px]"
             />
           ) : (product.image || product.packshot_url) ? (
-            <div className="w-full max-w-[280px] flex flex-col items-center justify-center">
+            <div className="absolute inset-0 w-full h-full overflow-hidden flex items-center justify-center">
               <img
                 src={assetUrl(product.image || product.packshot_url)}
                 alt={product.name}
-                className="max-h-[380px] w-auto object-contain drop-shadow-xl"
+                className="w-full h-full object-contain p-6 lg:p-12 mix-blend-multiply drop-shadow-2xl"
               />
             </div>
           ) : (

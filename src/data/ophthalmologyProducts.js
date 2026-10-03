@@ -56,8 +56,8 @@ export const ophthalmologyProducts = [
     image: "/assets/therapeutic-ophthalmology.jpg"
   },
   {
-    slug: "lotnova",
-    name: "Lotnova",
+    slug: "lotovo",
+    name: "Lotovo",
     composition: "Loteprednol etabonate 0.5% eye drops",
     description: "An ophthalmic anti-inflammatory steroid, sometimes combined with an antibiotic for selected postoperative or inflammatory conditions.",
     mechanism: "The corticosteroid suppresses ocular inflammatory cytokines and vascular permeability; an antibiotic component inhibits susceptible bacteria where present.",
@@ -67,7 +67,7 @@ export const ophthalmologyProducts = [
       "Ocular steroids can raise intraocular pressure, delay healing, worsen herpes/fungal infection and promote cataract with prolonged use.",
       "Antibiotic-steroid combinations should not be self-started."
     ],
-    image: "/assets/therapeutic-ophthalmology.jpg"
+    image: "/assets/products/lotovo.jpg"
   },
   {
     slug: "lotnova-t",

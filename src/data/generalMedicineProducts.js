@@ -261,8 +261,8 @@ export const generalMedicineProducts = [
     image: "/assets/therapeutic-general-medicine.jpg"
   },
   {
-    slug: "cefnara-250",
-    name: "Cefnara-250",
+    slug: "cefvanta-250",
+    name: "Cefvanta-250",
     composition: "Cefuroxime 250 mg",
     description: "A second-generation cephalosporin antibiotic.",
     mechanism: "Inhibits bacterial cell-wall synthesis by binding penicillin-binding proteins.",
@@ -272,7 +272,7 @@ export const generalMedicineProducts = [
       "Assess beta-lactam allergy and kidney function.",
       "Common effects include GI upset and diarrhoea; seek care for severe allergy or persistent diarrhoea."
     ],
-    image: "/assets/therapeutic-general-medicine.jpg"
+    image: "/assets/products/cefvanta-250.jpeg"
   },
   {
     slug: "cefnara-500",

@@ -30,8 +30,8 @@ export const femmeProducts = [
     image: "/assets/therapeutic-womens-health.jpg"
   },
   {
-    slug: "folentis-d",
-    name: "Folentis D",
+    slug: "folatis-d",
+    name: "Folatis-D",
     composition: "L-methylfolate 800 mcg + methylcobalamin 1500 mcg + pyridoxal-5-phosphate 500 mcg + DHA 200 mg softgel capsules",
     description: "A vitamin B12-based formulation, sometimes combined with cofactors used in red-cell and nerve metabolism.",
     mechanism: "Methylcobalamin serves as an active coenzyme form of vitamin B12 for methionine synthase and myelin-related metabolism; folate/B6 cofactors support one-carbon and homocysteine pathways.",
@@ -42,7 +42,7 @@ export const femmeProducts = [
       "Severe B12 deficiency from pernicious anaemia or malabsorption requires an adequate replacement regimen and follow-up.",
       "Folate can mask haematologic signs of B12 deficiency."
     ],
-    image: "/assets/therapeutic-womens-health.jpg"
+    image: "/assets/products/folatis-d.jpeg"
   },
   {
     slug: "dydronyx",
@@ -104,8 +104,8 @@ export const femmeProducts = [
     image: "/assets/therapeutic-womens-health.jpg"
   },
   {
-    slug: "humiphin",
-    name: "Humiphin",
+    slug: "humiphin-5000",
+    name: "Humiphin-5000",
     composition: "Highly purified human chorionic gonadotropin 5000 IU injection",
     description: "An injectable gonadotropin hormone that mimics luteinizing hormone activity.",
     mechanism: "Binds LH/hCG receptors. In women it triggers final follicular maturation/ovulation; in men it stimulates Leydig cells to produce testosterone.",
@@ -115,7 +115,7 @@ export const femmeProducts = [
       "In fertility treatment, ovarian hyperstimulation syndrome and multiple pregnancy are major concerns.",
       "Also consider thrombosis risk, hormone-sensitive tumours and injection reactions."
     ],
-    image: "/assets/therapeutic-womens-health.jpg"
+    image: "/assets/products/humiphin-5000.jpeg"
   },
   {
     slug: "throfree",
@@ -177,8 +177,8 @@ export const femmeProducts = [
     image: "/assets/therapeutic-womens-health.jpg"
   },
   {
-    slug: "vgisoft-t",
-    name: "Vgisoft-T",
+    slug: "clindaone-ct",
+    name: "Clindaone-CT",
     composition: "Clindamycin 100 mg + clotrimazole 100 mg + tinidazole 100 mg",
     description: "A local anti-infective combination aimed at mixed bacterial, fungal and anaerobic vaginal infections.",
     mechanism: "Clindamycin suppresses susceptible bacterial protein synthesis; clotrimazole disrupts fungal cell membranes by inhibiting ergosterol synthesis; tinidazole damages DNA in susceptible anaerobes/protozoa.",
@@ -189,7 +189,7 @@ export const femmeProducts = [
       "Consider pregnancy status, recurrent symptoms and STI evaluation.",
       "Stop if severe irritation or allergy develops."
     ],
-    image: "/assets/therapeutic-womens-health.jpg"
+    image: "/assets/products/clindaone-ct.jpeg"
   },
   {
     slug: "ferticore",
@@ -236,8 +236,8 @@ export const femmeProducts = [
     image: "/assets/therapeutic-womens-health.jpg"
   },
   {
-    slug: "onetron",
-    name: "Onetron",
+    slug: "oneq10-lm",
+    name: "OneQ10-LM",
     composition: "Astaxanthin 8 mg + CoQ10 100 mg + manganese 0.5 mg + selenium 50 mcg + L-methylfolate 0.5 mg + levocarnitine 300 mg + lycopene 5000 mcg + Vitamin A 2500 IU + B6 50 mg + C 75 mg + D3 1000 IU + E 25 IU + zinc monomethionine 21 mg",
     description: "A multi-antioxidant/nutraceutical formulation intended to support redox balance and tissue nutrition.",
     mechanism: "Ingredients act through complementary pathways such as glutathione recycling, free-radical scavenging, mitochondrial electron transport support, inflammatory signalling modulation and micronutrient cofactor activity.",
@@ -247,7 +247,7 @@ export const femmeProducts = [
       "Check pregnancy status, anticoagulants, liver/kidney disease and allergy history.",
       "Antioxidant supplements should not be promoted as replacing standard treatment, especially during cancer therapy without oncologist approval."
     ],
-    image: "/assets/therapeutic-womens-health.jpg"
+    image: "/assets/products/oneq10-lm.jpeg"
   },
   {
     slug: "cranly",
@@ -278,8 +278,8 @@ export const femmeProducts = [
     image: "/assets/therapeutic-womens-health.jpg"
   },
   {
-    slug: "texacore-mf",
-    name: "Texacore MF",
+    slug: "traxpause-mf",
+    name: "Traxpause MF",
     composition: "Tranexamic acid 500 mg + mefenamic acid 250 mg tablets",
     description: "A combined antifibrinolytic plus NSAID formulation for heavy, painful menstrual bleeding.",
     mechanism: "Tranexamic acid blocks lysine-binding sites on plasminogen, reducing fibrin breakdown and menstrual blood loss. Mefenamic acid inhibits cyclo-oxygenase and prostaglandin production, reducing pain and prostaglandin-driven bleeding.",
@@ -289,7 +289,7 @@ export const femmeProducts = [
       "Avoid or use cautiously with prior thrombosis, significant kidney disease, peptic ulcer/bleeding, NSAID allergy or anticoagulants.",
       "Seek care for unusually heavy bleeding, chest pain or leg swelling."
     ],
-    image: "/assets/therapeutic-womens-health.jpg"
+    image: "/assets/products/traxpause-mf.jpeg"
   }
 ];
 

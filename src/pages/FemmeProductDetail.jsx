@@ -208,7 +208,7 @@ export default function FemmeProductDetail() {
     <div className="w-full bg-transparent text-[#232126] font-sans antialiased">
 
       {/* 3. PRODUCT HERO (SPLIT SCREEN 43% / 57%) */}
-      <div id="overview" className="w-full bg-[#f7f5f1] grid grid-cols-1 lg:grid-cols-12 min-h-[640px] scroll-mt-24">
+      <div id="overview" className="w-full bg-transparent grid grid-cols-1 lg:grid-cols-12 min-h-[640px] scroll-mt-24">
         {/* LEFT 43% */}
         <div className="lg:col-span-5 bg-gradient-to-br from-[#e9e5df] to-[#f1eee9] p-8 sm:p-14 lg:p-16 flex flex-col items-center justify-center relative min-h-[420px]">
           {(product.images && product.images.length > 0) ? (
@@ -219,11 +219,11 @@ export default function FemmeProductDetail() {
               className="max-w-[340px]"
             />
           ) : (product.image || product.packshot_url) ? (
-            <div className="w-full max-w-[280px] flex flex-col items-center justify-center">
+            <div className="absolute inset-0 w-full h-full overflow-hidden flex items-center justify-center">
               <img
                 src={assetUrl(product.image || product.packshot_url)}
                 alt={product.name}
-                className="max-h-[380px] w-auto object-contain drop-shadow-xl"
+                className="w-full h-full object-contain p-6 lg:p-12 mix-blend-multiply drop-shadow-2xl"
               />
             </div>
           ) : (
@@ -261,13 +261,23 @@ export default function FemmeProductDetail() {
           <p className="text-lg sm:text-xl text-[#575159] leading-relaxed max-w-2xl font-sans">
             {product.description}
           </p>
+          {/* 4-Item Grid for 'Used For' */}
           <div className="border-t border-[#beb8b3] mt-8 pt-6 max-w-2xl">
-            <small className="block text-[10px] tracking-[0.15em] uppercase text-[#887e8c] font-semibold mb-2">
+            <small className="block text-[10px] tracking-[0.15em] uppercase text-[#887e8c] font-semibold mb-4">
               PRODUCT AT A GLANCE
             </small>
-            <span className="font-serif text-xl sm:text-2xl leading-snug text-[#232126]">
-              {product.usedFor}
-            </span>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
+              {parseUsedForItems(product.usedFor).map((item, idx) => (
+                <div key={idx} className="flex flex-col space-y-1">
+                  <span className="font-serif text-[#5b2a70] text-lg sm:text-xl">
+                    {item.num}
+                  </span>
+                  <span className="text-sm font-medium text-[#232126] leading-tight">
+                    {item.title}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
