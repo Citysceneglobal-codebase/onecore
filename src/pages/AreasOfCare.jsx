@@ -303,7 +303,7 @@ export default function AreasOfCare() {
             <div
               key={area.id}
               id={area.id}
-              className="scroll-mt-28 border-b border-[#E5E3DC] pb-20 sm:pb-28 last:border-b-0"
+              className="scroll-mt-28 border-b border-[#E5E3DC] pb-14 sm:pb-20 last:border-b-0"
             >
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
                 
@@ -333,25 +333,8 @@ export default function AreasOfCare() {
                     {area.description || area.heading}
                   </p>
 
-                  {/* Key Clinical Focus Items */}
-                  {area.keyTherapeuticInfo && area.keyTherapeuticInfo.length > 0 && (
-                    <div className="pt-2 space-y-2">
-                      <span className="text-xs font-semibold uppercase tracking-wider text-[#777777] block">
-                        Clinical Scope & Formulations:
-                      </span>
-                      <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-[#333333]">
-                        {area.keyTherapeuticInfo.slice(0, 4).map((item, idx) => (
-                          <li key={idx} className="flex items-start gap-2">
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#D52B1E] mt-1.5 shrink-0" />
-                            <span>{item}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-
                   {/* Single Clean Action Button (No redundant Filter in Directory button) */}
-                  <div className="pt-4">
+                  <div className="pt-2">
                     <Link
                       to={divisionUrl}
                       className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#D52B1E] hover:bg-[#B52015] text-white text-xs font-bold uppercase tracking-wider rounded-full transition-colors shadow-xs group cursor-pointer"

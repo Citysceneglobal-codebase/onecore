@@ -58,15 +58,6 @@ export default function Footer() {
         showCompassGuides={true}
       />
 
-      {/* Massive Centered "onecore" Text Watermark */}
-      <div 
-        className="absolute inset-x-0 top-0 bottom-20 sm:bottom-28 flex items-center justify-center pointer-events-none select-none z-[1] overflow-hidden"
-        aria-hidden="true"
-      >
-        <span className="text-[25vw] min-[400px]:text-[26vw] sm:text-[20vw] md:text-[22vw] lg:text-[220px] xl:text-[250px] font-black tracking-tighter leading-none text-[#500600]/35 sm:text-[#650800]/35 whitespace-nowrap select-none -translate-y-2 sm:-translate-y-6">
-          onecore
-        </span>
-      </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
@@ -81,7 +72,7 @@ export default function Footer() {
                 alt="Onecore Pharma"
                 className="h-8 sm:h-9 w-auto object-contain brightness-0 invert"
               />
-              <span className="text-[10px] font-extrabold uppercase tracking-[0.25em] text-white block pt-1.5">
+              <span className="text-[10px] font-extrabold uppercase tracking-[0.25em] text-black block pt-1.5">
                 PRESCRIBING A BETTER TOMORROW
               </span>
             </Link>

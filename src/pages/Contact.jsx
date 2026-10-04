@@ -421,10 +421,7 @@ export default function Contact() {
           {/* Header & Strategic Mission */}
           <div className="max-w-4xl space-y-6">
             <ScrollReveal>
-              <span className="text-xs sm:text-sm font-semibold tracking-wider text-[#D52B1E] uppercase font-sans">
-                {partnershipSec.eyebrow || 'Distribution & Franchise Partnerships'}
-              </span>
-              <h2 className="text-3xl sm:text-5xl lg:text-6xl font-serif font-light text-[#121212] tracking-tight mt-2 text-balance">
+              <h2 className="text-3xl sm:text-5xl lg:text-6xl font-serif font-light text-[#121212] tracking-tight text-balance">
                 {partnershipSec.title || 'Grow with Onecore.'}
               </h2>
             </ScrollReveal>

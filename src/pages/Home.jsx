@@ -32,7 +32,6 @@ export default function Home() {
   const aboutSec = getSection('about_onecore', {
     eyebrow: '',
     title: 'Healthcare is personal. \nOur approach should be too.',
-    body: 'Onecore Pharma is a pharmaceutical company focused on purposeful formulations, dependable quality and the needs of patients and healthcare professionals.',
     cta_text: 'Discover Onecore',
     cta_url: '/about',
     image_url: '/assets/internet/healthcare-team-discussion.jpg',
@@ -221,17 +220,11 @@ export default function Home() {
           <div className="space-y-8 sm:space-y-10">
 
             {/* Editorial Title with Italicized Punchline */}
-            <div className="max-w-4xl mx-auto text-center space-y-6">
+            <div className="max-w-4xl mx-auto text-center">
               <ScrollReveal>
                 <h2 className="lilly-serif text-3xl sm:text-5xl lg:text-6xl text-[#121212] tracking-tight leading-[1.12] pt-2 text-balance">
                   Healthcare is personal. <br className="hidden sm:inline" /><em className="lilly-serif-italic font-normal text-[#121212]">Our approach should be too.</em>
                 </h2>
-              </ScrollReveal>
-
-              <ScrollReveal delay={0.1}>
-                <p className="text-base sm:text-lg text-[#4B5563] max-w-2xl mx-auto leading-relaxed pt-2">
-                  {aboutSec.body || 'Onecore Pharma is a pharmaceutical company focused on purposeful formulations, dependable quality and the needs of patients and healthcare professionals.'}
-                </p>
               </ScrollReveal>
             </div>
 
@@ -399,11 +392,8 @@ export default function Home() {
           <div className="space-y-8 sm:space-y-10">
 
             {/* Header */}
-            <div className="max-w-4xl mx-auto text-center space-y-6">
+            <div className="max-w-4xl mx-auto text-center">
               <ScrollReveal>
-                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#6B7280] block">
-                  {purposeSec.eyebrow || 'OUR PURPOSE'}
-                </span>
                 <h2 className="lilly-serif text-3xl sm:text-5xl lg:text-6xl text-[#121212] tracking-tight leading-[1.1] text-balance">
                   Improve care through medicines <br className="hidden sm:inline" /><em className="lilly-serif-italic">and healthcare solutions that matter.</em>
                 </h2>

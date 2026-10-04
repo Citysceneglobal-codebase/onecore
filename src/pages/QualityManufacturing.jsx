@@ -151,10 +151,7 @@ export default function QualityManufacturing() {
         {/* Hero Content Block Overlaid On Video */}
         <div className="relative z-10 max-w-5xl mx-auto w-full space-y-6 sm:space-y-8">
           <ScrollReveal>
-            <span className="text-xs sm:text-sm font-semibold tracking-wider text-[#FF5A4E] uppercase font-sans">
-              {heroSec.eyebrow || 'Quality & Manufacturing'}
-            </span>
-            <h1 className="text-4xl sm:text-6xl lg:text-7xl xl:text-8xl font-serif font-light text-white tracking-tight leading-[1.05] mt-2 max-w-4xl text-balance">
+            <h1 className="text-4xl sm:text-6xl lg:text-7xl xl:text-8xl font-serif font-light text-white tracking-tight leading-[1.05] max-w-4xl text-balance">
               Quality is part of the product <br />
               <span className="italic font-normal text-[#FF5A4E]">from the beginning.</span>
             </h1>

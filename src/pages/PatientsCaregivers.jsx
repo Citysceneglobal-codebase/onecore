@@ -250,9 +250,6 @@ export default function PatientsCaregivers() {
             
             <div className="lg:col-span-6 space-y-6">
               <ScrollReveal>
-                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#D52B1E] block">
-                  {perspectivesSec.eyebrow || 'TWO PERSPECTIVES'}
-                </span>
                 <h2 className="text-3xl sm:text-5xl font-serif font-light text-[#121212] tracking-tight leading-tight">
                   Different experiences. <br />
                   <span className="italic font-normal text-[#D52B1E]">The same goal.</span>
@@ -290,11 +287,8 @@ export default function PatientsCaregivers() {
       {roleSec.is_active && (
         <section className="py-12 sm:py-16 bg-transparent border-y border-[#E5E3DC]/80 px-4 sm:px-8">
           <div className="max-w-7xl mx-auto space-y-8 sm:space-y-10">
-            <div className="max-w-3xl space-y-3">
+            <div className="max-w-3xl">
               <ScrollReveal>
-                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#D52B1E] block">
-                  {roleSec.eyebrow || 'OUR ROLE'}
-                </span>
                 <h2 className="text-3xl sm:text-5xl font-serif font-light text-[#121212] tracking-tight leading-tight">
                   Listen carefully. Support responsibly. Keep the person behind the medicine in view.
                 </h2>
@@ -336,13 +330,10 @@ export default function PatientsCaregivers() {
         <section id="for-patients" className="py-12 sm:py-16 px-4 sm:px-8 max-w-7xl mx-auto space-y-8 sm:space-y-10 scroll-mt-24">
           <div className="max-w-3xl space-y-4">
             <ScrollReveal>
-              <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#D52B1E] block">
-                {forPatientsSec.eyebrow || 'FOR PATIENTS AND CAREGIVERS'}
-              </span>
               <h2 className="text-3xl sm:text-5xl font-serif font-light text-[#121212] tracking-tight leading-tight">
                 You should be able to understand the medicines that are part of your care.
               </h2>
-              <p className="text-base sm:text-lg text-[#555555] font-light leading-relaxed font-sans pt-2">
+              <p className="text-base sm:text-lg text-[#555555] font-light leading-relaxed font-sans pt-3">
                 Clear information helps patients and caregivers take a more informed role in the treatment journey. Onecore provides factual information about its products and encourages patients to speak with their doctor or pharmacist.
               </p>
             </ScrollReveal>
@@ -411,9 +402,6 @@ export default function PatientsCaregivers() {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
               <div className="lg:col-span-7 space-y-6">
                 <ScrollReveal>
-                  <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#D52B1E] block">
-                    {forProfessionalsSec.eyebrow || 'FOR HEALTHCARE PROFESSIONALS'}
-                  </span>
                   <h2 className="text-3xl sm:text-5xl font-serif font-light text-white tracking-tight leading-tight">
                     Supporting clinical practice with clear product information.
                   </h2>
@@ -487,14 +475,11 @@ export default function PatientsCaregivers() {
         <section className="py-12 sm:py-16 px-4 sm:px-8 max-w-7xl mx-auto space-y-8 sm:space-y-10">
           <div className="max-w-3xl space-y-4">
             <ScrollReveal>
-              <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#D52B1E] block">
-                {treatmentJourneySec.eyebrow || 'TREATMENT JOURNEY'}
-              </span>
               <h2 className="text-3xl sm:text-5xl font-serif font-light text-[#121212] tracking-tight leading-tight">
                 A prescription begins in the clinic. <br />
                 <span className="italic font-normal text-[#D52B1E]">Care continues beyond it.</span>
               </h2>
-              <p className="text-base sm:text-lg text-[#555555] font-light leading-relaxed font-sans pt-2">
+              <p className="text-base sm:text-lg text-[#555555] font-light leading-relaxed font-sans pt-3">
                 Healthcare professionals make treatment decisions in the clinical setting. Patients then carry those decisions into everyday life. A responsible pharmaceutical company should support both parts of that journey.
               </p>
             </ScrollReveal>
@@ -539,15 +524,12 @@ export default function PatientsCaregivers() {
         <section id="patient-safety" className="py-12 sm:py-16 bg-transparent border-t border-[#E5E3DC]/80 scroll-mt-24 px-4 sm:px-8">
           <div className="max-w-7xl mx-auto space-y-8">
             
-            <div className="max-w-3xl space-y-3">
+            <div className="max-w-3xl">
               <ScrollReveal>
-                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#D52B1E] block">
-                  {safetySec.eyebrow || 'PATIENT SAFETY'}
-                </span>
                 <h2 className="text-3xl sm:text-5xl font-serif font-light text-[#121212] tracking-tight leading-tight">
                   Safety information deserves a clear way to reach us.
                 </h2>
-                <p className="text-base sm:text-lg text-[#555555] font-light leading-relaxed font-sans">
+                <p className="text-base sm:text-lg text-[#555555] font-light leading-relaxed font-sans pt-3">
                   {safetySec.body}
                 </p>
               </ScrollReveal>
@@ -558,9 +540,6 @@ export default function PatientsCaregivers() {
                 <ScrollReveal key={card.title || idx} delay={idx * 0.08}>
                   <div className="bg-white/80 backdrop-blur-xs p-8 sm:p-12 rounded-[28px] border border-[#E5E3DC] shadow-sm h-full flex flex-col justify-between space-y-8">
                     <div className="space-y-3">
-                      <span className="text-xs font-semibold uppercase tracking-wider text-[#D52B1E] block">
-                        {card.eyebrow}
-                      </span>
                       <h3 className="text-2xl sm:text-3xl font-serif font-bold text-[#121212] tracking-tight">
                         {card.title}
                       </h3>

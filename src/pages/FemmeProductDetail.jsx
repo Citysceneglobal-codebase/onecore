@@ -70,27 +70,6 @@ function parseMechanismSteps(mechanismText) {
   }
 }
 
-// Helper to parse UsedFor into 2-4 items for the horizontal grid
-function parseUsedForItems(usedForText) {
-  if (!usedForText) return [];
-
-  const items = usedForText
-    .replace(/^Used (?:for|when|in) /i, '')
-    .split(/(?:,|\band\b|\bor\b)/)
-    .map(i => i.trim())
-    .filter(i => i.length > 3 && !i.match(/^(?:for|or|and)$/i));
-
-  const finalItems = items.slice(0, 4);
-
-  if (finalItems.length === 0) {
-    return [{ num: "01", title: usedForText }];
-  }
-
-  return finalItems.map((item, idx) => ({
-    num: String(idx + 1).padStart(2, '0'),
-    title: item.charAt(0).toUpperCase() + item.slice(1)
-  }));
-}
 
 // Helper to parse Direction into numbered steps (01 and 02)
 function parseDirectionSteps(directionText) {
@@ -259,26 +238,8 @@ export default function FemmeProductDetail() {
             {product.composition}
           </div>
           <p className="text-lg sm:text-xl text-[#575159] leading-relaxed max-w-2xl font-sans">
-            {product.description}
+            {product.description} {product.usedFor || ''}
           </p>
-          {/* 4-Item Grid for 'Used For' */}
-          <div className="border-t border-[#beb8b3] mt-8 pt-6 max-w-2xl">
-            <small className="block text-[10px] tracking-[0.15em] uppercase text-[#887e8c] font-semibold mb-4">
-              PRODUCT AT A GLANCE
-            </small>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
-              {parseUsedForItems(product.usedFor).map((item, idx) => (
-                <div key={idx} className="flex flex-col space-y-1">
-                  <span className="font-serif text-[#5b2a70] text-lg sm:text-xl">
-                    {item.num}
-                  </span>
-                  <span className="text-sm font-medium text-[#232126] leading-tight">
-                    {item.title}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
       </div>
 
@@ -338,7 +299,7 @@ export default function FemmeProductDetail() {
               {mechanismSteps.map((step, idx) => (
                 <React.Fragment key={idx}>
                   <div className="border-t border-[#5c5760] pt-6 min-h-[180px]">
-                    <div className="font-serif text-3xl text-[#cbb9d3]">{step.num}</div>
+                    <div className="font-serif text-3xl text-[#D52B1E]">{step.num}</div>
                     <h3 className="font-serif text-2xl font-normal text-white my-3">{step.title}</h3>
                     <p className="text-sm text-[#cbc6ce] leading-relaxed">{step.desc}</p>
                   </div>
@@ -357,12 +318,10 @@ export default function FemmeProductDetail() {
       {/* 7. WHEN IS IT USED? (NEUTRAL/STONE SECTION) */}
       <section id="used" className="bg-[#ebe7e1] text-[#232126] py-20 px-6 sm:px-16 scroll-mt-24">
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
-          <div className="lg:col-span-3 text-xs font-bold tracking-[0.19em] uppercase text-[#5b2a70] pt-2">
-            WHEN IS IT USED?
-          </div>
+          <div className="lg:col-span-3" />
           <div className="lg:col-span-9 space-y-8">
             <h2 className="font-serif text-4xl sm:text-5xl font-normal leading-tight max-w-3xl">
-              Targeted clinical indications & support.
+              When is it used?
             </h2>
             <p className="text-base sm:text-lg text-[#625d64] leading-relaxed max-w-3xl">
               {product.usedFor}
@@ -375,9 +334,7 @@ export default function FemmeProductDetail() {
       {/* 8. ADMINISTRATION & DOSAGE */}
       <section id="directions" className="bg-white text-[#232126] py-20 px-6 sm:px-16 scroll-mt-24">
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
-          <div className="lg:col-span-3 text-xs font-bold tracking-[0.19em] uppercase text-[#5b2a70] pt-2">
-            ADMINISTRATION
-          </div>
+          <div className="lg:col-span-3" />
           <div className="lg:col-span-9 space-y-8">
             <h2 className="font-serif text-4xl sm:text-5xl font-normal leading-tight max-w-3xl">
               Administration and dosage guidance.
@@ -408,9 +365,7 @@ export default function FemmeProductDetail() {
       {/* 9. PRECAUTIONS */}
       <section id="precautions" className="bg-white text-[#232126] py-20 px-6 sm:px-16 border-t border-[#eeeae6] scroll-mt-24">
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
-          <div className="lg:col-span-3 text-xs font-bold tracking-[0.19em] uppercase text-[#5b2a70] pt-2">
-            PRECAUTIONS
-          </div>
+          <div className="lg:col-span-3" />
           <div className="lg:col-span-9 space-y-6">
             <h2 className="font-serif text-4xl sm:text-5xl font-normal leading-tight max-w-3xl">
               Important safety information.

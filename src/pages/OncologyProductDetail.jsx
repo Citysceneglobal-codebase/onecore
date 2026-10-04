@@ -259,16 +259,8 @@ export default function OncologyProductDetail() {
             {product.composition}
           </div>
           <p className="text-lg sm:text-xl text-[#575159] leading-relaxed max-w-2xl font-sans">
-            {product.description}
+            {product.description} {product.usedFor || ''}
           </p>
-          <div className="border-t border-[#beb8b3] mt-8 pt-6 max-w-2xl">
-            <small className="block text-[10px] tracking-[0.15em] uppercase text-[#788891] font-semibold mb-2">
-              PRODUCT AT A GLANCE
-            </small>
-            <span className="font-serif text-xl sm:text-2xl leading-snug text-[#232126]">
-              {product.usedFor}
-            </span>
-          </div>
         </div>
       </div>
 
@@ -326,7 +318,7 @@ export default function OncologyProductDetail() {
               {mechanismSteps.map((step, idx) => (
                 <React.Fragment key={idx}>
                   <div className="border-t border-[#5c5760] pt-6 min-h-[180px]">
-                    <div className="font-serif text-3xl text-[#cbb9d3]">{step.num}</div>
+                    <div className="font-serif text-3xl text-[#D52B1E]">{step.num}</div>
                     <h3 className="font-serif text-2xl font-normal text-white my-3">{step.title}</h3>
                     <p className="text-sm text-[#cbc6ce] leading-relaxed">{step.desc}</p>
                   </div>
@@ -360,9 +352,7 @@ export default function OncologyProductDetail() {
       {/* SECTION: ADMINISTRATION & DOSAGE */}
       <section id="directions" className="bg-white text-[#232126] py-20 px-6 sm:px-16 scroll-mt-24">
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
-          <div className="lg:col-span-3 text-xs font-bold tracking-[0.19em] uppercase text-[#1f4e5b] pt-2">
-            ADMINISTRATION
-          </div>
+          <div className="lg:col-span-3" />
           <div className="lg:col-span-9 space-y-8">
             <h2 className="font-serif text-4xl sm:text-5xl font-normal leading-tight max-w-3xl">
               Administration and dosage guidance.

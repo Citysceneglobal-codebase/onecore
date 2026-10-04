@@ -255,15 +255,12 @@ export default function DistributionPartnerships() {
           SECTION 2.7 — LOGISTICS & INFRASTRUCTURE SHOWCASE
           ========================================================================= */}
       <section className="py-12 sm:py-16 px-4 sm:px-8 max-w-7xl mx-auto space-y-8 sm:space-y-10">
-        <div className="max-w-3xl space-y-3">
+        <div className="max-w-3xl">
           <ScrollReveal>
-            <span className="text-xs font-mono font-semibold uppercase tracking-wider text-[#D52B1E]">
-              DISTRIBUTION INFRASTRUCTURE
-            </span>
             <h2 className="text-3xl sm:text-5xl font-serif font-light text-[#121212] tracking-tight leading-tight">
               Pan-India Cold Chain & High-Throughput Logistics
             </h2>
-            <p className="text-base sm:text-lg text-[#555555] font-light leading-relaxed">
+            <p className="text-base sm:text-lg text-[#555555] font-light leading-relaxed pt-3">
               Every shipment leaving our central hubs is protected by disciplined temperature logging, certified primary packaging, and rapid logistics dispatch.
             </p>
           </ScrollReveal>
