@@ -22,6 +22,7 @@ import ToastNotification from '../../components/admin/ToastNotification';
 import ConfirmModal from '../../components/admin/ConfirmModal';
 import MediaSelectorModal from '../../components/admin/MediaSelectorModal';
 import { useAdminAuth } from '../../context/AdminAuthContext';
+import { assetUrl } from '../../utils/assetUrl';
 
 const DIVISION_MAP = {
   'womens-health': 'Femme',
@@ -58,7 +59,7 @@ function AreaEditorPanel({ area, onSave, onCancel, onOpenMedia }) {
     number_label: area?.number_label || '01',
     heading: area?.heading || area?.name || '',
     description: area?.description || '',
-    image_url: area?.image_url || '',
+    image_url: area?.image_url || area?.image || '',
     is_active: area?.is_active !== 0,
     tags: (area?.tags || []).join(', '),
   });
@@ -148,7 +149,7 @@ function AreaEditorPanel({ area, onSave, onCancel, onOpenMedia }) {
               type="text"
               value={form.image_url}
               onChange={set('image_url')}
-              placeholder="/assets/therapeutic-orthopaedics.jpg"
+              placeholder="/assets/therapeutic-orthopaedics.jpg or /uploads/..."
               className="flex-1 bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-[#0D5C75] focus:ring-1 focus:ring-[#0D5C75]"
             />
             <button
@@ -159,7 +160,35 @@ function AreaEditorPanel({ area, onSave, onCancel, onOpenMedia }) {
               <ImageIcon size={14} />
               <span>Media</span>
             </button>
+            {form.image_url && (
+              <button
+                type="button"
+                onClick={() => setForm((p) => ({ ...p, image_url: '' }))}
+                className="shrink-0 px-2.5 py-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 border border-slate-200 rounded-lg text-xs transition-colors"
+                title="Clear image"
+              >
+                <X size={14} />
+              </button>
+            )}
           </div>
+          {form.image_url && (
+            <div className="mt-2.5 flex items-center gap-3 p-2 bg-white rounded-lg border border-slate-200 max-w-sm">
+              <div className="w-14 h-14 rounded-md overflow-hidden bg-slate-100 shrink-0 border border-slate-200">
+                <img
+                  src={assetUrl(form.image_url)}
+                  alt="Preview"
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
+                />
+              </div>
+              <div className="min-w-0 flex-1">
+                <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold">Active Preview</span>
+                <span className="text-xs font-mono text-slate-700 truncate block">{form.image_url}</span>
+              </div>
+            </div>
+          )}
         </div>
       </div>
       <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-200">
@@ -412,6 +441,24 @@ export default function AdminTherapeuticAreas() {
                     <span className="w-7 h-7 rounded-full bg-slate-100 border border-slate-200 text-slate-700 text-xs font-mono font-bold flex items-center justify-center shrink-0">
                       {area.number_label || String(idx + 1).padStart(2, '0')}
                     </span>
+
+                    {/* Area Image Thumbnail */}
+                    <div className="w-12 h-12 rounded-lg bg-slate-100 border border-slate-200 overflow-hidden shrink-0">
+                      {(area.image_url || area.image) ? (
+                        <img
+                          src={assetUrl(area.image_url || area.image)}
+                          alt={area.name}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                          }}
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-slate-400">
+                          <ImageIcon size={16} />
+                        </div>
+                      )}
+                    </div>
 
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2 flex-wrap">

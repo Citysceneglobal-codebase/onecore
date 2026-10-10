@@ -44,6 +44,7 @@ export default function Contact() {
     cta_url: '#enquiry-form',
     secondary_cta_text: 'Contact Details',
     secondary_cta_url: '#contact-details',
+    image_url: '/assets/internet/contact-direct-helpline.jpg',
   });
 
   const channelsSec = getSection('direct_channels', {
@@ -317,8 +318,8 @@ export default function Contact() {
             {/* Stately Healthcare Direct Helpline & Inquiries Banner Frame */}
             <div className="relative rounded-[28px] overflow-hidden border border-[#E5E3DC] shadow-sm aspect-[16/9] lg:aspect-[21/9] bg-[#FAF9F6] mt-8">
               <img
-                src={assetUrl('/assets/internet/contact-direct-helpline.jpg')}
-                alt="Onecore Pharma medical communication and direct helpline desk"
+                src={assetUrl(heroSec.image_url || '/assets/internet/contact-direct-helpline.jpg')}
+                alt={heroSec.title || 'Onecore Pharma medical communication and direct helpline desk'}
                 className="w-full h-full object-cover"
               />
             </div>

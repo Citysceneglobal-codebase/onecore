@@ -141,11 +141,11 @@ export default function Home() {
   // Map dynamic areas to division cards
   const divisions = (dynamicAreas && dynamicAreas.length > 0)
     ? dynamicAreas.map((a) => ({
-      name: a.divisionName || a.displayName || a.title,
-      specialty: a.therapeuticArea || a.displayName || a.title,
+      name: a.divisionName || a.name || a.displayName || a.title,
+      specialty: a.therapeuticArea || a.displayName || a.name || a.title,
       description: a.description || a.shortDescription || 'Targeted therapeutic formulations developed to address real clinical needs.',
-      image: a.image || a.image_url || '/assets/therapeutic-general-medicine.jpg',
-      path: `/areas-of-care/${(a.slug || a.id || a.divisionName || '').toLowerCase().trim()}`,
+      image: (a.image_url && a.image_url.trim()) ? a.image_url.trim() : ((a.image && a.image.trim()) ? a.image.trim() : '/assets/therapeutic-general-medicine.jpg'),
+      path: a.route || `/areas-of-care/${(a.slug || a.id || a.divisionName || '').toLowerCase().trim()}`,
     }))
     : [
       { name: "CYTOS", specialty: "Oncology", description: "Targeted therapeutics and supportive oncology care.", image: "/assets/cytos.jpg", path: "/areas-of-care/cytos" },
@@ -360,7 +360,7 @@ export default function Home() {
                     {/* Gradient Mask for High Contrast */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-90 group-hover:opacity-95 transition-opacity" />
 
-                    {/* Card Content Overlay (Clean bottom alignment, no top chip) */}
+                    {/* Card Content Overlay: Division/Brand Name and Specialty */}
                     <div className="absolute inset-0 p-6 sm:p-8 flex flex-col justify-end text-white">
                       <div className="space-y-1.5">
                         <span className="text-xs font-bold uppercase tracking-wider text-red-300">
@@ -369,9 +369,6 @@ export default function Home() {
                         <h3 className="text-2xl sm:text-3xl font-serif font-medium tracking-tight text-white leading-snug">
                           {item.specialty}
                         </h3>
-                        <p className="text-xs sm:text-sm text-white/80 line-clamp-2 leading-relaxed font-normal">
-                          {item.description}
-                        </p>
                       </div>
                     </div>
                   </Link>

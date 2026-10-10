@@ -15,7 +15,7 @@ export function assetUrl(path) {
 
   // Remove leading slash so it resolves with Vite BASE_URL
   const cleanPath = path.startsWith('/') ? path.slice(1) : path;
-  const base = import.meta.env.BASE_URL || './';
+  const base = import.meta.env.BASE_URL || '/';
   const cleanBase = base.endsWith('/') ? base : `${base}/`;
 
   return `${cleanBase}${cleanPath}`;

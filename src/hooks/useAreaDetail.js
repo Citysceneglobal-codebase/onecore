@@ -33,6 +33,8 @@ export function useAreaDetail(slug) {
 
         if (isMounted && result.success && result.data) {
           const apiArea = result.data;
+          const savedImage = (apiArea.image_url && String(apiArea.image_url).trim()) ? String(apiArea.image_url).trim() : ((apiArea.image && String(apiArea.image).trim()) ? String(apiArea.image).trim() : (fallback?.image || fallback?.image_url || '/assets/therapeutic-general-medicine.jpg'));
+
           const merged = {
             ...fallback,
             ...apiArea,
@@ -43,8 +45,9 @@ export function useAreaDetail(slug) {
             heading: apiArea.heading || fallback?.focusTitle,
             focusTitle: apiArea.heading || fallback?.focusTitle,
             description: apiArea.description || fallback?.description,
-            image: apiArea.image_url || fallback?.image,
-            image_url: apiArea.image_url || fallback?.image,
+            image: savedImage,
+            image_url: savedImage,
+            heroImage: savedImage,
             tags: apiArea.tags && apiArea.tags.length > 0 ? apiArea.tags : fallback?.tags || [],
             sampleProducts: (apiArea.products && apiArea.products.length > 0) ? apiArea.products : fallback?.sampleProducts || [],
           };

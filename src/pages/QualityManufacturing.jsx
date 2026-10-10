@@ -31,7 +31,7 @@ export default function QualityManufacturing() {
     title: 'Quality is part of the product from the beginning.',
     body: 'At Onecore Pharma, quality is not treated as a final checkpoint. It is considered throughout the product journey, from formulation and sourcing to manufacturing, testing and responsible release.',
     image_url: '/assets/quality.jpg',
-    video_url: '/assets/quality-manufacturing.mp4',
+    video_url: '',
     cta_text: 'Quality Principles',
     cta_url: '#principles',
     secondary_cta_text: 'Explore Formulations',
@@ -124,23 +124,31 @@ export default function QualityManufacturing() {
     <div className="w-full bg-transparent text-[#121212]">
       
       {/* =========================================================================
-          SECTION 1 — CINEMATIC MANUFACTURING VIDEO HERO
-          Headline & body overlaid directly on video with contrast grading & smooth looping
+          SECTION 1 — HERO SECTION
+          Headline & body overlaid with contrast grading & smooth presentation
           ========================================================================= */}
       <section className="relative min-h-[85vh] sm:min-h-[90vh] flex items-end pb-16 sm:pb-24 pt-32 px-4 sm:px-8 lg:px-12 bg-[#071324] overflow-hidden">
-        {/* Background Video with Cinematic Grading & Color Filter */}
+        {/* Background Visual (Image or Video) with Cinematic Grading & Color Filter */}
         <div className="absolute inset-0 z-0 overflow-hidden">
-          <video
-            ref={videoRef}
-            src={assetUrl(heroSec.video_url || '/assets/quality-manufacturing.mp4')}
-            poster={assetUrl(heroSec.image_url || '/assets/quality.jpg')}
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="auto"
-            className="w-full h-full object-cover object-center scale-[1.02] filter brightness-[0.72] contrast-[1.12] saturate-[0.88]"
-          />
+          {heroSec.video_url ? (
+            <video
+              ref={videoRef}
+              src={assetUrl(heroSec.video_url)}
+              poster={assetUrl(heroSec.image_url || '/assets/quality.jpg')}
+              autoPlay
+              loop
+              muted
+              playsInline
+              preload="auto"
+              className="w-full h-full object-cover object-center scale-[1.02] filter brightness-[0.72] contrast-[1.12] saturate-[0.88]"
+            />
+          ) : (
+            <img
+              src={assetUrl(heroSec.image_url || '/assets/quality.jpg')}
+              alt={heroSec.title || 'Quality is part of the product from the beginning.'}
+              className="w-full h-full object-cover object-center scale-[1.02] filter brightness-[0.72] contrast-[1.12] saturate-[0.88]"
+            />
+          )}
 
           {/* Clinical Color Contrast Grading Filters */}
           <div className="absolute inset-0 bg-[#071324]/35 mix-blend-multiply pointer-events-none" />

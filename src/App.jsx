@@ -113,6 +113,14 @@ function AdminRoutes() {
         }
       />
       <Route
+        path="/admin/therapeutic-areas"
+        element={
+          <ProtectedRoute>
+            <AdminTherapeuticAreas />
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/admin/products"
         element={
           <ProtectedRoute>

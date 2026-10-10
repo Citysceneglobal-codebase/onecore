@@ -186,7 +186,7 @@ export const pagesContent = {
         eyebrow: '',
         title: 'Connect with Onecore Pharma.',
         body: 'Whether you have inquiries regarding our therapeutic divisions, medical products, or corporate partnerships, our team is ready to assist you.',
-        image_url: '/assets/contact-hero.jpg',
+        image_url: '/assets/internet/contact-direct-helpline.jpg',
       }
     }
   }

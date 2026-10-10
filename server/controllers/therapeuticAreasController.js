@@ -37,7 +37,40 @@ export const getTherapeuticAreas = async (req, res, next) => {
 export const getTherapeuticAreaById = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const areas = await query('SELECT * FROM therapeutic_areas WHERE id = ? OR slug = ?', [id, id]);
+    let areas = await query('SELECT * FROM therapeutic_areas WHERE id = ? OR slug = ?', [id, id]);
+
+    if (!areas || areas.length === 0) {
+      // Check division alias mapping if not found by exact ID or slug
+      const aliasMap = {
+        'femme': 'womens-health',
+        'womens-health': 'womens-health',
+        'women-health': 'womens-health',
+        'pediaplus': 'paediatrics',
+        'paediatrics': 'paediatrics',
+        'pediatrics': 'paediatrics',
+        'ortheon': 'orthopaedics',
+        'orthopaedics': 'orthopaedics',
+        'orthopedic': 'orthopaedics',
+        'neurix': 'neurology',
+        'neurology': 'neurology',
+        'eyerix': 'ophthalmology',
+        'ophthalmology': 'ophthalmology',
+        'vellis': 'dermatology',
+        'dermatology': 'dermatology',
+        'otira': 'ent',
+        'ent': 'ent',
+        'omnara': 'general-medicine',
+        'general-medicine': 'general-medicine',
+        'general': 'general-medicine',
+        'cytos': 'oncology',
+        'oncology': 'oncology',
+      };
+      const cleanParam = String(id).toLowerCase().trim();
+      const mappedSlug = aliasMap[cleanParam];
+      if (mappedSlug) {
+        areas = await query('SELECT * FROM therapeutic_areas WHERE slug = ? OR name LIKE ?', [mappedSlug, `%${cleanParam}%`]);
+      }
+    }
 
     if (!areas || areas.length === 0) {
       return res.status(404).json({ success: false, message: 'Therapeutic area not found.' });
@@ -79,6 +112,8 @@ export const createTherapeuticArea = async (req, res, next) => {
       order = (maxOrder?.max_order || 0) + 1;
     }
 
+    const cleanImageUrl = image_url !== undefined && image_url !== null ? String(image_url).trim() : null;
+
     const result = await query(`
       INSERT INTO therapeutic_areas (name, slug, number_label, heading, description, image_url, display_order, is_active)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
@@ -88,7 +123,7 @@ export const createTherapeuticArea = async (req, res, next) => {
       number_label || '01',
       heading || name.trim(),
       description || '',
-      image_url || null,
+      cleanImageUrl || null,
       order,
       is_active !== undefined ? (is_active ? 1 : 0) : 1
     ]);
@@ -128,22 +163,34 @@ export const updateTherapeuticArea = async (req, res, next) => {
     if (number_label !== undefined) { updates.push('number_label = ?'); params.push(number_label); }
     if (heading !== undefined) { updates.push('heading = ?'); params.push(heading); }
     if (description !== undefined) { updates.push('description = ?'); params.push(description); }
-    if (image_url !== undefined) { updates.push('image_url = ?'); params.push(image_url); }
+    if (image_url !== undefined) {
+      const cleanImg = image_url !== null ? String(image_url).trim() : null;
+      updates.push('image_url = ?');
+      params.push(cleanImg);
+    }
     if (is_active !== undefined) { updates.push('is_active = ?'); params.push(is_active ? 1 : 0); }
     if (display_order !== undefined) { updates.push('display_order = ?'); params.push(display_order); }
 
     if (updates.length > 0) {
       params.push(id);
-      await query(`UPDATE therapeutic_areas SET ${updates.join(', ')} WHERE id = ?`, params);
+      params.push(id);
+      await query(`UPDATE therapeutic_areas SET ${updates.join(', ')} WHERE id = ? OR slug = ?`, params);
+    }
+
+    // Resolve numerical ID for tag association
+    let areaNumericId = id;
+    if (isNaN(id)) {
+      const [matchedArea] = await query('SELECT id FROM therapeutic_areas WHERE slug = ? OR id = ? LIMIT 1', [id, id]);
+      if (matchedArea) areaNumericId = matchedArea.id;
     }
 
     // Update tags if provided
     if (tags !== undefined && Array.isArray(tags)) {
-      await query('DELETE FROM therapeutic_area_tags WHERE therapeutic_area_id = ?', [id]);
+      await query('DELETE FROM therapeutic_area_tags WHERE therapeutic_area_id = ?', [areaNumericId]);
       for (let i = 0; i < tags.length; i++) {
         const tagName = typeof tags[i] === 'string' ? tags[i].trim() : tags[i].name?.trim();
         if (tagName) {
-          await query('INSERT INTO therapeutic_area_tags (therapeutic_area_id, name, display_order) VALUES (?, ?, ?)', [id, tagName, i + 1]);
+          await query('INSERT INTO therapeutic_area_tags (therapeutic_area_id, name, display_order) VALUES (?, ?, ?)', [areaNumericId, tagName, i + 1]);
         }
       }
     }
