@@ -151,12 +151,15 @@ function parsePrecautionsAccordions(precautionsArray) {
 }
 
 import { useProduct } from '../hooks/useProduct';
+import { getAreaListingRoute } from '../utils/areaNavigation';
+import { formatProductName } from '../utils/formatProductName';
 
 export default function OncologyProductDetail() {
   const { productSlug } = useParams();
   const staticProduct = getOncologyProductBySlug(productSlug);
   const { product: cmsProduct } = useProduct(productSlug);
   const product = cmsProduct || staticProduct;
+  const listingRoute = getAreaListingRoute(product, 'cytos');
 
   useEffect(() => {
     if (product) {
@@ -232,13 +235,17 @@ export default function OncologyProductDetail() {
                 <span className="text-[10px] tracking-[0.2em] font-bold text-[#1f4e5b] uppercase">ONECORE</span>
               </div>
               <div className="my-auto py-8 text-center space-y-2">
-                <h3 className="font-serif text-3xl text-[#232126] font-normal tracking-tight">{product.name}</h3>
+                <h3 className="font-serif text-3xl text-[#232126] font-normal tracking-tight">{formatProductName(product.name)}</h3>
                 <p className="text-[11px] text-[#556066] leading-relaxed max-w-[200px] mx-auto">
                   {product.composition}
                 </p>
               </div>
               <div className="w-full pt-3 border-t border-[#e6ebef] text-center">
-                <span className="text-[9px] font-mono uppercase tracking-widest text-[#788891]">ONCOLOGY</span>
+                <span className="text-[9px] font-mono uppercase tracking-widest text-[#788891]">
+                  <Link to={listingRoute} className="hover:underline transition-colors">
+                    ONCOLOGY
+                  </Link>
+                </span>
               </div>
             </div>
           )}
@@ -250,10 +257,16 @@ export default function OncologyProductDetail() {
         {/* RIGHT 57% */}
         <div className="lg:col-span-7 p-8 sm:p-14 lg:p-20 flex flex-col justify-center">
           <div className="text-[11px] tracking-[0.2em] uppercase font-bold text-[#1f4e5b]">
-            CYTOS · ONCOLOGY
+            <Link to={listingRoute} className="hover:underline transition-colors">
+              CYTOS
+            </Link>
+            <span> · </span>
+            <Link to={listingRoute} className="hover:underline transition-colors">
+              ONCOLOGY
+            </Link>
           </div>
           <h1 className="font-serif text-5xl sm:text-6xl lg:text-7xl tracking-tight text-[#232126] font-normal my-4 leading-[0.98]">
-            {product.name}
+            {formatProductName(product.name)}
           </h1>
           <div className="text-base text-[#736c74] mb-6 font-sans">
             {product.composition}
@@ -406,7 +419,7 @@ export default function OncologyProductDetail() {
       {/* FOOTER CTA */}
       <div className="border-t border-[#d9d4cf] py-12 px-6 sm:px-12 bg-[#f7f5f1] text-center">
         <Link
-          to="/areas-of-care/cytos"
+          to={listingRoute}
           className="inline-block border border-[#232126] px-8 py-3 text-xs uppercase tracking-wider font-semibold hover:bg-[#232126] hover:text-white transition-colors"
         >
           ← Back to Cytos Portfolio

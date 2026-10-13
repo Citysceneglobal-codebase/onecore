@@ -72,24 +72,46 @@ export default function DistributionPartnerships() {
     <div className="w-full bg-transparent text-[#121212]">
 
       {/* =========================================================================
-          SECTION 1 — HERO
+          SECTION 1 — HERO BANNER
+          Clean, stately, high-contrast human photography with bold typography
           ========================================================================= */}
-      <section className="pt-20 sm:pt-24 pb-10 sm:pb-14 px-4 sm:px-8 border-b border-[#E5E3DC]/80 bg-transparent">
-        <div className="max-w-7xl mx-auto space-y-8">
-          
-          <div className="max-w-4xl space-y-6">
-            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-serif font-light text-[#121212] tracking-tight leading-[1.05]">
+      <section className="relative min-h-[90vh] sm:min-h-screen flex items-end pb-16 sm:pb-24 pt-32 px-4 sm:px-8 lg:px-12 bg-black">
+        {/* Hero Background Photograph */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src={assetUrl(heroSection?.image_url || '/assets/about-facility.jpg')}
+            alt="Onecore Pharma pan-India pharmaceutical supply network"
+            className="w-full h-full object-cover object-center opacity-85 brightness-90"
+            loading="eager"
+          />
+          {/* Directional contrast gradient */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 to-black/20" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/40 to-transparent" />
+        </div>
+
+        {/* Hero Content Block */}
+        <div className="relative z-10 max-w-5xl mx-auto w-full space-y-6 sm:space-y-8">
+          <ScrollReveal>
+            <h1 className="text-4xl sm:text-6xl lg:text-7xl xl:text-8xl font-serif font-light text-white tracking-tight leading-[1.04] max-w-4xl">
               {heroSection?.heading || 'Distribution & Franchise Partnerships'}
+              {(heroSection?.subheading || 'Grow with Onecore.') && (
+                <>
+                  <br />
+                  <span className="italic font-normal text-[#D52B1E]">
+                    {heroSection?.subheading || 'Grow with Onecore.'}
+                  </span>
+                </>
+              )}
             </h1>
+          </ScrollReveal>
 
-            <p className="text-2xl sm:text-3xl font-serif italic text-[#D52B1E]">
-              {heroSection?.subheading || 'Grow with Onecore.'}
-            </p>
-
-            <p className="text-lg sm:text-xl text-[#555555] font-light leading-relaxed font-sans max-w-3xl">
+          <ScrollReveal delay={0.08}>
+            <p className="text-base sm:text-xl lg:text-2xl text-white/90 font-light leading-relaxed font-sans max-w-3xl">
               {heroSection?.body || 'We are expanding our distribution network across India and are looking to partner with pharmaceutical distributors and franchise partners who understand their markets and want to build for the long term.'}
             </p>
+          </ScrollReveal>
 
+          <ScrollReveal delay={0.14}>
             <div className="pt-2 flex flex-wrap items-center gap-4">
               <button
                 type="button"
@@ -99,45 +121,32 @@ export default function DistributionPartnerships() {
                     el.scrollIntoView({ behavior: 'smooth' });
                   }
                 }}
-                className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#D52B1E] hover:bg-[#B52015] text-white text-xs font-semibold rounded-full transition-colors shadow-xs cursor-pointer"
+                className="inline-flex items-center gap-2.5 px-8 py-4 bg-[#D52B1E] hover:bg-[#B52015] text-white text-sm font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 group cursor-pointer"
               >
                 <span>{heroSection?.cta_text || 'Apply for Partnership'}</span>
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </button>
 
               <Link
                 to={heroSection?.secondary_cta_url || '/areas-of-care'}
-                className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#FAF9F6] hover:bg-[#EBE9E1] text-[#121212] text-xs font-semibold rounded-full transition-colors border border-[#E5E3DC]"
+                className="inline-flex items-center gap-2 px-8 py-4 bg-white/15 hover:bg-white/25 backdrop-blur-md border border-white/25 text-white text-sm font-medium rounded-full transition-all duration-200"
               >
                 <span>{heroSection?.secondary_cta_text || 'View Product Portfolio'}</span>
               </Link>
             </div>
-          </div>
-
-          {/* Stately Indian Corporate / Clinical Photo Frame */}
-          <div className="relative rounded-[28px] overflow-hidden border border-[#E5E3DC] shadow-sm aspect-[16/9] lg:aspect-[21/9] bg-[#FAF9F6]">
-            <img
-              src={assetUrl(heroSection?.image_url || '/assets/about-facility.jpg')}
-              alt="Onecore Pharma pan-India pharmaceutical supply network"
-              className="w-full h-full object-cover"
-            />
-          </div>
-
+          </ScrollReveal>
         </div>
       </section>
 
       {/* =========================================================================
           SECTION 2 — WHY PARTNER WITH ONECORE (4 PILLARS)
           ========================================================================= */}
-      <section className="py-12 sm:py-16 px-4 sm:px-8 max-w-7xl mx-auto space-y-8 sm:space-y-10">
-        <div className="max-w-3xl space-y-4">
+      <section className="py-10 sm:py-14 px-4 sm:px-8 max-w-7xl mx-auto space-y-6 sm:space-y-8">
+        <div className="max-w-3xl">
           <ScrollReveal>
             <h2 className="text-3xl sm:text-5xl font-serif font-light text-[#121212] tracking-tight leading-tight">
               {pillarsSection?.heading || 'Why partner with Onecore'}
             </h2>
-            <p className="text-base sm:text-lg text-[#555555] font-light leading-relaxed">
-              {pillarsSection?.subheading || pillarsSection?.body || 'We partner with ethical distributors, PCD franchises, and institutional supply associates who share our vision for medical integrity and clinical excellence.'}
-            </p>
           </ScrollReveal>
         </div>
 

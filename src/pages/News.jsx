@@ -28,21 +28,37 @@ export default function News() {
     <div className="w-full bg-transparent text-[#121212] min-h-screen">
       
       {/* =========================================================================
-          SECTION 1 — EDITORIAL HERO
-          Spacious, dignified typography with signature crimson accent
+          SECTION 1 — HERO BANNER
+          Clean, stately, high-contrast human photography with bold typography
           ========================================================================= */}
-      <section className="pt-20 sm:pt-24 pb-8 sm:pb-10 px-4 sm:px-8 border-b border-[#E5E3DC]/80 bg-[#FAF9F6]/50 backdrop-blur-[1px]">
-        <div className="max-w-7xl mx-auto space-y-6">
-          <div className="max-w-3xl space-y-4">
-            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-serif font-light text-[#121212] tracking-tight leading-[1.05]">
+      <section className="relative min-h-[90vh] sm:min-h-screen flex items-end pb-16 sm:pb-24 pt-32 px-4 sm:px-8 lg:px-12 bg-black">
+        {/* Hero Background Photograph */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src={assetUrl(heroSec.image_url || '/assets/news-1.jpg')}
+            alt="Onecore Pharma News & Perspectives"
+            className="w-full h-full object-cover object-center opacity-85 brightness-90"
+            loading="eager"
+          />
+          {/* Directional contrast gradient */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 to-black/20" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/40 to-transparent" />
+        </div>
+
+        {/* Hero Content Block */}
+        <div className="relative z-10 max-w-5xl mx-auto w-full space-y-6 sm:space-y-8">
+          <ScrollReveal>
+            <h1 className="text-4xl sm:text-6xl lg:text-7xl xl:text-8xl font-serif font-light text-white tracking-tight leading-[1.04] max-w-4xl">
               News & <br />
               <span className="italic font-normal text-[#D52B1E]">Clinical Perspectives.</span>
             </h1>
+          </ScrollReveal>
 
-            <p className="text-lg sm:text-xl text-[#555555] font-light leading-relaxed font-sans pt-1">
+          <ScrollReveal delay={0.08}>
+            <p className="text-base sm:text-xl lg:text-2xl text-white/90 font-light leading-relaxed font-sans max-w-3xl">
               {heroSec.body || 'Stay updated with formulation research insights, therapeutic milestones, and manufacturing disciplines from Onecore Pharma.'}
             </p>
-          </div>
+          </ScrollReveal>
         </div>
       </section>
 

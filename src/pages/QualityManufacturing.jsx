@@ -31,7 +31,7 @@ export default function QualityManufacturing() {
     title: 'Quality is part of the product from the beginning.',
     body: 'At Onecore Pharma, quality is not treated as a final checkpoint. It is considered throughout the product journey, from formulation and sourcing to manufacturing, testing and responsible release.',
     image_url: '/assets/quality.jpg',
-    video_url: '',
+    video_url: '/assets/quality-manufacturing.mp4',
     cta_text: 'Quality Principles',
     cta_url: '#principles',
     secondary_cta_text: 'Explore Formulations',
@@ -41,7 +41,7 @@ export default function QualityManufacturing() {
   const principlesSec = getSection('principles', {
     eyebrow: 'FOUNDATIONAL PRINCIPLES',
     title: 'Principles that guide our quality approach.',
-    body: 'A disciplined commitment to patient safety, regulatory compliance, and formulation excellence across every batch.',
+    body: '',
     items: [
       {
         title: "Consistent Standards",
@@ -82,7 +82,7 @@ export default function QualityManufacturing() {
   const assuranceSec = getSection('assurance_steps', {
     eyebrow: 'QUALITY ASSURANCE',
     title: 'Controls throughout the lifecycle.',
-    subtitle: 'Key assurance stages designed to support formulation reliability from raw ingredient selection to clinical availability.',
+    subtitle: '',
     items: [
       {
         title: "Raw material and supplier oversight",
@@ -111,44 +111,27 @@ export default function QualityManufacturing() {
     ]
   });
 
-  const finalCtaSec = getSection('final_cta', {
-    title: 'Quality you can depend on.',
-    body: 'Explore the therapeutic areas and formulations that make up the Onecore portfolio, or speak with our Medical & Quality Affairs desk.',
-    cta_text: 'EXPLORE OUR QUALITY',
-    cta_url: '/quality-manufacturing',
-    secondary_cta_text: 'Contact Quality Team',
-    secondary_cta_url: '/contact',
-  });
-
   return (
     <div className="w-full bg-transparent text-[#121212]">
       
       {/* =========================================================================
-          SECTION 1 — HERO SECTION
-          Headline & body overlaid with contrast grading & smooth presentation
+          SECTION 1 — CINEMATIC MANUFACTURING VIDEO HERO
+          Headline & body overlaid directly on video with contrast grading & smooth looping
           ========================================================================= */}
       <section className="relative min-h-[85vh] sm:min-h-[90vh] flex items-end pb-16 sm:pb-24 pt-32 px-4 sm:px-8 lg:px-12 bg-[#071324] overflow-hidden">
-        {/* Background Visual (Image or Video) with Cinematic Grading & Color Filter */}
+        {/* Background Video with Cinematic Grading & Color Filter */}
         <div className="absolute inset-0 z-0 overflow-hidden">
-          {heroSec.video_url ? (
-            <video
-              ref={videoRef}
-              src={assetUrl(heroSec.video_url)}
-              poster={assetUrl(heroSec.image_url || '/assets/quality.jpg')}
-              autoPlay
-              loop
-              muted
-              playsInline
-              preload="auto"
-              className="w-full h-full object-cover object-center scale-[1.02] filter brightness-[0.72] contrast-[1.12] saturate-[0.88]"
-            />
-          ) : (
-            <img
-              src={assetUrl(heroSec.image_url || '/assets/quality.jpg')}
-              alt={heroSec.title || 'Quality is part of the product from the beginning.'}
-              className="w-full h-full object-cover object-center scale-[1.02] filter brightness-[0.72] contrast-[1.12] saturate-[0.88]"
-            />
-          )}
+          <video
+            ref={videoRef}
+            src={assetUrl(heroSec.video_url || '/assets/quality-manufacturing.mp4')}
+            poster={assetUrl(heroSec.image_url || '/assets/quality.jpg')}
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+            className="w-full h-full object-cover object-center scale-[1.02] filter brightness-[0.72] contrast-[1.12] saturate-[0.88]"
+          />
 
           {/* Clinical Color Contrast Grading Filters */}
           <div className="absolute inset-0 bg-[#071324]/35 mix-blend-multiply pointer-events-none" />
@@ -203,15 +186,12 @@ export default function QualityManufacturing() {
           SECTION 2 — FOUNDATIONAL PRINCIPLES (4 Cards)
           ========================================================================= */}
       {principlesSec.is_active && (
-        <section id="principles" className="py-12 sm:py-16 px-4 sm:px-8 max-w-7xl mx-auto space-y-8 sm:space-y-10">
-          <div className="max-w-3xl space-y-3">
+        <section id="principles" className="py-10 sm:py-14 px-4 sm:px-8 max-w-7xl mx-auto space-y-6 sm:space-y-8">
+          <div className="max-w-3xl">
             <ScrollReveal>
               <h2 className="text-3xl sm:text-5xl font-serif font-light text-[#121212] tracking-tight leading-tight">
                 {principlesSec.title || 'Principles that guide our quality approach.'}
               </h2>
-              <p className="text-base sm:text-lg text-[#555555] font-light leading-relaxed">
-                {principlesSec.body}
-              </p>
             </ScrollReveal>
           </div>
 
@@ -299,15 +279,12 @@ export default function QualityManufacturing() {
           SECTION 4 — QUALITY ASSURANCE (6-Step Lifecycle Grid)
           ========================================================================= */}
       {assuranceSec.is_active && (
-        <section className="py-12 sm:py-16 px-4 sm:px-8 max-w-7xl mx-auto space-y-8 sm:space-y-10">
-          <div className="max-w-3xl space-y-3">
+        <section className="pt-10 sm:pt-14 pb-16 sm:pb-20 px-4 sm:px-8 max-w-7xl mx-auto space-y-6 sm:space-y-8">
+          <div className="max-w-3xl">
             <ScrollReveal>
               <h2 className="text-3xl sm:text-5xl font-serif font-light text-[#121212] tracking-tight leading-tight">
                 {assuranceSec.title || 'Controls throughout the lifecycle.'}
               </h2>
-              <p className="text-base sm:text-lg text-[#555555] font-light leading-relaxed">
-                {assuranceSec.subtitle || 'Key assurance stages designed to support formulation reliability from raw ingredient selection to clinical availability.'}
-              </p>
             </ScrollReveal>
           </div>
 
@@ -329,42 +306,6 @@ export default function QualityManufacturing() {
                 </div>
               </ScrollReveal>
             ))}
-          </div>
-        </section>
-      )}
-
-      {/* =========================================================================
-          SECTION 5 — FINAL CTA
-          ========================================================================= */}
-      {finalCtaSec.is_active && (
-        <section className="py-12 sm:py-16 bg-[#121212] text-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-8">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center justify-between">
-              
-              <div className="lg:col-span-8 space-y-4">
-                <ScrollReveal>
-                  <h2 className="text-3xl sm:text-5xl font-serif font-light text-white tracking-tight leading-tight">
-                    {finalCtaSec.title || 'Quality you can depend on.'}
-                  </h2>
-                  <p className="text-base sm:text-lg text-white/70 font-light leading-relaxed max-w-2xl font-sans pt-1">
-                    {finalCtaSec.body || 'Explore the therapeutic areas and formulations that make up the Onecore portfolio.'}
-                  </p>
-                </ScrollReveal>
-              </div>
-
-              <div className="lg:col-span-4 flex flex-wrap lg:justify-end gap-4">
-                <ScrollReveal delay={0.1}>
-                  <Link
-                    to={finalCtaSec.cta_url || '/quality-manufacturing'}
-                    className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#D52B1E] hover:bg-[#B52015] text-white text-xs font-semibold rounded-full transition-colors shadow-xs cursor-pointer"
-                  >
-                    <span>{finalCtaSec.cta_text || 'EXPLORE OUR QUALITY'}</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </Link>
-                </ScrollReveal>
-              </div>
-
-            </div>
           </div>
         </section>
       )}

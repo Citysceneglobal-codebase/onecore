@@ -25,7 +25,6 @@ import ToastNotification from '../../components/admin/ToastNotification';
 import ConfirmModal from '../../components/admin/ConfirmModal';
 import MediaSelectorModal from '../../components/admin/MediaSelectorModal';
 import { useAdminAuth } from '../../context/AdminAuthContext';
-import { assetUrl } from '../../utils/assetUrl';
 
 // ─── Inline Repeatable Items Manager ──────────────────────────────────────────
 function SectionItemsManager({ items, onChange, onOpenMedia }) {
@@ -521,7 +520,7 @@ function SectionEditorPanel({ section, onSave, onCancel, onOpenMedia }) {
           {form.image_url && (
             <div className="mt-2.5 flex items-center gap-3 p-2 bg-slate-50 border border-slate-200 rounded-lg">
               <img
-                src={assetUrl(form.image_url)}
+                src={form.image_url}
                 alt="Section Preview"
                 className="w-16 h-10 object-cover rounded border border-slate-200 bg-white"
                 onError={(e) => {

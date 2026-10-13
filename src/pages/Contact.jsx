@@ -38,7 +38,7 @@ export default function Contact() {
 
   const heroSec = getSection('hero', {
     eyebrow: 'CONTACT ONECORE',
-    title: 'Contact',
+    title: 'Start a conversation with Onecore.',
     body: 'Whether you are looking for product information, exploring a business opportunity or simply want to reach our team, we will help direct your enquiry to the appropriate place.',
     cta_text: 'Send an Enquiry',
     cta_url: '#enquiry-form',
@@ -285,44 +285,56 @@ export default function Contact() {
           Spacious, dignified, human-scale typography (The Lilly Model)
           ========================================================================= */}
       {heroSec.is_active && (
-        <section className="pt-20 sm:pt-24 pb-10 sm:pb-14 px-4 sm:px-8 border-b border-[#E5E3DC]/80 bg-transparent">
-          <div className="max-w-7xl mx-auto space-y-6">
-            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-serif font-light text-[#121212] tracking-tight leading-[1.05]">
-              {heroSec.title || 'Contact'}. <br />
-              <span className="italic font-normal text-[#D52B1E]">Direct dialogue, dedicated care.</span>
-            </h1>
+        <section className="relative min-h-[90vh] sm:min-h-screen flex items-end pb-16 sm:pb-24 pt-32 px-4 sm:px-8 lg:px-12 bg-black">
+          {/* Hero Background Photograph */}
+          <div className="absolute inset-0 z-0">
+            <img
+              src={assetUrl(heroSec.image_url || '/assets/internet/contact-direct-helpline.jpg')}
+              alt="Onecore Pharma medical communication and direct helpline desk"
+              className="w-full h-full object-cover object-center opacity-85 brightness-90"
+              loading="eager"
+            />
+            {/* Directional contrast gradient */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 to-black/20" />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/40 to-transparent" />
+          </div>
 
-            <p className="text-lg sm:text-2xl text-[#555555] font-light leading-relaxed font-sans max-w-3xl">
-              {heroSec.body || 'Whether you are looking for product information, exploring a business opportunity or simply want to reach our team, we will help direct your enquiry to the appropriate place.'}
-            </p>
+          {/* Hero Content Block */}
+          <div className="relative z-10 max-w-5xl mx-auto w-full space-y-6 sm:space-y-8">
+            <ScrollReveal>
+              <h1 className="text-4xl sm:text-6xl lg:text-7xl xl:text-8xl font-serif font-light text-white tracking-tight leading-[1.04] max-w-4xl">
+                {heroSec.title && heroSec.title !== 'Contact' ? heroSec.title : 'Start a conversation with Onecore.'} <br />
+                <span className="italic font-normal text-[#D52B1E]">Direct dialogue, dedicated care.</span>
+              </h1>
+            </ScrollReveal>
 
-            <div className="pt-4 flex flex-wrap items-center gap-4">
-              <button
-                type="button"
-                onClick={() => scrollToSection(heroSec.cta_url || 'enquiry-form')}
-                className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#D52B1E] hover:bg-[#B52015] text-white text-xs font-semibold rounded-full transition-colors shadow-xs cursor-pointer"
-              >
-                <span>{heroSec.cta_text || 'Send an Enquiry'}</span>
-                <ArrowDown className="w-3.5 h-3.5" />
-              </button>
-              <button
-                type="button"
-                onClick={() => scrollToSection(heroSec.secondary_cta_url || 'contact-details')}
-                className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#FAF9F6] hover:bg-[#EBE9E1] text-[#121212] text-xs font-semibold rounded-full transition-colors border border-[#E5E3DC] cursor-pointer"
-              >
-                <span>{heroSec.secondary_cta_text || 'Contact Details'}</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
+            <ScrollReveal delay={0.08}>
+              <p className="text-base sm:text-xl lg:text-2xl text-white/90 font-light leading-relaxed font-sans max-w-3xl">
+                {heroSec.body || 'Whether you are looking for product information, exploring a business opportunity or simply want to reach our team, we will help direct your enquiry to the appropriate place.'}
+              </p>
+            </ScrollReveal>
 
-            {/* Stately Healthcare Direct Helpline & Inquiries Banner Frame */}
-            <div className="relative rounded-[28px] overflow-hidden border border-[#E5E3DC] shadow-sm aspect-[16/9] lg:aspect-[21/9] bg-[#FAF9F6] mt-8">
-              <img
-                src={assetUrl(heroSec.image_url || '/assets/internet/contact-direct-helpline.jpg')}
-                alt={heroSec.title || 'Onecore Pharma medical communication and direct helpline desk'}
-                className="w-full h-full object-cover"
-              />
-            </div>
+            <ScrollReveal delay={0.14}>
+              <div className="pt-2 flex flex-wrap items-center gap-4">
+                <button
+                  type="button"
+                  onClick={() => scrollToSection(heroSec.cta_url || 'enquiry-form')}
+                  className="inline-flex items-center gap-2.5 px-8 py-4 bg-[#D52B1E] hover:bg-[#B52015] text-white text-sm font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 group cursor-pointer"
+                >
+                  <span>{heroSec.cta_text || 'Send an Enquiry'}</span>
+                  <ArrowDown className="w-4 h-4 group-hover:translate-y-0.5 transition-transform" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => scrollToSection(heroSec.secondary_cta_url || 'contact-details')}
+                  className="inline-flex items-center gap-2 px-8 py-4 bg-white/15 hover:bg-white/25 backdrop-blur-md border border-white/25 text-white text-sm font-medium rounded-full transition-all duration-200 cursor-pointer"
+                >
+                  <span>{heroSec.secondary_cta_text || 'Contact Details'}</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                </button>
+              </div>
+            </ScrollReveal>
           </div>
         </section>
       )}

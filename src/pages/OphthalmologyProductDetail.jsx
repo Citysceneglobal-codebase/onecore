@@ -155,12 +155,15 @@ function parsePrecautionsAccordions(precautionsArray) {
 }
 
 import { useProduct } from '../hooks/useProduct';
+import { getAreaListingRoute } from '../utils/areaNavigation';
+import { formatProductName } from '../utils/formatProductName';
 
 export default function OphthalmologyProductDetail() {
   const { productSlug } = useParams();
   const staticProduct = getOphthalmologyProductBySlug(productSlug);
   const { product: cmsProduct } = useProduct(productSlug);
   const product = cmsProduct || staticProduct;
+  const listingRoute = getAreaListingRoute(product, 'eyerix');
 
   useEffect(() => {
     if (product) {
@@ -236,13 +239,21 @@ export default function OphthalmologyProductDetail() {
                 <span className="text-[10px] tracking-[0.2em] font-bold text-[#5b2a70] uppercase">ONECORE</span>
               </div>
               <div className="my-auto py-8 text-center space-y-2">
-                <h3 className="font-serif text-3xl text-[#232126] font-normal tracking-tight">{product.name}</h3>
+                <h3 className="font-serif text-3xl text-[#232126] font-normal tracking-tight">{formatProductName(product.name)}</h3>
                 <p className="text-[11px] text-[#5f5862] leading-relaxed max-w-[200px] mx-auto">
                   {product.composition}
                 </p>
               </div>
               <div className="w-full pt-3 border-t border-[#eeeae6] text-center">
-                <span className="text-[9px] font-mono uppercase tracking-widest text-[#887e8c]">EYERIX · OPHTHALMOLOGY</span>
+                <span className="text-[9px] font-mono uppercase tracking-widest text-[#887e8c]">
+                  <Link to={listingRoute} className="hover:underline transition-colors">
+                    EYERIX
+                  </Link>
+                  <span> · </span>
+                  <Link to={listingRoute} className="hover:underline transition-colors">
+                    OPHTHALMOLOGY
+                  </Link>
+                </span>
               </div>
             </div>
           )}
@@ -254,10 +265,16 @@ export default function OphthalmologyProductDetail() {
         {/* RIGHT 57% - Product Information */}
         <div className="lg:col-span-7 p-8 sm:p-14 lg:p-20 flex flex-col justify-center">
           <div className="text-[11px] tracking-[0.2em] uppercase font-bold text-[#5b2a70]">
-            EYERIX · OPHTHALMOLOGY
+            <Link to={listingRoute} className="hover:underline transition-colors">
+              EYERIX
+            </Link>
+            <span> · </span>
+            <Link to={listingRoute} className="hover:underline transition-colors">
+              OPHTHALMOLOGY
+            </Link>
           </div>
           <h1 className="font-serif text-5xl sm:text-6xl lg:text-7xl tracking-tight text-[#232126] font-normal my-4 leading-[0.98]">
-            {product.name}
+            {formatProductName(product.name)}
           </h1>
           <div className="text-base text-[#736c74] mb-6 font-sans">
             {product.composition}

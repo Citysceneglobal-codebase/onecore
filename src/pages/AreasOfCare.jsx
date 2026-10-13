@@ -11,6 +11,7 @@ import { allProducts, searchFormulations } from '../data/allProducts';
 import { useTherapeuticAreas } from '../hooks/useTherapeuticAreas';
 import { useCmsPage } from '../hooks/useCmsPage';
 import { assetUrl } from '../utils/assetUrl';
+import { formatProductName } from '../utils/formatProductName';
 
 export default function AreasOfCare() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -243,7 +244,7 @@ export default function AreasOfCare() {
                       {/* Product Details: Just Name and Salt */}
                       <div className="p-5 sm:p-6 flex flex-col flex-1">
                         <h3 className="text-xl sm:text-2xl font-serif font-medium text-[#121212] group-hover:text-[#D52B1E] transition-colors mb-2 leading-snug">
-                          {product.name}
+                          {formatProductName(product.name)}
                         </h3>
 
                         <p className="text-xs sm:text-sm text-[#555555] font-light leading-relaxed">

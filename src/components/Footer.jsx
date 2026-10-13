@@ -70,9 +70,9 @@ export default function Footer() {
               <img
                 src={assetUrl(siteSettings.logo_url || '/assets/onecore-logo.png')}
                 alt="Onecore Pharma"
-                className="h-8 sm:h-9 w-auto object-contain brightness-0 invert"
+                className="h-10 sm:h-11 md:h-12 w-auto object-contain brightness-0 invert"
               />
-              <span className="text-[10px] font-extrabold uppercase tracking-[0.25em] text-black block pt-1.5">
+              <span className="text-[11px] sm:text-xs md:text-[13px] font-extrabold uppercase tracking-[0.25em] text-black block pt-2">
                 PRESCRIBING A BETTER TOMORROW
               </span>
             </Link>

@@ -6,10 +6,13 @@ import PrescriptionDisclaimer from '../components/PrescriptionDisclaimer';
 import ProductImageGallery from '../components/ProductImageGallery';
 import { useProduct } from '../hooks/useProduct';
 import { assetUrl } from '../utils/assetUrl';
+import { getAreaListingRoute } from '../utils/areaNavigation';
+import { formatProductName } from '../utils/formatProductName';
 
 export default function ProductOneFlexo() {
   const [activeSection, setActiveSection] = useState('description');
   const { product } = useProduct('oneflexo');
+  const listingRoute = getAreaListingRoute(product, 'ortheon');
 
   useEffect(() => {
     document.title = "OneFLEXO | Orthopaedics Portfolio | Onecore Pharma";
@@ -164,11 +167,16 @@ export default function ProductOneFlexo() {
               Areas of Care
             </Link>
             <span>›</span>
-            <Link to="/areas-of-care/orthopaedics" className="hover:text-[#121212] transition-colors font-medium">
-              Orthopaedics (Ortheon)
+            <Link to={listingRoute} className="hover:text-[#121212] hover:underline transition-colors font-medium">
+              Orthopaedics
             </Link>
+            <span> (</span>
+            <Link to={listingRoute} className="hover:text-[#121212] hover:underline transition-colors font-medium">
+              Ortheon
+            </Link>
+            <span>)</span>
             <span>›</span>
-            <span className="text-[#121212] font-semibold">{brandName}</span>
+            <span className="text-[#121212] font-semibold">{formatProductName(brandName)}</span>
           </div>
           <div className="text-xs font-semibold uppercase tracking-wider text-[#D52B1E]">
             Prescription Formulation Monograph
@@ -186,7 +194,7 @@ export default function ProductOneFlexo() {
                 SPECIALISED JOINT HEALTH FORMULATION
               </span>
               <h1 className="text-4xl sm:text-6xl font-serif font-light text-[#121212] tracking-tight leading-[1.05]">
-                {brandName}. <br />
+                {formatProductName(brandName)}. <br />
                 <span className="italic font-normal text-[#D52B1E]">Targeted joint mobility & comfort.</span>
               </h1>
               <p className="text-base sm:text-xl text-[#555555] font-light leading-relaxed font-sans max-w-2xl">
@@ -230,7 +238,7 @@ export default function ProductOneFlexo() {
         <div className="max-w-7xl mx-auto px-4 sm:px-8">
           <div className="flex items-center justify-between gap-4">
             <span className="text-xs font-mono font-semibold uppercase tracking-wider text-[#121212] hidden md:inline">
-              {brandName} Clinical Monograph
+              {formatProductName(brandName)} Clinical Monograph
             </span>
             <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-none w-full md:w-auto justify-start md:justify-end">
               {navItems.map((item) => {

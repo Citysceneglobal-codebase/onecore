@@ -4,6 +4,7 @@ import { ArrowLeft, Search, Check } from 'lucide-react';
 import PageBanner from '../components/PageBanner';
 import SectionEyebrow from '../components/SectionEyebrow';
 import { assetUrl } from '../utils/assetUrl';
+import { formatProductName } from '../utils/formatProductName';
 
 // Import product datasets for all 9 therapeutic areas
 import { femmeProducts } from '../data/femmeProducts';
@@ -345,9 +346,11 @@ export default function AreaOfCareDetail() {
     if (!searchQuery.trim()) return currentCategory.products;
 
     const query = searchQuery.toLowerCase().trim();
+    const cleanQuery = query.replace(/™/g, '').trim();
     return currentCategory.products.filter(
       (product) =>
         product.name.toLowerCase().includes(query) ||
+        (cleanQuery && product.name.toLowerCase().includes(cleanQuery)) ||
         (product.composition && product.composition.toLowerCase().includes(query))
     );
   }, [currentCategory, searchQuery]);
@@ -496,7 +499,7 @@ export default function AreaOfCareDetail() {
                   {/* Product Details: Just Product Name and Active Salt */}
                   <div className="p-5 sm:p-6 flex flex-col flex-1">
                     <h3 className="text-xl sm:text-2xl font-serif font-medium text-[#121212] tracking-tight group-hover:text-[#D52B1E] transition-colors mb-2 leading-snug">
-                      {product.name}
+                      {formatProductName(product.name)}
                     </h3>
                     <p className="text-xs sm:text-sm text-[#555555] font-light leading-relaxed">
                       {product.composition}

@@ -48,11 +48,11 @@ export default function Home() {
     items: [
       {
         title: 'Our Vision',
-        desc: 'To be a trusted partner for healthcare professionals across India, known for our innovation, reliability, and commitment to excellence in prescription medicine.'
+        desc: 'To become one of India’s most trusted healthcare companies, shaping better health and better lives through quality, innovation and purpose.'
       },
       {
         title: 'Our Mission',
-        desc: 'To improve patient health outcomes by delivering high-quality, prescription-based products that address the unique needs of Orthopaedic, Gynaecological, Paediatric and General Segment.'
+        desc: 'To provide the medical fraternity with trusted medicines and innovative healthcare solutions, while empowering our people and stakeholders through intellectual, professional and financial growth.'
       }
     ]
   });
@@ -80,7 +80,6 @@ export default function Home() {
   const sustainabilitySec = getSection('sustainability', {
     eyebrow: '',
     title: 'Better health and a healthier future belong together.',
-    body: 'Our responsibility extends beyond the products we provide. As Onecore grows, we want responsible choices to become part of how we operate, how we source and how we work with our partners.',
     items: [
       {
         eyebrow: '',
@@ -103,7 +102,6 @@ export default function Home() {
   const lookingAheadSec = getSection('looking_ahead', {
     eyebrow: '',
     title: 'Building depth. \nExpanding thoughtfully.',
-    body: 'Our roadmap prioritizes therapeutic rigor, medical dialogue, and disciplined expansion that preserves trust.',
     items: [
       {
         title: "Deepen therapeutic expertise",
@@ -141,11 +139,11 @@ export default function Home() {
   // Map dynamic areas to division cards
   const divisions = (dynamicAreas && dynamicAreas.length > 0)
     ? dynamicAreas.map((a) => ({
-      name: a.divisionName || a.name || a.displayName || a.title,
-      specialty: a.therapeuticArea || a.displayName || a.name || a.title,
+      name: a.divisionName || a.displayName || a.title,
+      specialty: a.therapeuticArea || a.displayName || a.title,
       description: a.description || a.shortDescription || 'Targeted therapeutic formulations developed to address real clinical needs.',
-      image: (a.image_url && a.image_url.trim()) ? a.image_url.trim() : ((a.image && a.image.trim()) ? a.image.trim() : '/assets/therapeutic-general-medicine.jpg'),
-      path: a.route || `/areas-of-care/${(a.slug || a.id || a.divisionName || '').toLowerCase().trim()}`,
+      image: a.image || a.image_url || '/assets/therapeutic-general-medicine.jpg',
+      path: `/areas-of-care/${(a.slug || a.id || a.divisionName || '').toLowerCase().trim()}`,
     }))
     : [
       { name: "CYTOS", specialty: "Oncology", description: "Targeted therapeutics and supportive oncology care.", image: "/assets/cytos.jpg", path: "/areas-of-care/cytos" },
@@ -360,7 +358,7 @@ export default function Home() {
                     {/* Gradient Mask for High Contrast */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-90 group-hover:opacity-95 transition-opacity" />
 
-                    {/* Card Content Overlay: Division/Brand Name and Specialty */}
+                    {/* Card Content Overlay (Clean bottom alignment, no top chip) */}
                     <div className="absolute inset-0 p-6 sm:p-8 flex flex-col justify-end text-white">
                       <div className="space-y-1.5">
                         <span className="text-xs font-bold uppercase tracking-wider text-red-300">
@@ -532,19 +530,16 @@ export default function Home() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 sm:space-y-10">
 
             {/* Header */}
-            <div className="max-w-3xl space-y-4">
+            <div className="max-w-3xl">
               <ScrollReveal>
                 <h2 className="lilly-serif text-3xl sm:text-5xl lg:text-6xl text-[#121212] tracking-tight leading-tight text-balance">
                   Better health and a healthier future <br className="hidden sm:inline" />belong together.
                 </h2>
-                <p className="text-sm sm:text-base text-[#4B5563] leading-relaxed pt-2">
-                  {sustainabilitySec.body || 'Our responsibility extends beyond the products we provide. As Onecore grows, we want responsible choices to become part of how we operate, how we source and how we work with our partners.'}
-                </p>
               </ScrollReveal>
             </div>
 
             {/* 3 Sustainability Cards (Clean typography, no tacky icon containers) */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10 pt-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10">
               {sustainabilitySec.items.map((col, idx) => (
                 <ScrollReveal key={col.title || idx} delay={0.05 + idx * 0.05}>
                   <div className="p-8 sm:p-10 rounded-3xl bg-white/80 backdrop-blur-xs border border-stone-200/90 shadow-sm flex flex-col h-full space-y-4 group hover:bg-white/95 transition-all">
@@ -580,14 +575,11 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
 
             {/* Left Header */}
-            <div className="lg:col-span-5 space-y-6">
+            <div className="lg:col-span-5">
               <ScrollReveal>
-                <h2 className="lilly-serif text-3xl sm:text-5xl text-[#121212] tracking-tight leading-tight whitespace-pre-line pt-2">
+                <h2 className="lilly-serif text-3xl sm:text-5xl text-[#121212] tracking-tight leading-tight whitespace-pre-line">
                   {lookingAheadSec.title || 'Building depth. \nExpanding thoughtfully.'}
                 </h2>
-                <p className="text-sm sm:text-base text-[#4B5563] leading-relaxed pt-2 whitespace-pre-line">
-                  {lookingAheadSec.body || 'Our roadmap prioritizes therapeutic rigor, medical dialogue, and disciplined expansion that preserves trust.'}
-                </p>
               </ScrollReveal>
             </div>
 
