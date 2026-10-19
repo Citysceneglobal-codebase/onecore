@@ -25,10 +25,16 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Ensure uploads folder exists
-const uploadsDir = path.join(__dirname, 'uploads');
+// Ensure uploads folder exists (both local and Hostinger production layouts)
+const uploadsDir = path.resolve(__dirname, 'uploads');
+const parentUploadsDir = path.resolve(__dirname, '..', 'uploads');
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
+}
+if (!fs.existsSync(parentUploadsDir)) {
+  try {
+    fs.mkdirSync(parentUploadsDir, { recursive: true });
+  } catch {}
 }
 
 const app = express();
@@ -38,6 +44,14 @@ const PORT = process.env.PORT || 5000;
 app.use(helmet({
   crossOriginResourcePolicy: { policy: 'cross-origin' },
 }));
+
+// Normalize duplicate /uploads/uploads/ URLs
+app.use((req, res, next) => {
+  if (req.url.startsWith('/uploads/uploads/')) {
+    req.url = req.url.replace('/uploads/uploads/', '/uploads/');
+  }
+  next();
+});
 
 const allowedOrigins = [
   'http://localhost:3000',
@@ -73,6 +87,14 @@ const globalLimiter = rateLimit({
 });
 app.use('/api', globalLimiter);
 
+// Disable Cache Staleness across all API routes
+app.use('/api', (req, res, next) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  next();
+});
+
 // Auth Limiter (Strict for login brute force prevention)
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -84,8 +106,21 @@ const authLimiter = rateLimit({
 });
 app.use('/api/auth/login', authLimiter);
 
-// Static uploads serving
+// Persistent static uploads serving
 app.use('/uploads', express.static(uploadsDir));
+if (fs.existsSync(parentUploadsDir) && parentUploadsDir !== uploadsDir) {
+  app.use('/uploads', express.static(parentUploadsDir));
+}
+
+// Public assets & fallback placeholder
+const publicAssetsDir = path.resolve(__dirname, '../public/assets');
+if (fs.existsSync(publicAssetsDir)) {
+  app.use('/assets', express.static(publicAssetsDir));
+}
+const placeholderPath = path.resolve(__dirname, '../public/placeholder.png');
+if (fs.existsSync(placeholderPath)) {
+  app.use('/placeholder.png', (req, res) => res.sendFile(placeholderPath));
+}
 
 // Health check
 app.get('/api/health', (req, res) => {
@@ -105,6 +140,7 @@ app.use('/api/products', productsRoutes);
 app.use('/api/news', newsRoutes);
 app.use('/api/pages', pagesRoutes);
 app.use('/api/admin/media', mediaRoutes);
+app.use('/api/media', mediaRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/admin/users', adminUsersRoutes);
 

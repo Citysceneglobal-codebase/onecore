@@ -8,7 +8,7 @@ import { assetUrl } from '../utils/assetUrl';
 
 export default function News() {
   const { getSection } = useCmsPage('news');
-  const { articles: newsArticles } = useNews();
+  const { articles: newsArticles, loading: newsLoading } = useNews();
 
   useEffect(() => {
     document.title = "News & Perspectives | Onecore Pharma";
@@ -21,8 +21,9 @@ export default function News() {
     image_url: '/assets/news-1.jpg',
   });
 
-  const featuredArticle = newsArticles.length > 0 ? newsArticles[0] : null;
-  const remainingArticles = newsArticles.length > 1 ? newsArticles.slice(1) : [];
+  const articlesList = newsArticles || [];
+  const featuredArticle = articlesList.length > 0 ? articlesList[0] : null;
+  const remainingArticles = articlesList.length > 1 ? articlesList.slice(1) : [];
 
   return (
     <div className="w-full bg-transparent text-[#121212] min-h-screen">

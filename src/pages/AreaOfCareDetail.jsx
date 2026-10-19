@@ -1,21 +1,12 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Search, Check } from 'lucide-react';
+import { ArrowLeft, Search, Loader2 } from 'lucide-react';
 import PageBanner from '../components/PageBanner';
 import SectionEyebrow from '../components/SectionEyebrow';
 import { assetUrl } from '../utils/assetUrl';
 import { formatProductName } from '../utils/formatProductName';
-
-// Import product datasets for all 9 therapeutic areas
-import { femmeProducts } from '../data/femmeProducts';
-import { pediatricsProducts } from '../data/pediatricsProducts';
-import { orthopaedicsProducts } from '../data/orthopaedicsProducts';
-import { neurologyProducts } from '../data/neurologyProducts';
-import { ophthalmologyProducts } from '../data/ophthalmologyProducts';
-import { dermatologyProducts } from '../data/dermatologyProducts';
-import { entProducts } from '../data/entProducts';
-import { generalMedicineProducts } from '../data/generalMedicineProducts';
-import { oncologyProducts } from '../data/oncologyProducts';
+import { useAreaDetail } from '../hooks/useAreaDetail';
+import { THERAPEUTIC_DIVISIONS } from '../data/areasOfCare';
 
 const categoryData = {
   // 1. Women's Health / Femme
@@ -25,23 +16,20 @@ const categoryData = {
     description: "Specialized prescription medicines and supportive therapeutic formulations designed for reproductive health, maternal care, fertility nutrition, and gynaecological wellness.",
     image: "/assets/therapeutic-womens-health.jpg",
     baseRoute: "/areas-of-care/femme",
-    products: femmeProducts
   },
   'womens-health': {
     title: "Femme",
     subtitle: "Women's Health",
     description: "Specialized prescription medicines and supportive therapeutic formulations designed for reproductive health, maternal care, fertility nutrition, and gynaecological wellness.",
     image: "/assets/therapeutic-womens-health.jpg",
-    baseRoute: "/areas-of-care/femme",
-    products: femmeProducts
+    baseRoute: "/areas-of-care/womens-health",
   },
   'women-health': {
     title: "Femme",
     subtitle: "Women's Health",
     description: "Specialized prescription medicines and supportive therapeutic formulations designed for reproductive health, maternal care, fertility nutrition, and gynaecological wellness.",
     image: "/assets/therapeutic-womens-health.jpg",
-    baseRoute: "/areas-of-care/femme",
-    products: femmeProducts
+    baseRoute: "/areas-of-care/women-health",
   },
 
   // 2. Pediatrics / Pediaplus
@@ -51,7 +39,6 @@ const categoryData = {
     description: "Formulations and dosage formats engineered specifically for infants, children, and adolescents, spanning nutritional support, respiratory care, antipyretics, and pediatric wellness.",
     image: "/assets/pediaplus.jpg",
     baseRoute: "/areas-of-care/pediaplus",
-    products: pediatricsProducts
   },
   pediatrics: {
     title: "Pediaplus",
@@ -59,7 +46,6 @@ const categoryData = {
     description: "Formulations and dosage formats engineered specifically for infants, children, and adolescents, spanning nutritional support, respiratory care, antipyretics, and pediatric wellness.",
     image: "/assets/pediaplus.jpg",
     baseRoute: "/areas-of-care/pediatrics",
-    products: pediatricsProducts
   },
   paediatrics: {
     title: "Pediaplus",
@@ -67,7 +53,6 @@ const categoryData = {
     description: "Formulations and dosage formats engineered specifically for infants, children, and adolescents, spanning nutritional support, respiratory care, antipyretics, and pediatric wellness.",
     image: "/assets/pediaplus.jpg",
     baseRoute: "/areas-of-care/paediatrics",
-    products: pediatricsProducts
   },
   pediatric: {
     title: "Pediaplus",
@@ -75,7 +60,6 @@ const categoryData = {
     description: "Formulations and dosage formats engineered specifically for infants, children, and adolescents, spanning nutritional support, respiratory care, antipyretics, and pediatric wellness.",
     image: "/assets/pediaplus.jpg",
     baseRoute: "/areas-of-care/pediaplus",
-    products: pediatricsProducts
   },
 
   // 3. Orthopaedics / Ortheon
@@ -85,7 +69,6 @@ const categoryData = {
     description: "Musculoskeletal therapies, advanced joint-health complexes, bone mineralization agents, and anti-inflammatory formulations supporting mobility and patient recovery.",
     image: "/assets/ortheon.jpg",
     baseRoute: "/areas-of-care/ortheon",
-    products: orthopaedicsProducts
   },
   orthopaedics: {
     title: "Ortheon",
@@ -93,7 +76,6 @@ const categoryData = {
     description: "Musculoskeletal therapies, advanced joint-health complexes, bone mineralization agents, and anti-inflammatory formulations supporting mobility and patient recovery.",
     image: "/assets/ortheon.jpg",
     baseRoute: "/areas-of-care/orthopaedics",
-    products: orthopaedicsProducts
   },
   orthopedic: {
     title: "Ortheon",
@@ -101,7 +83,6 @@ const categoryData = {
     description: "Musculoskeletal therapies, advanced joint-health complexes, bone mineralization agents, and anti-inflammatory formulations supporting mobility and patient recovery.",
     image: "/assets/ortheon.jpg",
     baseRoute: "/areas-of-care/orthopedic",
-    products: orthopaedicsProducts
   },
   orthopedics: {
     title: "Ortheon",
@@ -109,7 +90,6 @@ const categoryData = {
     description: "Musculoskeletal therapies, advanced joint-health complexes, bone mineralization agents, and anti-inflammatory formulations supporting mobility and patient recovery.",
     image: "/assets/ortheon.jpg",
     baseRoute: "/areas-of-care/orthopedics",
-    products: orthopaedicsProducts
   },
 
   // 4. Neurology / Neurix
@@ -119,7 +99,6 @@ const categoryData = {
     description: "Prescription neuro-therapeutics, neurotropic vitamin formulations, neuropathic pain management medicines, and central nervous system supportive care.",
     image: "/assets/neurix.jpg",
     baseRoute: "/areas-of-care/neurix",
-    products: neurologyProducts
   },
   neurology: {
     title: "Neurix",
@@ -127,7 +106,6 @@ const categoryData = {
     description: "Prescription neuro-therapeutics, neurotropic vitamin formulations, neuropathic pain management medicines, and central nervous system supportive care.",
     image: "/assets/neurix.jpg",
     baseRoute: "/areas-of-care/neurology",
-    products: neurologyProducts
   },
   neuro: {
     title: "Neurix",
@@ -135,7 +113,6 @@ const categoryData = {
     description: "Prescription neuro-therapeutics, neurotropic vitamin formulations, neuropathic pain management medicines, and central nervous system supportive care.",
     image: "/assets/neurix.jpg",
     baseRoute: "/areas-of-care/neuro",
-    products: neurologyProducts
   },
 
   // 5. Ophthalmology / Eyerix
@@ -145,7 +122,6 @@ const categoryData = {
     description: "Targeted ocular solutions spanning antibiotic and anti-inflammatory eye drops, glaucoma pressure management, dry eye ocular lubricants, and retinal antioxidants.",
     image: "/assets/eyerix.jpg",
     baseRoute: "/areas-of-care/eyerix",
-    products: ophthalmologyProducts
   },
   ophthalmology: {
     title: "Eyerix",
@@ -153,7 +129,6 @@ const categoryData = {
     description: "Targeted ocular solutions spanning antibiotic and anti-inflammatory eye drops, glaucoma pressure management, dry eye ocular lubricants, and retinal antioxidants.",
     image: "/assets/eyerix.jpg",
     baseRoute: "/areas-of-care/ophthalmology",
-    products: ophthalmologyProducts
   },
   ocular: {
     title: "Eyerix",
@@ -161,7 +136,6 @@ const categoryData = {
     description: "Targeted ocular solutions spanning antibiotic and anti-inflammatory eye drops, glaucoma pressure management, dry eye ocular lubricants, and retinal antioxidants.",
     image: "/assets/eyerix.jpg",
     baseRoute: "/areas-of-care/ocular",
-    products: ophthalmologyProducts
   },
   'eye-care': {
     title: "Eyerix",
@@ -169,7 +143,6 @@ const categoryData = {
     description: "Targeted ocular solutions spanning antibiotic and anti-inflammatory eye drops, glaucoma pressure management, dry eye ocular lubricants, and retinal antioxidants.",
     image: "/assets/eyerix.jpg",
     baseRoute: "/areas-of-care/eye-care",
-    products: ophthalmologyProducts
   },
 
   // 6. Dermatology / Vellis
@@ -179,7 +152,6 @@ const categoryData = {
     description: "Medical dermatology and supportive cutaneous therapies covering antifungal treatments, acne protocols, corticosteroid applications, barrier repair, and photoprotection.",
     image: "/assets/vellis.webp",
     baseRoute: "/areas-of-care/vellis",
-    products: dermatologyProducts
   },
   dermatology: {
     title: "Vellis",
@@ -187,7 +159,6 @@ const categoryData = {
     description: "Medical dermatology and supportive cutaneous therapies covering antifungal treatments, acne protocols, corticosteroid applications, barrier repair, and photoprotection.",
     image: "/assets/vellis.webp",
     baseRoute: "/areas-of-care/dermatology",
-    products: dermatologyProducts
   },
   derma: {
     title: "Vellis",
@@ -195,7 +166,6 @@ const categoryData = {
     description: "Medical dermatology and supportive cutaneous therapies covering antifungal treatments, acne protocols, corticosteroid applications, barrier repair, and photoprotection.",
     image: "/assets/vellis.webp",
     baseRoute: "/areas-of-care/derma",
-    products: dermatologyProducts
   },
   skin: {
     title: "Vellis",
@@ -203,7 +173,6 @@ const categoryData = {
     description: "Medical dermatology and supportive cutaneous therapies covering antifungal treatments, acne protocols, corticosteroid applications, barrier repair, and photoprotection.",
     image: "/assets/vellis.webp",
     baseRoute: "/areas-of-care/skin",
-    products: dermatologyProducts
   },
 
   // 7. ENT / Otira
@@ -213,7 +182,6 @@ const categoryData = {
     description: "Formulations engineered for ear, nose, and throat clinical care, including intranasal corticosteroids, nasal decongestants, otic antimicrobial drops, and antihistamines.",
     image: "/assets/otira.jpg",
     baseRoute: "/areas-of-care/otira",
-    products: entProducts
   },
   ent: {
     title: "OTIRA",
@@ -221,7 +189,6 @@ const categoryData = {
     description: "Formulations engineered for ear, nose, and throat clinical care, including intranasal corticosteroids, nasal decongestants, otic antimicrobial drops, and antihistamines.",
     image: "/assets/otira.jpg",
     baseRoute: "/areas-of-care/ent",
-    products: entProducts
   },
   'ear-nose-throat': {
     title: "OTIRA",
@@ -229,7 +196,6 @@ const categoryData = {
     description: "Formulations engineered for ear, nose, and throat clinical care, including intranasal corticosteroids, nasal decongestants, otic antimicrobial drops, and antihistamines.",
     image: "/assets/otira.jpg",
     baseRoute: "/areas-of-care/ear-nose-throat",
-    products: entProducts
   },
 
   // 8. General Medicine / Omnara
@@ -239,7 +205,6 @@ const categoryData = {
     description: "Broad-spectrum daily therapeutic solutions spanning gastrointestinal acid suppression, systemic antibiotics, analgesics, anti-allergic medicines, and vital metabolic support.",
     image: "/assets/therapeutic-general-medicine.jpg",
     baseRoute: "/areas-of-care/omnara",
-    products: generalMedicineProducts
   },
   'general-medicine': {
     title: "OMNARA",
@@ -247,7 +212,6 @@ const categoryData = {
     description: "Broad-spectrum daily therapeutic solutions spanning gastrointestinal acid suppression, systemic antibiotics, analgesics, anti-allergic medicines, and vital metabolic support.",
     image: "/assets/therapeutic-general-medicine.jpg",
     baseRoute: "/areas-of-care/general-medicine",
-    products: generalMedicineProducts
   },
   general: {
     title: "OMNARA",
@@ -255,7 +219,6 @@ const categoryData = {
     description: "Broad-spectrum daily therapeutic solutions spanning gastrointestinal acid suppression, systemic antibiotics, analgesics, anti-allergic medicines, and vital metabolic support.",
     image: "/assets/therapeutic-general-medicine.jpg",
     baseRoute: "/areas-of-care/general",
-    products: generalMedicineProducts
   },
   'internal-medicine': {
     title: "OMNARA",
@@ -263,7 +226,6 @@ const categoryData = {
     description: "Broad-spectrum daily therapeutic solutions spanning gastrointestinal acid suppression, systemic antibiotics, analgesics, anti-allergic medicines, and vital metabolic support.",
     image: "/assets/therapeutic-general-medicine.jpg",
     baseRoute: "/areas-of-care/internal-medicine",
-    products: generalMedicineProducts
   },
 
   // 9. Oncology / Cytos
@@ -273,7 +235,6 @@ const categoryData = {
     description: "Specialized prescription pharmaceuticals and medical nutritional supplements providing antiemetic control, hematologic support, and cachexia care for oncology patients.",
     image: "/assets/cytos.jpg",
     baseRoute: "/areas-of-care/cytos",
-    products: oncologyProducts
   },
   oncology: {
     title: "Cytos",
@@ -281,7 +242,6 @@ const categoryData = {
     description: "Specialized prescription pharmaceuticals and medical nutritional supplements providing antiemetic control, hematologic support, and cachexia care for oncology patients.",
     image: "/assets/cytos.jpg",
     baseRoute: "/areas-of-care/oncology",
-    products: oncologyProducts
   },
   'cancer-care': {
     title: "Cytos",
@@ -289,49 +249,91 @@ const categoryData = {
     description: "Specialized prescription pharmaceuticals and medical nutritional supplements providing antiemetic control, hematologic support, and cachexia care for oncology patients.",
     image: "/assets/cytos.jpg",
     baseRoute: "/areas-of-care/cancer-care",
-    products: oncologyProducts
   }
 };
 
-import { useAreaDetail } from '../hooks/useAreaDetail';
-
 export default function AreaOfCareDetail() {
   const { slug } = useParams();
+  const currentDivisionSlug = (slug || '').toLowerCase().trim();
   const [searchQuery, setSearchQuery] = useState('');
-  const { area: dynamicArea } = useAreaDetail(slug);
+  const [products, setProducts] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
+
+  const { area: dynamicArea, loading: areaLoading } = useAreaDetail(currentDivisionSlug);
+  const division = THERAPEUTIC_DIVISIONS[currentDivisionSlug] || {};
+
+  // Dynamic Division Fetch with Cache-Busting
+  useEffect(() => {
+    if (!currentDivisionSlug) {
+      setProducts([]);
+      setLoading(false);
+      return;
+    }
+
+    let isMounted = true;
+    setLoading(true);
+
+    fetch(`/api/products?division=${encodeURIComponent(currentDivisionSlug)}`, {
+      cache: 'no-store',
+      headers: {
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache',
+      },
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+        return res.json();
+      })
+      .then((data) => {
+        if (!isMounted) return;
+        const items = Array.isArray(data) ? data : (Array.isArray(data?.data) ? data.data : []);
+        setProducts(items);
+        setIsError(false);
+      })
+      .catch((err) => {
+        if (!isMounted) return;
+        console.error('Failed to load products for division:', err);
+        setProducts([]);
+        setIsError(true);
+      })
+      .finally(() => {
+        if (isMounted) setLoading(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [currentDivisionSlug]);
 
   const currentCategory = useMemo(() => {
-    if (!slug) return null;
-    const base = categoryData[slug.toLowerCase().trim()] || null;
-    if (!base) return null;
-    if (!dynamicArea) return base;
-
-    // Merge static and CMS products
-    const staticProducts = base.products || [];
-    const cmsProductsRaw = dynamicArea.sampleProducts || [];
-    
-    // Normalize CMS products to match static product schema
-    const cmsProducts = cmsProductsRaw.map(p => ({
-      ...p,
-      name: p.brand_name || p.name,
-      composition: p.composition || p.short_description || '',
-      image: p.packshot_url || p.image || base.image,
-    }));
-
-    const productMap = new Map();
-    staticProducts.forEach(p => productMap.set(p.slug, p));
-    cmsProducts.forEach(p => {
-       // Prefer CMS data if slug matches, otherwise append new product
-       productMap.set(p.slug, { ...productMap.get(p.slug), ...p });
+    if (!currentDivisionSlug) return null;
+    const base = division.name ? {
+      title: division.brand,
+      subtitle: division.name,
+      description: division.description,
+      image: division.heroImage,
+      baseRoute: `/areas-of-care/${currentDivisionSlug}`,
+    } : (categoryData[currentDivisionSlug] || {
+      title: currentDivisionSlug.replace(/-/g, ' ').toUpperCase(),
+      subtitle: "Therapeutic Division",
+      description: "Specialized prescription medicines and clinical healthcare formulations.",
+      image: "/assets/therapeutic-general-medicine.jpg",
+      baseRoute: `/areas-of-care/${currentDivisionSlug}`,
     });
 
-    return {
-      ...base,
-      description: dynamicArea.description || base.description,
-      image: dynamicArea.image_url || dynamicArea.image || base.image,
-      products: Array.from(productMap.values())
-    };
-  }, [slug, dynamicArea]);
+    if (dynamicArea) {
+      return {
+        ...base,
+        title: dynamicArea.name || base.title,
+        subtitle: dynamicArea.heading || base.subtitle,
+        description: dynamicArea.description || base.description,
+        image: division.heroImage || dynamicArea.image_url || base.image,
+      };
+    }
+
+    return base;
+  }, [currentDivisionSlug, dynamicArea, division]);
 
   useEffect(() => {
     if (currentCategory) {
@@ -342,18 +344,43 @@ export default function AreaOfCareDetail() {
   }, [currentCategory]);
 
   const filteredProducts = useMemo(() => {
-    if (!currentCategory || !currentCategory.products) return [];
-    if (!searchQuery.trim()) return currentCategory.products;
+    if (!products || products.length === 0) return [];
+    if (!searchQuery.trim()) return products;
 
     const query = searchQuery.toLowerCase().trim();
     const cleanQuery = query.replace(/™/g, '').trim();
-    return currentCategory.products.filter(
-      (product) =>
-        product.name.toLowerCase().includes(query) ||
-        (cleanQuery && product.name.toLowerCase().includes(cleanQuery)) ||
-        (product.composition && product.composition.toLowerCase().includes(query))
+
+    return products.filter((product) => {
+      const name = (product.brandName || product.name || product.brand_name || '').toLowerCase();
+      const comp = (product.shortDescription || product.description || product.composition || product.fullDescription || product.full_description || '').toLowerCase();
+      return name.includes(query) || (cleanQuery && name.includes(cleanQuery)) || comp.includes(query);
+    });
+  }, [products, searchQuery]);
+
+  // Neutral skeleton layout while loading to avoid content flash/jitter
+  if ((areaLoading || loading) && !dynamicArea && !division.name) {
+    return (
+      <div className="w-full bg-transparent text-[#121212] min-h-screen">
+        <div className="pt-24 sm:pt-28 pb-4 border-b border-[#E5E3DC] bg-white/80">
+          <div className="max-w-7xl mx-auto px-4 sm:px-8">
+            <div className="h-4 w-48 bg-gray-200 animate-pulse rounded" />
+          </div>
+        </div>
+        <section className="py-12 sm:py-16 px-4 sm:px-8 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+            <div className="lg:col-span-7 space-y-4">
+              <div className="h-10 w-3/4 bg-gray-200 animate-pulse rounded" />
+              <div className="h-4 w-full bg-gray-200 animate-pulse rounded" />
+              <div className="h-4 w-2/3 bg-gray-200 animate-pulse rounded" />
+            </div>
+            <div className="lg:col-span-5">
+              <div className="rounded-[28px] overflow-hidden border border-[#E5E3DC] aspect-[16/10] bg-gray-200 animate-pulse" />
+            </div>
+          </div>
+        </section>
+      </div>
     );
-  }, [currentCategory, searchQuery]);
+  }
 
   if (!currentCategory) {
     return (
@@ -382,11 +409,10 @@ export default function AreaOfCareDetail() {
 
   // Resolve specific product detail route
   const getProductRoute = (product) => {
-    // Special custom route for OneFLEXO
-    if (product.slug === 'oneflexo' || product.name.toLowerCase() === 'oneflexo') {
+    if (product.slug === 'oneflexo' || (product.brandName || product.name || '').toLowerCase() === 'oneflexo') {
       return '/areas-of-care/orthopaedics/oneflexo';
     }
-    return `${currentCategory.baseRoute}/${product.slug}`;
+    return `/areas-of-care/${currentDivisionSlug}/${product.slug}`;
   };
 
   return (
@@ -421,11 +447,16 @@ export default function AreaOfCareDetail() {
             </div>
 
             <div className="lg:col-span-5">
-              <div className="rounded-[28px] overflow-hidden border border-[#E5E3DC] shadow-sm aspect-[16/10] bg-[#FAF9F6]">
+              <div className="division-hero-media rounded-[28px] overflow-hidden border border-[#E5E3DC] shadow-sm aspect-[16/10] bg-[#FAF9F6]">
                 <img
-                  src={assetUrl(currentCategory.image)}
-                  alt={`${currentCategory.title} — ${currentCategory.subtitle} — Onecore Pharma`}
+                  src={assetUrl(division.heroImage || currentCategory.image)}
+                  alt={`${division.brand || currentCategory.title} ${division.name || currentCategory.subtitle}`}
                   className="w-full h-full object-cover"
+                  loading="lazy"
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = '/placeholder.png';
+                  }}
                 />
               </div>
             </div>
@@ -440,7 +471,7 @@ export default function AreaOfCareDetail() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={`Search in ${currentCategory.title} products or active salts...`}
+                placeholder={`Search in ${currentCategory.title} formulations or active salts...`}
                 className="w-full bg-[#FAF9F6] border border-[#E5E3DC] focus:border-[#D52B1E] rounded-full pl-11 pr-10 py-2.5 text-xs sm:text-sm text-[#121212] placeholder-[#888888] focus:outline-none transition-colors shadow-xs"
               />
               {searchQuery && (
@@ -455,7 +486,7 @@ export default function AreaOfCareDetail() {
               )}
             </div>
             <div className="text-xs text-[#777777] self-end sm:self-center">
-              Showing <strong className="text-[#121212] font-semibold">{filteredProducts.length}</strong> of {currentCategory.products.length} formulations
+              Showing <strong className="text-[#121212] font-semibold">{filteredProducts.length}</strong> of {products?.length || 0} formulations
             </div>
           </div>
         </div>
@@ -463,46 +494,57 @@ export default function AreaOfCareDetail() {
 
       {/* 3. Product Cards Grid */}
       <section className="py-12 sm:py-16 px-4 sm:px-8 max-w-7xl mx-auto space-y-8">
-        {filteredProducts.length === 0 ? (
+        {loading ? (
+          <div className="py-24 text-center flex flex-col items-center justify-center gap-3">
+            <Loader2 className="w-6 h-6 animate-spin text-[#D52B1E]" />
+            <p className="text-xs font-mono tracking-wider text-[#777777] uppercase">Loading division catalog...</p>
+          </div>
+        ) : filteredProducts.length === 0 ? (
           <div className="py-16 text-center bg-white/80 backdrop-blur-xs border border-[#E5E3DC] rounded-3xl p-8 space-y-3 max-w-lg mx-auto">
-            <p className="text-base text-[#121212] font-serif font-bold">No formulations match your search.</p>
-            <p className="text-xs text-[#555555]">Try searching with a generic chemical name or active ingredient.</p>
-            <button
-              onClick={() => setSearchQuery('')}
-              className="text-xs font-semibold text-[#D52B1E] underline hover:text-[#121212] pt-2 cursor-pointer"
-            >
-              Clear Search
-            </button>
+            <p className="text-base text-[#121212] font-serif font-bold">No formulations found.</p>
+            <p className="text-xs text-[#555555]">
+              {searchQuery ? 'Try searching with another chemical name or active ingredient.' : 'No products currently active in this division.'}
+            </p>
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="text-xs font-semibold text-[#D52B1E] underline hover:text-[#121212] pt-2 cursor-pointer"
+              >
+                Clear Search
+              </button>
+            )}
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredProducts.map((product, index) => {
               const productUrl = getProductRoute(product);
-              const productImage = product.image || currentCategory.image;
+              const productImage = product.productPrimaryPackshotImage || product.image || product.packshot_url || currentCategory.image || '/assets/placeholder.png';
+              const title = product.brandName || product.name || product.brand_name || 'Unnamed Product';
+              const description = product.shortDescription || product.description || product.composition || product.fullDescription || product.short_description || 'Active pharmaceutical formulation';
 
               return (
                 <Link
-                  key={product.slug || index}
+                  key={product.slug || product.id || index}
                   to={productUrl}
                   className="bg-white/80 backdrop-blur-xs border border-[#E5E3DC] hover:border-[#D52B1E] rounded-3xl overflow-hidden flex flex-col group shadow-xs hover:shadow-md transition-all duration-300 block cursor-pointer"
                 >
-                  {/* Product Packshot / Image — Flush to top, left, and right with no padding */}
+                  {/* Product Packshot / Image — Flush to top, left, and right */}
                   <div className="w-full aspect-[4/3] bg-[#FAF9F6] overflow-hidden">
                     <img
                       src={assetUrl(productImage)}
-                      alt={`${product.name} - Onecore Pharma`}
+                      alt={`${title} - Onecore Pharma`}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       loading="lazy"
                     />
                   </div>
 
-                  {/* Product Details: Just Product Name and Active Salt */}
+                  {/* Product Details: Product Name and Active Salt */}
                   <div className="p-5 sm:p-6 flex flex-col flex-1">
                     <h3 className="text-xl sm:text-2xl font-serif font-medium text-[#121212] tracking-tight group-hover:text-[#D52B1E] transition-colors mb-2 leading-snug">
-                      {formatProductName(product.name)}
+                      {formatProductName(title)}
                     </h3>
                     <p className="text-xs sm:text-sm text-[#555555] font-light leading-relaxed">
-                      {product.composition}
+                      {description}
                     </p>
                   </div>
                 </Link>

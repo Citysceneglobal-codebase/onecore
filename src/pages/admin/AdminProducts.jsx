@@ -36,8 +36,9 @@ export default function AdminProducts() {
       });
       if (res.ok) {
         const data = await res.json();
-        if (data.success && Array.isArray(data.data) && data.data.length > 0) {
-          setProducts(data.data);
+        const items = Array.isArray(data) ? data : (Array.isArray(data?.data) ? data.data : []);
+        if (items.length > 0) {
+          setProducts(items);
         } else {
           // Fallback to allProducts
           setProducts(allProducts.map((p, idx) => ({
@@ -46,7 +47,9 @@ export default function AdminProducts() {
             name: p.name,
             slug: p.slug,
             therapeutic_area_name: p.category || p.division,
-            therapeutic_area_slug: p.division?.toLowerCase() || 'orthopaedics',
+            therapeutic_area_slug: p.division?.toLowerCase() || 'general-medicine',
+            division: p.division?.toLowerCase() || 'general-medicine',
+            divisionSlug: p.division?.toLowerCase() || 'general-medicine',
             status: 'published',
             short_description: p.composition || p.description,
             packshot_url: p.image,
@@ -175,7 +178,7 @@ export default function AdminProducts() {
                     <span>Edit</span>
                   </Link>
                   <a
-                    href={`/areas-of-care/${p.therapeutic_area_slug || 'orthopaedics'}/${p.slug || 'oneflexo'}`}
+                    href={`/areas-of-care/${p.divisionSlug || p.division || p.therapeutic_area_slug || 'general-medicine'}/${p.slug}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"

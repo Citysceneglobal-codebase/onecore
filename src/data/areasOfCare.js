@@ -362,3 +362,111 @@ export function getAllAreas() {
   return areasOfCare;
 }
 
+export const THERAPEUTIC_DIVISIONS = {
+  omnara: {
+    id: 'general-medicine',
+    slug: 'omnara',
+    brand: 'OMNARA',
+    name: 'General Medicine',
+    heroImage: '/images/divisions/general-medicine.jpg',
+    description: 'Our general medicine portfolio includes gastrointestinal care, anti infectives, pain management, allergy care and other commonly encountered therapeutic needs.'
+  },
+  ortheon: {
+    id: 'orthopaedics',
+    slug: 'ortheon',
+    brand: 'ORTHEON',
+    name: 'Orthopaedics',
+    heroImage: '/images/divisions/orthopaedics.jpg',
+    description: 'Our orthopaedic portfolio spans joint health, bone health, mobility, pain management and musculoskeletal support.'
+  },
+  femme: {
+    id: 'womens-health',
+    slug: 'femme',
+    brand: 'FEMME',
+    name: "Women's Health",
+    heroImage: '/images/divisions/womens-health.jpg',
+    description: 'Specialized therapeutic solutions dedicated to women’s health and hormonal wellness.'
+  },
+  pediaplus: {
+    id: 'pediatrics',
+    slug: 'pediaplus',
+    brand: 'PEDIAPLUS',
+    name: 'Pediatrics',
+    heroImage: '/images/divisions/pediatrics.jpg',
+    description: 'A portfolio spanning paediatric therapeutic and nutritional needs, with formulations and dosage formats suited to different stages of childhood care.'
+  },
+  neurix: {
+    id: 'neurology',
+    slug: 'neurix',
+    brand: 'NEURIX',
+    name: 'Neurology',
+    heroImage: '/images/divisions/neurology.jpg',
+    description: 'Targeted formulations for neuro-protective support, cognitive vitality, and peripheral nerve care.'
+  },
+  eyerix: {
+    id: 'ophthalmology',
+    slug: 'eyerix',
+    brand: 'EYERIX',
+    name: 'Ophthalmology',
+    heroImage: '/images/divisions/ophthalmology.jpg',
+    description: 'Specialized ocular formulations engineered for vision health and ocular comfort.'
+  },
+  vellis: {
+    id: 'dermatology',
+    slug: 'vellis',
+    brand: 'VELLIS',
+    name: 'Dermatology',
+    heroImage: '/images/divisions/dermatology.jpg',
+    description: 'Advanced derma-care therapeutic formulations for targeted skin barrier support.'
+  },
+  otira: {
+    id: 'ent',
+    slug: 'otira',
+    brand: 'OTIRA',
+    name: 'ENT',
+    heroImage: '/images/divisions/ent.jpg',
+    description: 'Focused support across ear, nose and throat care.'
+  },
+  cytos: {
+    id: 'oncology',
+    slug: 'cytos',
+    brand: 'CYTOS',
+    name: 'Oncology',
+    heroImage: '/images/divisions/oncology.jpg',
+    description: 'Specialized prescription pharmaceuticals and medical nutritional supplements providing antiemetic control, hematologic support, and cachexia care for oncology patients.'
+  }
+};
+
+// Aliases for specialty slugs and variations
+THERAPEUTIC_DIVISIONS['general-medicine'] = THERAPEUTIC_DIVISIONS.omnara;
+THERAPEUTIC_DIVISIONS['general'] = THERAPEUTIC_DIVISIONS.omnara;
+THERAPEUTIC_DIVISIONS['internal-medicine'] = THERAPEUTIC_DIVISIONS.omnara;
+
+THERAPEUTIC_DIVISIONS['orthopaedics'] = THERAPEUTIC_DIVISIONS.ortheon;
+THERAPEUTIC_DIVISIONS['orthopedic'] = THERAPEUTIC_DIVISIONS.ortheon;
+THERAPEUTIC_DIVISIONS['orthopedics'] = THERAPEUTIC_DIVISIONS.ortheon;
+
+THERAPEUTIC_DIVISIONS['womens-health'] = THERAPEUTIC_DIVISIONS.femme;
+THERAPEUTIC_DIVISIONS['women-health'] = THERAPEUTIC_DIVISIONS.femme;
+
+THERAPEUTIC_DIVISIONS['pediatrics'] = THERAPEUTIC_DIVISIONS.pediaplus;
+THERAPEUTIC_DIVISIONS['paediatrics'] = THERAPEUTIC_DIVISIONS.pediaplus;
+THERAPEUTIC_DIVISIONS['pediatric'] = THERAPEUTIC_DIVISIONS.pediaplus;
+
+THERAPEUTIC_DIVISIONS['neurology'] = THERAPEUTIC_DIVISIONS.neurix;
+THERAPEUTIC_DIVISIONS['neuro'] = THERAPEUTIC_DIVISIONS.neurix;
+
+THERAPEUTIC_DIVISIONS['ophthalmology'] = THERAPEUTIC_DIVISIONS.eyerix;
+THERAPEUTIC_DIVISIONS['ocular'] = THERAPEUTIC_DIVISIONS.eyerix;
+THERAPEUTIC_DIVISIONS['eye-care'] = THERAPEUTIC_DIVISIONS.eyerix;
+
+THERAPEUTIC_DIVISIONS['dermatology'] = THERAPEUTIC_DIVISIONS.vellis;
+THERAPEUTIC_DIVISIONS['derma'] = THERAPEUTIC_DIVISIONS.vellis;
+THERAPEUTIC_DIVISIONS['skin'] = THERAPEUTIC_DIVISIONS.vellis;
+
+THERAPEUTIC_DIVISIONS['ent'] = THERAPEUTIC_DIVISIONS.otira;
+THERAPEUTIC_DIVISIONS['ear-nose-throat'] = THERAPEUTIC_DIVISIONS.otira;
+
+THERAPEUTIC_DIVISIONS['oncology'] = THERAPEUTIC_DIVISIONS.cytos;
+THERAPEUTIC_DIVISIONS['cancer-care'] = THERAPEUTIC_DIVISIONS.cytos;
+

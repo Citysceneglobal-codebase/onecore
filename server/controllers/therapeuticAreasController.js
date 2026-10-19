@@ -37,7 +37,21 @@ export const getTherapeuticAreas = async (req, res, next) => {
 export const getTherapeuticAreaById = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const areas = await query('SELECT * FROM therapeutic_areas WHERE id = ? OR slug = ?', [id, id]);
+    const cleanId = (id || '').toLowerCase().trim();
+    const slugAliasMap = {
+      omnara: 'general-medicine',
+      ortheon: 'orthopaedics',
+      femme: 'womens-health',
+      pediaplus: 'paediatrics',
+      pediatrics: 'paediatrics',
+      neurix: 'neurology',
+      eyerix: 'ophthalmology',
+      vellis: 'dermatology',
+      otira: 'ent',
+      cytos: 'oncology',
+    };
+    const mappedSlug = slugAliasMap[cleanId] || cleanId;
+    const areas = await query('SELECT * FROM therapeutic_areas WHERE id = ? OR slug = ? OR slug = ?', [cleanId, cleanId, mappedSlug]);
 
     if (!areas || areas.length === 0) {
       return res.status(404).json({ success: false, message: 'Therapeutic area not found.' });

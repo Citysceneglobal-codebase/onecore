@@ -1,31 +1,178 @@
 import { query } from '../config/db.js';
 
+const DIVISION_ALIAS_MAP = {
+  'womens-health': ['womens-health', 'womens health', 'women-health', 'women health', 'femme', "women's health", 'women’s health', 'womenshealth', 'reproductive health'],
+  'women-health': ['womens-health', 'womens health', 'women-health', 'women health', 'femme', "women's health", 'women’s health', 'womenshealth'],
+  'femme': ['womens-health', 'womens health', 'women-health', 'women health', 'femme', "women's health", 'women’s health', 'womenshealth'],
+  'paediatrics': ['paediatrics', 'paediatric', 'pediatrics', 'pediatric', 'pediaplus', 'pedia', 'child health'],
+  'paediatric': ['paediatrics', 'paediatric', 'pediatrics', 'pediatric', 'pediaplus', 'pedia'],
+  'pediatrics': ['paediatrics', 'paediatric', 'pediatrics', 'pediatric', 'pediaplus', 'pedia'],
+  'pediatric': ['paediatrics', 'paediatric', 'pediatrics', 'pediatric', 'pediaplus', 'pedia'],
+  'pediaplus': ['paediatrics', 'paediatric', 'pediatrics', 'pediatric', 'pediaplus', 'pedia'],
+  'orthopaedics': ['orthopaedics', 'orthopaedic', 'orthopedics', 'orthopedic', 'ortheon', 'musculoskeletal'],
+  'orthopaedic': ['orthopaedics', 'orthopaedic', 'orthopedics', 'orthopedic', 'ortheon'],
+  'orthopedics': ['orthopaedics', 'orthopaedic', 'orthopedics', 'orthopedic', 'ortheon'],
+  'orthopedic': ['orthopaedics', 'orthopaedic', 'orthopedics', 'orthopedic', 'ortheon'],
+  'ortheon': ['orthopaedics', 'orthopaedic', 'orthopedics', 'orthopedic', 'ortheon'],
+  'neurology': ['neurology', 'neuro', 'neurix', 'neurological'],
+  'neuro': ['neurology', 'neuro', 'neurix', 'neurological'],
+  'neurix': ['neurology', 'neuro', 'neurix', 'neurological'],
+  'ophthalmology': ['ophthalmology', 'ophthalmic', 'eyerix', 'ocular', 'eye-care', 'eye care', 'eye'],
+  'ocular': ['ophthalmology', 'ophthalmic', 'eyerix', 'ocular', 'eye-care', 'eye care', 'eye'],
+  'eyerix': ['ophthalmology', 'ophthalmic', 'eyerix', 'ocular', 'eye-care', 'eye care', 'eye'],
+  'eye-care': ['ophthalmology', 'ophthalmic', 'eyerix', 'ocular', 'eye-care', 'eye care', 'eye'],
+  'dermatology': ['dermatology', 'derma', 'vellis', 'cutaneous', 'skin', 'skin-care', 'skin care'],
+  'derma': ['dermatology', 'derma', 'vellis', 'cutaneous', 'skin', 'skin-care', 'skin care'],
+  'vellis': ['dermatology', 'derma', 'vellis', 'cutaneous', 'skin', 'skin-care', 'skin care'],
+  'skin': ['dermatology', 'derma', 'vellis', 'cutaneous', 'skin', 'skin-care', 'skin care'],
+  'ent': ['ent', 'otira', 'ear-nose-throat', 'ear nose throat', 'ear, nose and throat'],
+  'otira': ['ent', 'otira', 'ear-nose-throat', 'ear nose throat'],
+  'ear-nose-throat': ['ent', 'otira', 'ear-nose-throat', 'ear nose throat'],
+  'general-medicine': ['general-medicine', 'general medicine', 'omnara', 'general', 'internal-medicine', 'internal medicine'],
+  'general': ['general-medicine', 'general medicine', 'omnara', 'general', 'internal-medicine', 'internal medicine'],
+  'omnara': ['general-medicine', 'general medicine', 'omnara', 'general', 'internal-medicine', 'internal medicine'],
+  'internal-medicine': ['general-medicine', 'general medicine', 'omnara', 'general', 'internal-medicine', 'internal medicine'],
+  'oncology': ['oncology', 'cytos', 'cancer-care', 'cancer care', 'cancer'],
+  'cytos': ['oncology', 'cytos', 'cancer-care', 'cancer care', 'cancer'],
+  'cancer-care': ['oncology', 'cytos', 'cancer-care', 'cancer care', 'cancer'],
+};
+
+const DIVISION_TO_AREA_ID = {
+  'womens-health': 1, 'femme': 1, 'women-health': 1,
+  'paediatrics': 2, 'pediatrics': 2, 'pediaplus': 2, 'paediatric': 2, 'pediatric': 2,
+  'orthopaedics': 3, 'orthopedics': 3, 'ortheon': 3, 'orthopaedic': 3, 'orthopedic': 3,
+  'neurology': 4, 'neuro': 4, 'neurix': 4,
+  'ophthalmology': 5, 'eyerix': 5, 'ocular': 5, 'eye-care': 5,
+  'dermatology': 6, 'derma': 6, 'vellis': 6, 'skin': 6,
+  'ent': 7, 'otira': 7, 'ear-nose-throat': 7,
+  'general-medicine': 8, 'omnara': 8, 'general': 8, 'internal-medicine': 8,
+  'oncology': 9, 'cytos': 9, 'cancer-care': 9,
+};
+
+const AREA_ID_TO_CANONICAL = {
+  1: { slug: 'womens-health', name: "Women's Health" },
+  2: { slug: 'paediatrics', name: 'Paediatrics' },
+  3: { slug: 'orthopaedics', name: 'Orthopaedics' },
+  4: { slug: 'neurology', name: 'Neurology' },
+  5: { slug: 'ophthalmology', name: 'Ophthalmology' },
+  6: { slug: 'dermatology', name: 'Dermatology' },
+  7: { slug: 'ent', name: 'ENT' },
+  8: { slug: 'general-medicine', name: 'General Medicine' },
+  9: { slug: 'oncology', name: 'Oncology' },
+};
+
 export const getProducts = async (req, res, next) => {
   try {
+    // Disable all caching so live updates and past records show immediately
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+
+    const divisionQuery = req.query.division || req.query.divisionSlug || req.query.category || req.query.therapeuticArea || req.query.slug;
     const isPublic = !req.user;
+
     let sql = `
       SELECT p.*, ta.name as therapeutic_area_name, ta.slug as therapeutic_area_slug
       FROM products p
       LEFT JOIN therapeutic_areas ta ON p.therapeutic_area_id = ta.id
     `;
+    const conditions = [];
+    const params = [];
+
     if (isPublic) {
-      sql += " WHERE p.status = 'published'";
+      conditions.push("p.status = 'published'");
+    }
+
+    if (divisionQuery) {
+      const slug = divisionQuery.toLowerCase().trim();
+      const slugSpaced = slug.replace(/[-_]+/g, ' ');
+      const slugDashed = slug.replace(/[\s_]+/g, '-');
+
+      let searchTerms = [slug, slugSpaced, slugDashed];
+      if (DIVISION_ALIAS_MAP[slug]) {
+        searchTerms.push(...DIVISION_ALIAS_MAP[slug]);
+      }
+      if (DIVISION_ALIAS_MAP[slugDashed]) {
+        searchTerms.push(...DIVISION_ALIAS_MAP[slugDashed]);
+      }
+      searchTerms = [...new Set(searchTerms)];
+
+      const regexPattern = searchTerms
+        .map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+        .map(t => `^${t}$`)
+        .join('|');
+
+      conditions.push(`(
+        p.division REGEXP ? OR
+        p.divisionSlug REGEXP ? OR
+        p.therapeuticArea REGEXP ? OR
+        p.category REGEXP ? OR
+        ta.slug REGEXP ? OR
+        ta.name REGEXP ?
+      )`);
+      for (let i = 0; i < 6; i++) {
+        params.push(regexPattern);
+      }
+    }
+
+    if (conditions.length > 0) {
+      sql += ' WHERE ' + conditions.join(' AND ');
     }
     sql += ' ORDER BY p.display_order ASC, p.id ASC';
 
-    const products = await query(sql);
+    const rawProducts = await query(sql, params);
 
-    return res.status(200).json({
-      success: true,
-      data: products,
+    const products = rawProducts.map(p => {
+      const brandName = p.brand_name || p.brandName || p.name || '';
+      const shortDesc = p.short_description || p.shortDescription || p.composition_summary || p.composition || p.full_description || '';
+      const fullDesc = p.full_description || p.fullDescription || p.description || '';
+      const packshot = p.packshot_url || p.productPrimaryPackshotImage || p.image || '/assets/placeholder.png';
+      const divSlug = p.divisionSlug || p.division || p.therapeutic_area_slug || 'general-medicine';
+      const taName = p.therapeuticArea || p.therapeutic_area_name || 'General Medicine';
+
+      return {
+        ...p,
+        id: p.id,
+        brandName,
+        brand_name: brandName,
+        name: brandName,
+        slug: p.slug,
+        shortDescription: shortDesc,
+        short_description: shortDesc,
+        fullDescription: fullDesc,
+        full_description: fullDesc,
+        description: shortDesc || fullDesc,
+        composition: p.composition_summary || shortDesc,
+        composition_summary: p.composition_summary || shortDesc,
+        packshot_url: packshot,
+        productPrimaryPackshotImage: packshot,
+        image: packshot,
+        division: divSlug,
+        divisionSlug: divSlug,
+        therapeuticArea: taName,
+        therapeutic_area_name: taName,
+        therapeutic_area_slug: divSlug,
+        category: divSlug,
+        status: p.status || 'published',
+        display_order: p.display_order || 0,
+        updatedAt: p.updated_at || new Date(),
+      };
     });
+
+    return res.status(200).json(products);
   } catch (error) {
-    next(error);
+    console.error('Database query error:', error);
+    return res.status(500).json({ error: 'Failed to retrieve products' });
   }
 };
 
 export const getProductByIdOrSlug = async (req, res, next) => {
   try {
+    // Disable all caching on single product fetch
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+
     const { identifier } = req.params;
     const products = await query(
       `SELECT p.*, ta.name as therapeutic_area_name, ta.slug as therapeutic_area_slug
@@ -75,9 +222,41 @@ export const getProductByIdOrSlug = async (req, res, next) => {
       [product.id]
     );
 
+    const brandName = product.brand_name || product.brandName || product.name || '';
+    const shortDesc = product.short_description || product.shortDescription || product.composition_summary || product.composition || product.full_description || '';
+    const fullDesc = product.full_description || product.fullDescription || product.description || '';
+    const packshot = product.packshot_url || product.productPrimaryPackshotImage || product.product_primary_packshot_image || product.image || '/assets/placeholder.png';
+    const divSlug = product.divisionSlug || product.division || product.therapeutic_area_slug || 'general-medicine';
+    const taName = product.therapeuticArea || product.therapeutic_area_name || 'General Medicine';
+
+    const enriched = {
+      ...product,
+      brandName,
+      brand_name: brandName,
+      name: brandName,
+      shortDescription: shortDesc,
+      short_description: shortDesc,
+      fullDescription: fullDesc,
+      full_description: fullDesc,
+      description: shortDesc || fullDesc,
+      composition: product.composition_summary || shortDesc,
+      composition_summary: product.composition_summary || shortDesc,
+      packshot_url: packshot,
+      productPrimaryPackshotImage: packshot,
+      product_primary_packshot_image: packshot,
+      image: packshot,
+      division: divSlug,
+      divisionSlug: divSlug,
+      therapeuticArea: taName,
+      therapeutic_area_name: taName,
+      therapeutic_area_slug: divSlug,
+      category: divSlug,
+    };
+
     return res.status(200).json({
+      ...enriched,
       success: true,
-      data: product,
+      data: enriched,
     });
   } catch (error) {
     next(error);
@@ -87,12 +266,22 @@ export const getProductByIdOrSlug = async (req, res, next) => {
 export const createProduct = async (req, res, next) => {
   try {
     const {
+      id,
       therapeutic_area_id,
+      therapeuticArea,
       brand_name,
+      brandName,
       slug,
+      division,
+      divisionSlug,
+      category,
       short_description,
+      shortDescription,
       full_description,
+      fullDescription,
       packshot_url,
+      productPrimaryPackshotImage,
+      image,
       status,
       display_order,
       seo_title,
@@ -105,11 +294,39 @@ export const createProduct = async (req, res, next) => {
       images,
     } = req.body;
 
-    if (!brand_name || !brand_name.trim()) {
+    // If an existing product ID was provided in the payload, delegate to updateProduct
+    if (id) {
+      const existingById = await query('SELECT id FROM products WHERE id = ? OR slug = ? LIMIT 1', [id, id]);
+      if (existingById && existingById.length > 0) {
+        req.params.id = existingById[0].id;
+        return updateProduct(req, res, next);
+      }
+    }
+
+    const brandNameVal = (brandName || brand_name || '').trim();
+    if (!brandNameVal) {
       return res.status(400).json({ success: false, message: 'Brand name is required.' });
     }
 
-    const productSlug = slug ? slug.trim().toLowerCase().replace(/\s+/g, '-') : brand_name.trim().toLowerCase().replace(/\s+/g, '-');
+    const productSlug = slug ? slug.trim().toLowerCase().replace(/\s+/g, '-') : brandNameVal.toLowerCase().replace(/\s+/g, '-');
+    const chosenDivisionSlug = (divisionSlug || division || category || '').toLowerCase().trim();
+
+    let areaId = therapeutic_area_id;
+    if (!areaId && chosenDivisionSlug) {
+      areaId = DIVISION_TO_AREA_ID[chosenDivisionSlug] || null;
+    }
+    if (!areaId && therapeuticArea) {
+      const normTa = therapeuticArea.toLowerCase().replace(/['’]/g, '').trim();
+      areaId = DIVISION_TO_AREA_ID[normTa] || null;
+    }
+    if (!areaId) areaId = 1;
+
+    const canonicalInfo = AREA_ID_TO_CANONICAL[areaId] || { slug: chosenDivisionSlug || 'general-medicine', name: therapeuticArea || 'General Medicine' };
+    const finalDivisionSlug = chosenDivisionSlug || canonicalInfo.slug;
+    const finalTaLabel = therapeuticArea || canonicalInfo.name;
+    const shortDescVal = shortDescription || short_description || '';
+    const fullDescVal = fullDescription || full_description || '';
+    const packshotVal = productPrimaryPackshotImage || packshot_url || image || null;
 
     let order = display_order;
     if (order === undefined) {
@@ -117,20 +334,44 @@ export const createProduct = async (req, res, next) => {
       order = (maxOrder?.max_order || 0) + 1;
     }
 
+    // Check if slug already exists to prevent duplicate entry errors
+    let finalSlug = productSlug;
+    const existingSlug = await query('SELECT id FROM products WHERE slug = ? LIMIT 1', [finalSlug]);
+    if (existingSlug && existingSlug.length > 0) {
+      // Auto-generate a suffixed slug (e.g., ${slug}-1, ${slug}-2)
+      let counter = 1;
+      while (true) {
+        const candidateSlug = `${productSlug}-${counter}`;
+        const check = await query('SELECT id FROM products WHERE slug = ? LIMIT 1', [candidateSlug]);
+        if (!check || check.length === 0) {
+          finalSlug = candidateSlug;
+          break;
+        }
+        counter++;
+      }
+    }
+
     const result = await query(`
-      INSERT INTO products (therapeutic_area_id, brand_name, slug, short_description, full_description, packshot_url, status, display_order, seo_title, seo_description)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO products (
+        therapeutic_area_id, brand_name, slug, short_description, full_description, packshot_url,
+        status, display_order, seo_title, seo_description, division, divisionSlug, therapeuticArea, category
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `, [
-      therapeutic_area_id || 1,
-      brand_name.trim(),
-      productSlug,
-      short_description || '',
-      full_description || '',
-      packshot_url || null,
+      areaId,
+      brandNameVal,
+      finalSlug,
+      shortDescVal,
+      fullDescVal,
+      packshotVal,
       status || 'published',
       order,
       seo_title || null,
-      seo_description || null
+      seo_description || null,
+      finalDivisionSlug,
+      finalDivisionSlug,
+      finalTaLabel,
+      finalDivisionSlug
     ]);
 
     const productId = result.insertId;
@@ -141,7 +382,7 @@ export const createProduct = async (req, res, next) => {
     return res.status(201).json({
       success: true,
       message: 'Product created successfully.',
-      data: { id: productId }
+      data: { id: productId, slug: finalSlug }
     });
   } catch (error) {
     next(error);
@@ -153,13 +394,22 @@ export const updateProduct = async (req, res, next) => {
     const { id } = req.params;
     const {
       therapeutic_area_id,
+      therapeuticArea,
       brand_name,
+      brandName,
       slug,
+      division,
+      divisionSlug,
+      category,
       short_description,
+      shortDescription,
       full_description,
+      fullDescription,
       status,
       display_order,
       packshot_url,
+      productPrimaryPackshotImage,
+      image,
       seo_title,
       seo_description,
       compositions,
@@ -170,31 +420,121 @@ export const updateProduct = async (req, res, next) => {
       images
     } = req.body;
 
+    // Resolve target numeric ID if slug or identifier was passed
+    const existingRows = await query('SELECT id, slug FROM products WHERE id = ? OR slug = ? LIMIT 1', [id, id]);
+    if (!existingRows || existingRows.length === 0) {
+      return res.status(404).json({ success: false, error: 'Product not found', message: 'Product not found.' });
+    }
+    const targetId = existingRows[0].id;
+
+    const brandNameVal = brandName !== undefined ? brandName : brand_name;
+    const shortDescVal = shortDescription !== undefined ? shortDescription : short_description;
+    const fullDescVal = fullDescription !== undefined ? fullDescription : full_description;
+    const packshotVal = productPrimaryPackshotImage !== undefined ? productPrimaryPackshotImage : (packshot_url !== undefined ? packshot_url : image);
+    const chosenDivisionSlug = (divisionSlug || division || category || '').toLowerCase().trim();
+
+    // Check slug uniqueness excluding the current product being updated
+    const targetSlug = slug !== undefined
+      ? slug.trim().toLowerCase().replace(/\s+/g, '-')
+      : (brandNameVal ? brandNameVal.trim().toLowerCase().replace(/\s+/g, '-') : undefined);
+
+    if (targetSlug) {
+      const slugConflict = await query('SELECT id FROM products WHERE slug = ? AND id != ? LIMIT 1', [targetSlug, targetId]);
+      if (slugConflict && slugConflict.length > 0) {
+        return res.status(400).json({
+          success: false,
+          error: `The slug '${targetSlug}' is already in use by another product (ID: ${slugConflict[0].id}).`,
+          message: `The slug '${targetSlug}' is already in use by another product.`
+        });
+      }
+    }
+
     const updates = [];
     const params = [];
 
-    if (therapeutic_area_id !== undefined) { updates.push('therapeutic_area_id = ?'); params.push(therapeutic_area_id); }
-    if (brand_name !== undefined) { updates.push('brand_name = ?'); params.push(brand_name.trim()); }
-    if (slug !== undefined) { updates.push('slug = ?'); params.push(slug.trim().toLowerCase().replace(/\s+/g, '-')); }
-    if (short_description !== undefined) { updates.push('short_description = ?'); params.push(short_description); }
-    if (full_description !== undefined) { updates.push('full_description = ?'); params.push(full_description); }
-    if (status !== undefined) { updates.push('status = ?'); params.push(status); }
-    if (display_order !== undefined) { updates.push('display_order = ?'); params.push(display_order); }
-    if (packshot_url !== undefined) { updates.push('packshot_url = ?'); params.push(packshot_url); }
-    if (seo_title !== undefined) { updates.push('seo_title = ?'); params.push(seo_title); }
-    if (seo_description !== undefined) { updates.push('seo_description = ?'); params.push(seo_description); }
+    let areaId = therapeutic_area_id;
+    if (areaId === undefined && chosenDivisionSlug) {
+      areaId = DIVISION_TO_AREA_ID[chosenDivisionSlug] || undefined;
+    }
+
+    if (areaId !== undefined) {
+      updates.push('therapeutic_area_id = ?');
+      params.push(areaId);
+    }
+    if (brandNameVal !== undefined) {
+      updates.push('brand_name = ?');
+      params.push(brandNameVal.trim());
+    }
+    if (targetSlug !== undefined) {
+      updates.push('slug = ?');
+      params.push(targetSlug);
+    }
+    if (shortDescVal !== undefined) {
+      updates.push('short_description = ?');
+      params.push(shortDescVal);
+    }
+    if (fullDescVal !== undefined) {
+      updates.push('full_description = ?');
+      params.push(fullDescVal);
+    }
+    if (status !== undefined) {
+      updates.push('status = ?');
+      params.push(status);
+    }
+    if (display_order !== undefined) {
+      updates.push('display_order = ?');
+      params.push(display_order);
+    }
+    if (packshotVal !== undefined) {
+      updates.push('packshot_url = ?');
+      params.push(packshotVal);
+    }
+    if (seo_title !== undefined) {
+      updates.push('seo_title = ?');
+      params.push(seo_title);
+    }
+    if (seo_description !== undefined) {
+      updates.push('seo_description = ?');
+      params.push(seo_description);
+    }
+
+    // Standardize division fields across all keys
+    const canonicalInfo = areaId ? AREA_ID_TO_CANONICAL[areaId] : null;
+    const finalDivisionSlug = chosenDivisionSlug || canonicalInfo?.slug;
+    const finalTaLabel = therapeuticArea || canonicalInfo?.name;
+
+    if (finalDivisionSlug) {
+      updates.push('division = ?');
+      params.push(finalDivisionSlug);
+      updates.push('divisionSlug = ?');
+      params.push(finalDivisionSlug);
+      updates.push('division_slug = ?');
+      params.push(finalDivisionSlug);
+      updates.push('category = ?');
+      params.push(finalDivisionSlug);
+    }
+    if (finalTaLabel) {
+      updates.push('therapeuticArea = ?');
+      params.push(finalTaLabel);
+      updates.push('therapeutic_area = ?');
+      params.push(finalTaLabel);
+    }
+
+    // Always update timestamp
+    updates.push('updated_at = NOW()');
 
     if (updates.length > 0) {
-      params.push(id);
+      params.push(targetId);
       await query(`UPDATE products SET ${updates.join(', ')} WHERE id = ?`, params);
     }
 
-    // Update nested details if present in payload
-    await saveNestedProductDetails(id, { compositions, benefits, dosage, mechanisms, safetySections, images });
+    // Update nested details targeting numeric targetId
+    await saveNestedProductDetails(targetId, { compositions, benefits, dosage, mechanisms, safetySections, images });
 
     return res.status(200).json({
       success: true,
       message: 'Product updated successfully.',
+      data: { id: targetId, slug: targetSlug || existingRows[0].slug }
     });
   } catch (error) {
     next(error);

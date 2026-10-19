@@ -11,7 +11,34 @@ export const getMediaList = async (req, res, next) => {
        ORDER BY m.created_at DESC`
     );
 
-    return res.status(200).json({ success: true, data: media });
+    const normalizedMedia = (media || []).map((item) => {
+      const file = item.file_path || item.url || item.path || item.filename || '';
+
+      let cleanUrl = '';
+      if (!file) {
+        cleanUrl = '';
+      } else if (file.startsWith('http://') || file.startsWith('https://') || file.startsWith('data:')) {
+        cleanUrl = file;
+      } else if (file.startsWith('/assets/') || file.startsWith('assets/')) {
+        cleanUrl = file.startsWith('/assets/') ? file : `/${file}`;
+      } else {
+        // Ensure path always begins with '/uploads/' and never has duplicate slashes
+        cleanUrl = file.startsWith('/uploads/')
+          ? file
+          : `/uploads/${file.replace(/^\/+/, '')}`;
+        // Prevent duplicate /uploads/uploads/
+        cleanUrl = cleanUrl.replace(/^\/uploads\/uploads\//, '/uploads/');
+      }
+
+      return {
+        ...item,
+        file_path: cleanUrl,
+        url: cleanUrl,
+        path: cleanUrl,
+      };
+    });
+
+    return res.status(200).json({ success: true, data: normalizedMedia });
   } catch (error) {
     next(error);
   }
@@ -25,7 +52,8 @@ export const uploadMedia = async (req, res, next) => {
 
     const { altText } = req.body;
     const file = req.file;
-    const relativePath = `/uploads/${file.filename}`;
+    const cleanFilename = file.filename.replace(/^\/+/, '').replace(/^uploads\//, '');
+    const relativePath = `/uploads/${cleanFilename}`;
 
     const result = await query(
       `INSERT INTO media (filename, original_filename, file_path, mime_type, file_size, alt_text, uploaded_by, created_at)
@@ -49,6 +77,8 @@ export const uploadMedia = async (req, res, next) => {
         filename: file.filename,
         original_filename: file.originalname,
         file_path: relativePath,
+        url: relativePath,
+        path: relativePath,
         mime_type: file.mimetype,
         file_size: file.size,
         created_at: new Date().toISOString(),

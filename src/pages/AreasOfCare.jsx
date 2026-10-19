@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { allProducts, searchFormulations } from '../data/allProducts';
 import { useTherapeuticAreas } from '../hooks/useTherapeuticAreas';
+import { THERAPEUTIC_DIVISIONS } from '../data/areasOfCare';
 import { useCmsPage } from '../hooks/useCmsPage';
 import { assetUrl } from '../utils/assetUrl';
 import { formatProductName } from '../utils/formatProductName';
@@ -17,7 +18,7 @@ export default function AreasOfCare() {
   const [searchParams, setSearchParams] = useSearchParams();
   const urlQuery = searchParams.get('q') || '';
 
-  const { areas: dynamicAreas } = useTherapeuticAreas();
+  const { areas: dynamicAreas, loading: areasLoading } = useTherapeuticAreas();
   const areasList = dynamicAreas || [];
   const { getSection } = useCmsPage('areas-of-care');
   const heroSection = getSection('hero');
@@ -294,81 +295,111 @@ export default function AreasOfCare() {
           SECTION 2 — THE 9 SPECIALTY DIVISIONS (ALTERNATING EDITORIAL SHOWCASE)
           ========================================================================= */}
       <section className="py-8 sm:py-12 px-4 sm:px-8 max-w-7xl mx-auto space-y-12 sm:space-y-16">
-        {areasList.map((area, index) => {
-          const isEven = index % 2 === 0;
-          const divisionSlug = (area.divisionName || area.slug || area.id || '').toLowerCase();
-          const divisionUrl = `/areas-of-care/${divisionSlug}`;
-          const formulationCount = area.products ? area.products.length : 0;
-
-          return (
-            <div
-              key={area.id}
-              id={area.id}
-              className="scroll-mt-28 border-b border-[#E5E3DC] pb-14 sm:pb-20 last:border-b-0"
-            >
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
-                
-                {/* Text Column */}
-                <div
-                  className={`order-2 lg:col-span-6 space-y-6 ${
-                    isEven ? 'lg:order-2' : 'lg:order-1'
-                  }`}
-                >
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-3">
-                      <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#D52B1E]">
-                        {area.divisionName || area.displayName}
-                      </span>
-                      {formulationCount > 0 && (
-                        <span className="text-xs font-mono text-[#777777]">
-                          ({formulationCount} Formulations)
-                        </span>
-                      )}
+        {areasLoading && (!areasList || areasList.length === 0) ? (
+          // Neutral loading skeleton state directly inside layout to prevent visual flash/jitter
+          <div className="space-y-12">
+            {[1, 2, 3].map((idx) => (
+              <div key={idx} className="border-b border-[#E5E3DC] pb-14 sm:pb-20">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+                  <div className="order-2 lg:col-span-6 space-y-6">
+                    <div className="h-4 w-32 bg-gray-200 animate-pulse rounded" />
+                    <div className="h-10 w-3/4 bg-gray-200 animate-pulse rounded" />
+                    <div className="space-y-2">
+                      <div className="h-4 w-full bg-gray-200 animate-pulse rounded" />
+                      <div className="h-4 w-5/6 bg-gray-200 animate-pulse rounded" />
                     </div>
-                    <h2 className="text-3xl sm:text-5xl font-serif font-light text-[#121212] tracking-tight leading-[1.1]">
-                      {area.therapeuticArea || area.displayName}
-                    </h2>
+                    <div className="h-12 w-48 bg-gray-200 animate-pulse rounded-full" />
+                  </div>
+                  <div className="order-1 lg:col-span-6">
+                    <div className="rounded-3xl border border-[#E5E3DC] aspect-[16/11] bg-gray-200 animate-pulse" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          areasList.map((area, index) => {
+            const isEven = index % 2 === 0;
+            const divisionSlug = (area.divisionName || area.slug || area.id || '').toLowerCase();
+            const divisionUrl = `/areas-of-care/${divisionSlug}`;
+            const formulationCount = area.products ? area.products.length : 0;
+            const divisionConfig = THERAPEUTIC_DIVISIONS[divisionSlug] || THERAPEUTIC_DIVISIONS[area.slug] || THERAPEUTIC_DIVISIONS[area.id] || {};
+            const unifiedHeroImage = divisionConfig.heroImage || area.image_url || area.image;
+
+            return (
+              <div
+                key={area.id}
+                id={area.id}
+                className="scroll-mt-28 border-b border-[#E5E3DC] pb-14 sm:pb-20 last:border-b-0"
+              >
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+                  
+                  {/* Text Column */}
+                  <div
+                    className={`order-2 lg:col-span-6 space-y-6 ${
+                      isEven ? 'lg:order-2' : 'lg:order-1'
+                    }`}
+                  >
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-3">
+                        <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#D52B1E]">
+                          {area.divisionName || area.displayName}
+                        </span>
+                        {formulationCount > 0 && (
+                          <span className="text-xs font-mono text-[#777777]">
+                            ({formulationCount} Formulations)
+                          </span>
+                        )}
+                      </div>
+                      <h2 className="text-3xl sm:text-5xl font-serif font-light text-[#121212] tracking-tight leading-[1.1]">
+                        {area.therapeuticArea || area.displayName}
+                      </h2>
+                    </div>
+
+                    <p className="text-base sm:text-lg text-[#555555] font-light leading-relaxed font-sans">
+                      {area.description || area.heading}
+                    </p>
+
+                    {/* Single Clean Action Button */}
+                    <div className="pt-2">
+                      <Link
+                        to={divisionUrl}
+                        className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#D52B1E] hover:bg-[#B52015] text-white text-xs font-bold uppercase tracking-wider rounded-full transition-colors shadow-xs group cursor-pointer"
+                      >
+                        <span>Explore {area.divisionName || area.displayName} Products</span>
+                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      </Link>
+                    </div>
                   </div>
 
-                  <p className="text-base sm:text-lg text-[#555555] font-light leading-relaxed font-sans">
-                    {area.description || area.heading}
-                  </p>
-
-                  {/* Single Clean Action Button (No redundant Filter in Directory button) */}
-                  <div className="pt-2">
+                  {/* Image Column */}
+                  <div
+                    className={`order-1 lg:col-span-6 ${
+                      isEven ? 'lg:order-1' : 'lg:order-2'
+                    }`}
+                  >
                     <Link
                       to={divisionUrl}
-                      className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#D52B1E] hover:bg-[#B52015] text-white text-xs font-bold uppercase tracking-wider rounded-full transition-colors shadow-xs group cursor-pointer"
+                      className="block group rounded-3xl overflow-hidden border border-[#E5E3DC] shadow-sm aspect-[16/11] bg-white division-hero-media"
                     >
-                      <span>Explore {area.divisionName || area.displayName} Products</span>
-                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      <img
+                        src={assetUrl(unifiedHeroImage)}
+                        alt={`${divisionConfig.brand || area.therapeuticArea} ${divisionConfig.name || area.displayName} Portfolio - Onecore Pharma`}
+                        className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-700"
+                        loading="lazy"
+                        onError={(e) => {
+                          e.currentTarget.onerror = null;
+                          e.currentTarget.src = '/placeholder.png';
+                        }}
+                      />
                     </Link>
                   </div>
-                </div>
 
-                {/* Image Column */}
-                <div
-                  className={`order-1 lg:col-span-6 ${
-                    isEven ? 'lg:order-1' : 'lg:order-2'
-                  }`}
-                >
-                  <Link
-                    to={divisionUrl}
-                    className="block group rounded-3xl overflow-hidden border border-[#E5E3DC] shadow-sm aspect-[16/11] bg-white"
-                  >
-                    <img
-                      src={assetUrl(area.image)}
-                      alt={`${area.therapeuticArea} Portfolio - Onecore Pharma`}
-                      className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-700"
-                      loading="lazy"
-                    />
-                  </Link>
                 </div>
-
               </div>
-            </div>
-          );
-        })}
+            );
+          })
+        )}
       </section>
 
       {/* =========================================================================

@@ -11,7 +11,7 @@ import { formatProductName } from '../utils/formatProductName';
 
 export default function ProductOneFlexo() {
   const [activeSection, setActiveSection] = useState('description');
-  const { product } = useProduct('oneflexo');
+  const { product, loading } = useProduct('oneflexo');
   const listingRoute = getAreaListingRoute(product, 'ortheon');
 
   useEffect(() => {
@@ -25,6 +25,18 @@ export default function ProductOneFlexo() {
       );
     }
   }, []);
+
+  if (loading && !product) {
+    return (
+      <div className="w-full bg-[#FAF9F6] min-h-screen py-24 flex items-center justify-center">
+        <div className="space-y-4 max-w-md w-full px-6 text-center">
+          <div className="h-8 w-48 bg-gray-200 animate-pulse rounded mx-auto" />
+          <div className="h-4 w-64 bg-gray-200 animate-pulse rounded mx-auto" />
+          <div className="h-64 w-full bg-gray-200 animate-pulse rounded-2xl" />
+        </div>
+      </div>
+    );
+  }
 
   // Sticky sub-navigation scrollspy
   useEffect(() => {

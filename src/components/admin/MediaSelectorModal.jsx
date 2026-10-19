@@ -3,6 +3,21 @@ import { Search, Upload, X, Check, Image as ImageIcon, File } from 'lucide-react
 import { useAdminAuth } from '../../context/AdminAuthContext';
 
 /**
+ * In-place path sanitizer to guarantee clean, root-relative media paths
+ */
+const sanitizeMediaUrl = (url) => {
+  if (!url) return '';
+  if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) {
+    return url;
+  }
+  const clean = url.replace(/^\/+/, '').replace(/^uploads\/uploads\//, 'uploads/');
+  if (clean.startsWith('assets/')) {
+    return `/${clean}`;
+  }
+  return clean.startsWith('uploads/') ? `/${clean}` : `/uploads/${clean}`;
+};
+
+/**
  * MediaSelectorModal — browse/upload and pick a media asset.
  */
 export default function MediaSelectorModal({ isOpen, onSelect, onClose }) {
@@ -49,8 +64,15 @@ export default function MediaSelectorModal({ isOpen, onSelect, onClose }) {
       });
       const data = await res.json();
       if (data.success && data.data) {
-        setMediaList((prev) => [data.data, ...prev]);
-        setSelected(data.data.file_path);
+        const cleanPath = sanitizeMediaUrl(data.data.file_path || data.data.url || data.data.filename);
+        const newAsset = {
+          ...data.data,
+          file_path: cleanPath,
+          url: cleanPath,
+          path: cleanPath,
+        };
+        setMediaList((prev) => [newAsset, ...prev]);
+        setSelected(cleanPath);
       }
     } catch {
       // silent
@@ -59,10 +81,23 @@ export default function MediaSelectorModal({ isOpen, onSelect, onClose }) {
     }
   };
 
+  const handleApply = () => {
+    if (!selected) return;
+    let formattedPath = sanitizeMediaUrl(selected);
+    if (!formattedPath.startsWith('http://') && !formattedPath.startsWith('https://') && !formattedPath.startsWith('data:')) {
+      if (!formattedPath.startsWith('/assets/')) {
+        const cleanFilename = formattedPath.replace(/^\/+/, '').replace(/^uploads\//, '');
+        formattedPath = `/uploads/${cleanFilename}`;
+      }
+    }
+    onSelect(formattedPath);
+    onClose();
+  };
+
   const filtered = mediaList.filter(
     (m) =>
       !search ||
-      (m.original_name || m.original_filename || '')?.toLowerCase().includes(search.toLowerCase()) ||
+      (m.original_name || m.original_filename || m.name || '')?.toLowerCase().includes(search.toLowerCase()) ||
       (m.filename || '')?.toLowerCase().includes(search.toLowerCase()) ||
       (m.alt_text || '')?.toLowerCase().includes(search.toLowerCase())
   );
@@ -132,39 +167,34 @@ export default function MediaSelectorModal({ isOpen, onSelect, onClose }) {
             </div>
           ) : (
             <div className="grid grid-cols-3 sm:grid-cols-4 gap-3.5">
-              {filtered.map((item) => {
-                const filePath = item.file_path || `/uploads/${item.filename}`;
-                const isImg = item.mime_type ? item.mime_type.startsWith('image/') : true;
-                const isSelected = selected === filePath;
+              {filtered.map((asset) => {
+                const assetUrl = sanitizeMediaUrl(asset.url || asset.path || asset.file_path || asset.filename);
+                const isSelected = selected === assetUrl;
 
                 return (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => setSelected(filePath)}
-                    className={`relative group rounded-xl border-2 overflow-hidden aspect-square flex flex-col items-center justify-center p-1.5 transition-all text-left bg-slate-50 ${
+                  <div
+                    className={`media-thumbnail-card relative group rounded-xl border-2 overflow-hidden aspect-square flex flex-col items-center justify-center p-1.5 transition-all text-left bg-slate-50 cursor-pointer ${
                       isSelected
                         ? 'border-[#1B365D] ring-2 ring-[#1B365D]/20 bg-blue-50/20'
                         : 'border-slate-200 hover:border-slate-400 hover:shadow-xs'
                     }`}
+                    key={asset.id || asset.filename || asset.url || assetUrl}
+                    onClick={() => setSelected(assetUrl)}
                   >
-                    {isImg ? (
-                      <img
-                        src={filePath}
-                        alt={item.alt_text || item.filename}
-                        className="w-full h-full object-cover rounded-lg"
-                        onError={(e) => {
-                          e.target.style.display = 'none';
-                        }}
-                      />
-                    ) : (
-                      <div className="flex flex-col items-center justify-center p-2 text-slate-400">
-                        <File size={28} />
-                        <span className="text-[10px] font-mono text-center truncate mt-1 max-w-full">
-                          {item.filename}
-                        </span>
-                      </div>
-                    )}
+                    <img
+                      src={sanitizeMediaUrl(asset.url || asset.path || asset.filename)}
+                      alt={asset.name || asset.filename || 'Media Asset'}
+                      loading="lazy"
+                      className="w-full h-full object-cover rounded-lg"
+                      onError={(e) => {
+                        // Prevent broken blank box: show a styled fallback placeholder SVG
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Crect width='100%25' height='100%25' fill='%23f1f5f9' stroke='%23cbd5e1'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%2364748b' font-family='sans-serif' font-size='10'%3EPreview 404%3C/text%3E%3C/svg%3E";
+                      }}
+                    />
+                    <span className="media-asset-label absolute inset-x-0 bottom-0 bg-slate-900/80 px-1.5 py-1 text-[9px] text-white font-mono truncate">
+                      {asset.name || asset.filename}
+                    </span>
 
                     {/* Selected badge */}
                     {isSelected && (
@@ -172,12 +202,7 @@ export default function MediaSelectorModal({ isOpen, onSelect, onClose }) {
                         <Check size={12} strokeWidth={3} />
                       </div>
                     )}
-
-                    {/* File name tooltip on hover */}
-                    <div className="absolute inset-x-0 bottom-0 bg-slate-900/80 px-1.5 py-1 text-[9px] text-white font-mono truncate opacity-0 group-hover:opacity-100 transition-opacity">
-                      {item.original_name || item.filename}
-                    </div>
-                  </button>
+                  </div>
                 );
               })}
             </div>
@@ -204,12 +229,7 @@ export default function MediaSelectorModal({ isOpen, onSelect, onClose }) {
             <button
               type="button"
               disabled={!selected}
-              onClick={() => {
-                if (selected) {
-                  onSelect(selected);
-                  onClose();
-                }
-              }}
+              onClick={handleApply}
               className="px-4 py-2 text-xs font-semibold bg-[#1B365D] hover:bg-[#152a48] text-white rounded-lg transition-colors shadow-xs disabled:opacity-40 disabled:cursor-not-allowed"
             >
               Apply Image

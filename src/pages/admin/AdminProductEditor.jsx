@@ -131,6 +131,10 @@ export default function AdminProductEditor() {
     brand_name: '',
     slug: '',
     therapeutic_area_id: 3,
+    division: '',
+    divisionSlug: '',
+    therapeuticArea: '',
+    category: '',
     short_description: '',
     full_description: '',
     packshot_url: '',
@@ -179,8 +183,13 @@ export default function AdminProductEditor() {
           setForm({
             id: p.id,
             brand_name: p.brand_name || p.name || '',
+            brandName: p.brand_name || p.name || '',
             slug: p.slug || '',
             therapeutic_area_id: p.therapeutic_area_id || 3,
+            division: p.division || p.divisionSlug || p.therapeutic_area_slug || '',
+            divisionSlug: p.divisionSlug || p.division || p.therapeutic_area_slug || '',
+            therapeuticArea: p.therapeuticArea || p.therapeutic_area_name || '',
+            category: p.category || p.division || p.therapeutic_area_slug || '',
             short_description: p.short_description || '',
             full_description: p.full_description || p.description || '',
             packshot_url: p.packshot_url || p.image || '',
@@ -208,9 +217,15 @@ export default function AdminProductEditor() {
           const fallback = allProducts.find((item) => item.slug === id || String(item.id) === id);
           if (fallback) {
             setForm({
+              id: fallback.id || (id !== 'new' ? id : undefined),
               brand_name: fallback.name,
+              brandName: fallback.name,
               slug: fallback.slug,
               therapeutic_area_id: 3,
+              division: fallback.division?.toLowerCase() || 'orthopaedics',
+              divisionSlug: fallback.division?.toLowerCase() || 'orthopaedics',
+              therapeuticArea: fallback.category || fallback.division || 'Orthopaedics',
+              category: fallback.division?.toLowerCase() || 'orthopaedics',
               short_description: fallback.composition || fallback.usedFor || '',
               full_description: fallback.description || '',
               packshot_url: fallback.image || '',
@@ -241,15 +256,39 @@ export default function AdminProductEditor() {
       .finally(() => setLoading(false));
   }, [id, isNew, token]);
 
-  const handleSave = async () => {
+  const handleSave = async (e) => {
+    if (e && e.preventDefault) e.preventDefault();
     if (!form.brand_name.trim()) {
       showToast('error', 'Brand name is required.');
       return;
     }
 
     setSaving(true);
-    const method = isNew ? 'POST' : 'PUT';
-    const endpoint = isNew ? '/api/products' : `/api/products/${form.id || id}`;
+    const productId = form.id || (id && id !== 'new' ? id : null);
+    const isEditing = Boolean(productId);
+    const method = isEditing ? 'PUT' : 'POST';
+    const endpoint = isEditing ? `/api/products/${productId}` : '/api/products';
+
+    const selectedArea = areas.find((a) => a.id === form.therapeutic_area_id);
+    const selectedDivisionSlug = selectedArea?.slug || form.divisionSlug || form.division || 'general-medicine';
+    const selectedDivisionLabel = selectedArea?.name || form.therapeuticArea || 'General Medicine';
+
+    const payload = {
+      ...form,
+      id: form.id || (isEditing ? productId : undefined),
+      brand_name: (form.brand_name || form.brandName || '').trim(),
+      brandName: (form.brand_name || form.brandName || '').trim(),
+      name: (form.brand_name || form.brandName || '').trim(),
+      slug: (form.slug || '').trim().toLowerCase(),
+      therapeuticArea: selectedDivisionLabel,
+      division: selectedDivisionSlug,
+      divisionSlug: selectedDivisionSlug,
+      division_slug: selectedDivisionSlug,
+      therapeutic_area: selectedDivisionLabel,
+      category: selectedDivisionSlug,
+      therapeutic_area_id: form.therapeutic_area_id,
+      updatedAt: new Date()
+    };
 
     try {
       const res = await fetch(endpoint, {
@@ -258,20 +297,23 @@ export default function AdminProductEditor() {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(form),
+        body: JSON.stringify(payload),
       });
 
       const data = await res.json();
       if (res.ok && data.success) {
-        showToast('success', isNew ? 'Product created successfully.' : 'Product updated successfully.');
-        if (isNew && data.data?.id) {
+        showToast('success', isEditing ? 'Product updated successfully.' : 'Product created successfully.');
+        if (!isEditing && data.data?.id) {
+          setForm((prev) => ({ ...prev, id: data.data.id, slug: data.data.slug || prev.slug }));
           navigate(`/admin/products/${data.data.id}`, { replace: true });
+        } else if (isEditing && data.data?.id) {
+          setForm((prev) => ({ ...prev, id: data.data.id }));
         }
       } else {
-        showToast('error', data.message || 'Failed to save product.');
+        showToast('error', data.error || data.message || 'Failed to save product.');
       }
     } catch (err) {
-      showToast('error', err.message);
+      showToast('error', err.message || 'Failed to save product.');
     } finally {
       setSaving(false);
     }
@@ -354,7 +396,7 @@ export default function AdminProductEditor() {
         <div className="flex items-center gap-2.5">
           {!isNew && form.slug && (
             <a
-              href={`/areas-of-care/orthopaedics/${form.slug}`}
+              href={`/areas-of-care/${form.divisionSlug || form.division || (areas.find((a) => a.id === form.therapeutic_area_id)?.slug) || 'general-medicine'}/${form.slug}`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 px-3 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-semibold rounded-lg transition-all shadow-xs"

@@ -94,22 +94,23 @@ function findStaticFallback(slugOrId) {
 }
 
 export function useProduct(slugOrId = 'oneflexo') {
-  const [product, setProduct] = useState(() => findStaticFallback(slugOrId));
+  const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
-    const fallback = findStaticFallback(slugOrId);
-    if (fallback) setProduct(fallback);
+    setLoading(true);
 
     const fetchProduct = async () => {
       try {
-        const res = await fetch(`/api/products/${slugOrId}`);
+        const res = await fetch(`/api/products/${slugOrId}`, { cache: 'no-store' });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const result = await res.json();
 
         if (isMounted && result.success && result.data) {
           const apiProd = result.data;
+          const fallback = findStaticFallback(slugOrId);
           
           // Normalize compositions
           const comps = (apiProd.compositions || []).map((c) => ({
@@ -179,9 +180,16 @@ export function useProduct(slugOrId = 'oneflexo') {
           };
 
           setProduct(normalized);
+          setIsError(false);
+        } else {
+          throw new Error('Product not found in API');
         }
       } catch {
-        // Fallback already set
+        if (isMounted) {
+          const fallback = findStaticFallback(slugOrId);
+          setProduct(fallback || null);
+          setIsError(true);
+        }
       } finally {
         if (isMounted) setLoading(false);
       }
@@ -194,5 +202,5 @@ export function useProduct(slugOrId = 'oneflexo') {
     };
   }, [slugOrId]);
 
-  return { product, loading };
+  return { product, loading, isError };
 }

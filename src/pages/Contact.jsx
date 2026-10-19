@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Mail, Phone, Clock, ArrowRight, ArrowDown, CheckCircle2, ArrowUpRight } from 'lucide-react';
+import { Mail, Phone, Clock, ArrowRight, ArrowDown, CheckCircle2, ArrowUpRight, MapPin } from 'lucide-react';
 import ScrollReveal from '../components/ScrollReveal';
 import { useCmsPage } from '../hooks/useCmsPage';
 import { useSettings } from '../hooks/useSettings';
@@ -32,49 +32,79 @@ export default function Contact() {
     }
   };
 
-  const displayEmail = contact?.general_email || contact?.email || 'info@onecorepharma.in';
-  const displayPhone = contact?.phone || '8169255034';
-  const displayHours = contact?.office_hours || contact?.business_hours || '10 AM - 7 PM';
-
-  const heroSec = getSection('hero', {
-    eyebrow: 'CONTACT ONECORE',
-    title: 'Start a conversation with Onecore.',
+  const heroSec = getSection('contact_hero', getSection('hero', {
+    eyebrow: 'CONNECT WITH US',
+    title: 'Get in Touch with Onecore Pharma',
+    heading: 'Get in Touch with Onecore Pharma',
     body: 'Whether you are looking for product information, exploring a business opportunity or simply want to reach our team, we will help direct your enquiry to the appropriate place.',
     cta_text: 'Send an Enquiry',
     cta_url: '#enquiry-form',
     secondary_cta_text: 'Contact Details',
     secondary_cta_url: '#contact-details',
     image_url: '/assets/internet/contact-direct-helpline.jpg',
-  });
+  }));
 
-  const channelsSec = getSection('direct_channels', {
+  const channelsSec = getSection('contact_info_cards', getSection('direct_channels', {
     eyebrow: 'GET IN TOUCH',
-    title: 'Direct Channels',
-    subheading: 'We’d love to hear from you. Whether you’re a healthcare professional interested in our products or a patient seeking more information, reach out to us',
-    items: [
-      {
-        channel: 'EMAIL',
-        value: displayEmail,
-        desc: 'For general company, medical affairs, and product related enquiries.',
-        cta_text: 'Write to info desk',
-        cta_url: `mailto:${displayEmail}`
-      },
-      {
-        channel: 'PHONE',
-        value: displayPhone,
-        desc: 'Available during regular corporate business hours.',
-        cta_text: 'Call our team',
-        cta_url: `tel:${displayPhone.replace(/[^0-9+]/g, '')}`
-      },
-      {
-        channel: 'BUSINESS HOURS',
-        value: displayHours,
-        desc: 'Dedicated corporate operations & support hours.',
-        cta_text: 'WORKING DAYS // MON – SAT',
-        cta_url: null
-      }
-    ]
-  });
+    title: 'Company Contact Coordinates',
+    heading: 'Company Contact Coordinates',
+    subheading: 'Direct channels and operational hours for healthcare professionals, patients, and partners.',
+    body: 'Onecore Pharma Headquarters, Industrial Area, Hyderabad, India',
+    items: [],
+  }));
+
+  // Parse contact coordinates from MySQL content_json or fallback to settings/defaults
+  const coords = channelsSec.content || (channelsSec.content_json ? (() => {
+    try { return typeof channelsSec.content_json === 'string' ? JSON.parse(channelsSec.content_json) : channelsSec.content_json; }
+    catch { return {}; }
+  })() : {}) || {};
+
+  const displayEmail = coords.support_email || contact?.general_email || contact?.email || 'contact@onecorepharma.com';
+  const displayBusinessEmail = coords.business_email || 'business@onecorepharma.com';
+  const displayPhone = coords.primary_phone || contact?.phone || '+91 40 0000 0000';
+  const displayHours = coords.working_hours || contact?.office_hours || contact?.business_hours || 'Monday – Friday: 9:00 AM – 6:00 PM IST';
+  const displayOffice = coords.registered_office || channelsSec.body || 'Onecore Pharma Headquarters, Industrial Area, Hyderabad, India';
+
+  // Resolved dynamic cards list: use database items if present, otherwise build from coordinates
+  const channelCards = (channelsSec.items && channelsSec.items.length > 0)
+    ? channelsSec.items
+    : [
+        {
+          channel: 'SUPPORT EMAIL',
+          value: displayEmail,
+          desc: 'For general company, medical affairs, and product related enquiries.',
+          cta_text: 'Write to info desk',
+          cta_url: `mailto:${displayEmail}`,
+        },
+        {
+          channel: 'PRIMARY PHONE',
+          value: displayPhone,
+          desc: 'Available during regular corporate business hours.',
+          cta_text: 'Call our team',
+          cta_url: `tel:${displayPhone.replace(/[^0-9+]/g, '')}`,
+        },
+        {
+          channel: 'BUSINESS HOURS',
+          value: displayHours,
+          desc: 'Dedicated corporate operations & support hours.',
+          cta_text: 'WORKING DAYS // MON – SAT',
+          cta_url: null,
+        },
+        {
+          channel: 'BUSINESS EMAIL',
+          value: displayBusinessEmail,
+          desc: 'For institutional distribution, franchise partnerships, and commercial procurement.',
+          cta_text: 'Email business desk',
+          cta_url: `mailto:${displayBusinessEmail}`,
+        },
+        {
+          channel: 'REGISTERED OFFICE',
+          value: displayOffice,
+          desc: 'Registered corporate office and official correspondence location.',
+          cta_text: 'Corporate Office',
+          cta_url: '#contact-details',
+        },
+      ];
 
   const enquiryOptions = [
     { value: 'Product information', label: 'Product information' },
@@ -268,11 +298,14 @@ export default function Contact() {
 
   const renderChannelIcon = (ch, idx) => {
     const upper = (ch || '').toUpperCase();
-    if (upper.includes('EMAIL') || idx === 0) {
+    if (upper.includes('EMAIL')) {
       return <Mail className="w-4 h-4 text-[#888888] group-hover:text-[#D52B1E] transition-colors" />;
     }
-    if (upper.includes('PHONE') || idx === 1) {
+    if (upper.includes('PHONE')) {
       return <Phone className="w-4 h-4 text-[#888888] group-hover:text-[#D52B1E] transition-colors" />;
+    }
+    if (upper.includes('OFFICE') || upper.includes('HEADQUARTERS') || upper.includes('ADDRESS')) {
+      return <MapPin className="w-4 h-4 text-[#888888] group-hover:text-[#D52B1E] transition-colors" />;
     }
     return <Clock className="w-4 h-4 text-[#888888] group-hover:text-[#D52B1E] transition-colors" />;
   };
@@ -303,7 +336,7 @@ export default function Contact() {
           <div className="relative z-10 max-w-5xl mx-auto w-full space-y-6 sm:space-y-8">
             <ScrollReveal>
               <h1 className="text-4xl sm:text-6xl lg:text-7xl xl:text-8xl font-serif font-light text-white tracking-tight leading-[1.04] max-w-4xl">
-                {heroSec.title && heroSec.title !== 'Contact' ? heroSec.title : 'Start a conversation with Onecore.'} <br />
+                {heroSec.title && heroSec.title !== 'Contact' ? heroSec.title : 'Get in Touch with Onecore Pharma'} <br />
                 <span className="italic font-normal text-[#D52B1E]">Direct dialogue, dedicated care.</span>
               </h1>
             </ScrollReveal>
@@ -348,7 +381,7 @@ export default function Contact() {
 
             <div className="max-w-3xl space-y-3">
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-light text-[#121212] tracking-tight">
-                {channelsSec.title || 'Direct Channels'}
+                {channelsSec.heading || channelsSec.title || 'Company Contact Coordinates'}
               </h2>
               {(channelsSec.subheading || channelsSec.body) && (
                 <p className="text-base sm:text-lg text-[#555555] font-light leading-relaxed pt-1 font-sans">
@@ -358,13 +391,13 @@ export default function Contact() {
             </div>
 
             {/* Direct Contact Cards */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10">
-              {channelsSec.items.map((card, idx) => {
-                const channelName = card.channel || (idx === 0 ? 'EMAIL' : idx === 1 ? 'PHONE' : 'BUSINESS HOURS');
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
+              {channelCards.map((card, idx) => {
+                const channelName = card.channel || card.title || (idx === 0 ? 'EMAIL' : idx === 1 ? 'PHONE' : 'BUSINESS HOURS');
                 const channelVal = card.value || (idx === 0 ? displayEmail : idx === 1 ? displayPhone : displayHours);
 
                 return (
-                  <ScrollReveal key={channelName} delay={0.08 * (idx + 1)}>
+                  <ScrollReveal key={channelName + idx} delay={0.06 * (idx + 1)}>
                     <div className="bg-white/80 backdrop-blur-xs p-8 sm:p-10 border border-[#E5E3DC] rounded-3xl h-full flex flex-col justify-between space-y-6 group hover:border-[#121212] transition-all duration-300 shadow-xs hover:shadow-md">
                       <div className="space-y-4">
                         <div className="flex items-center justify-between">
@@ -374,14 +407,14 @@ export default function Contact() {
                           {renderChannelIcon(channelName, idx)}
                         </div>
 
-                        {idx === 0 ? (
+                        {channelVal && ((card.cta_url && card.cta_url.startsWith('mailto:')) || channelName.includes('EMAIL')) ? (
                           <a
-                            href={`mailto:${channelVal}`}
+                            href={`mailto:${String(channelVal).trim()}`}
                             className="text-xl sm:text-2xl font-serif font-medium text-[#121212] group-hover:text-[#D52B1E] transition-colors block break-all tracking-tight leading-snug"
                           >
                             {channelVal}
                           </a>
-                        ) : idx === 1 ? (
+                        ) : channelVal && ((card.cta_url && card.cta_url.startsWith('tel:')) || channelName.includes('PHONE')) ? (
                           <a
                             href={`tel:${String(channelVal).replace(/[^0-9+]/g, '')}`}
                             className="text-2xl sm:text-3xl font-serif font-medium text-[#121212] group-hover:text-[#D52B1E] transition-colors block whitespace-nowrap tracking-tight"
@@ -389,7 +422,7 @@ export default function Contact() {
                             {channelVal}
                           </a>
                         ) : (
-                          <span className="text-2xl sm:text-3xl font-serif font-medium text-[#121212] block whitespace-nowrap tracking-tight">
+                          <span className="text-xl sm:text-2xl font-serif font-medium text-[#121212] block tracking-tight leading-snug">
                             {channelVal}
                           </span>
                         )}

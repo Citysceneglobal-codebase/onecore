@@ -11,7 +11,7 @@ import { assetUrl } from '../utils/assetUrl';
 
 export default function Home() {
   const { getSection } = useCmsPage('home');
-  const { areas: dynamicAreas } = useTherapeuticAreas();
+  const { areas: dynamicAreas, loading: areasLoading } = useTherapeuticAreas();
   const { articles: dynamicNews } = useNews();
   const carouselRef = useRef(null);
 
@@ -338,40 +338,55 @@ export default function Home() {
               ref={carouselRef}
               className="flex gap-6 overflow-x-auto scrollbar-none pb-4 pt-2 -mx-4 px-4 sm:mx-0 sm:px-0 scroll-smooth snap-x snap-mandatory"
             >
-              {divisions.map((item) => (
-                <div
-                  key={item.name}
-                  className="snap-start flex-shrink-0 w-[280px] sm:w-[340px] lg:w-[380px]"
-                >
-                  <Link
-                    to={item.path || '/areas-of-care'}
-                    className="group relative block aspect-[4/5] rounded-[28px] overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 bg-stone-900 border border-stone-200/80"
+              {areasLoading && (!dynamicAreas || dynamicAreas.length === 0) ? (
+                [1, 2, 3, 4].map((n) => (
+                  <div
+                    key={n}
+                    className="snap-start flex-shrink-0 w-[280px] sm:w-[340px] lg:w-[380px]"
                   >
-                    {/* Background Imagery */}
-                    <img
-                      src={assetUrl(item.image)}
-                      alt={`${item.name} — ${item.specialty}`}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-                      loading="lazy"
-                    />
+                    <div className="aspect-[4/5] rounded-[28px] bg-stone-200/80 animate-pulse border border-stone-200/80" />
+                  </div>
+                ))
+              ) : (
+                (divisions || []).map((item) => (
+                  <div
+                    key={item.name}
+                    className="snap-start flex-shrink-0 w-[280px] sm:w-[340px] lg:w-[380px]"
+                  >
+                    <Link
+                      to={item.path || '/areas-of-care'}
+                      className="group relative block aspect-[4/5] rounded-[28px] overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 bg-stone-900 border border-stone-200/80"
+                    >
+                      {/* Background Imagery */}
+                      <img
+                        src={assetUrl(item.image)}
+                        alt={`${item.name} — ${item.specialty}`}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                        loading="lazy"
+                        onError={(e) => {
+                          e.currentTarget.onerror = null;
+                          e.currentTarget.src = '/placeholder.png';
+                        }}
+                      />
 
-                    {/* Gradient Mask for High Contrast */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-90 group-hover:opacity-95 transition-opacity" />
+                      {/* Gradient Mask for High Contrast */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-90 group-hover:opacity-95 transition-opacity" />
 
-                    {/* Card Content Overlay (Clean bottom alignment, no top chip) */}
-                    <div className="absolute inset-0 p-6 sm:p-8 flex flex-col justify-end text-white">
-                      <div className="space-y-1.5">
-                        <span className="text-xs font-bold uppercase tracking-wider text-red-300">
-                          {item.name}
-                        </span>
-                        <h3 className="text-2xl sm:text-3xl font-serif font-medium tracking-tight text-white leading-snug">
-                          {item.specialty}
-                        </h3>
+                      {/* Card Content Overlay (Clean bottom alignment, no top chip) */}
+                      <div className="absolute inset-0 p-6 sm:p-8 flex flex-col justify-end text-white">
+                        <div className="space-y-1.5">
+                          <span className="text-xs font-bold uppercase tracking-wider text-red-300">
+                            {item.name}
+                          </span>
+                          <h3 className="text-2xl sm:text-3xl font-serif font-medium tracking-tight text-white leading-snug">
+                            {item.specialty}
+                          </h3>
+                        </div>
                       </div>
-                    </div>
-                  </Link>
-                </div>
-              ))}
+                    </Link>
+                  </div>
+                ))
+              )}
             </div>
 
           </div>
@@ -540,7 +555,7 @@ export default function Home() {
 
             {/* 3 Sustainability Cards (Clean typography, no tacky icon containers) */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10">
-              {sustainabilitySec.items.map((col, idx) => (
+              {(sustainabilitySec.items || []).map((col, idx) => (
                 <ScrollReveal key={col.title || idx} delay={0.05 + idx * 0.05}>
                   <div className="p-8 sm:p-10 rounded-3xl bg-white/80 backdrop-blur-xs border border-stone-200/90 shadow-sm flex flex-col h-full space-y-4 group hover:bg-white/95 transition-all">
                     <h3 className="text-xl sm:text-2xl font-serif font-medium text-[#121212] tracking-tight">
@@ -586,7 +601,7 @@ export default function Home() {
             {/* Right Strategic Rows */}
             <div className="lg:col-span-7">
               <div className="border-t border-stone-200 divide-y divide-stone-200">
-                {lookingAheadSec.items.map((item, idx) => (
+                {(lookingAheadSec.items || []).map((item, idx) => (
                   <ScrollReveal key={item.title || idx} delay={idx * 0.08}>
                     <div className="py-6 sm:py-7 space-y-2 group hover:bg-[#FAF9F6] transition-colors px-4 -mx-4 rounded-2xl">
                       <h3 className="text-lg sm:text-xl font-serif font-medium text-[#121212] tracking-tight group-hover:text-[#D52B1E] transition-colors">
@@ -633,47 +648,58 @@ export default function Home() {
 
             {/* 3 News Articles */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10">
-              {dynamicNews.slice(0, 3).map((article, idx) => (
-                <ScrollReveal key={article.id} delay={idx * 0.08}>
-                  <article className="group flex flex-col h-full space-y-4">
-                    <div className="relative aspect-[16/10] overflow-hidden rounded-3xl border border-stone-200 bg-stone-100">
-                      <FallbackImage
-                        src={article.image}
-                        alt={article.title}
-                        aspectRatio="aspect-[16/10]"
-                        className="group-hover:scale-105 transition-transform duration-500"
-                      />
-                    </div>
+              {(!dynamicNews || dynamicNews.length === 0) ? (
+                [1, 2, 3].map((n) => (
+                  <div key={n} className="flex flex-col h-full space-y-4 animate-pulse">
+                    <div className="aspect-[16/10] rounded-3xl bg-stone-200/80 border border-stone-200/80" />
+                    <div className="h-4 bg-stone-200/80 rounded w-1/3" />
+                    <div className="h-6 bg-stone-200/80 rounded w-3/4" />
+                    <div className="h-10 bg-stone-200/80 rounded w-full" />
+                  </div>
+                ))
+              ) : (
+                dynamicNews.slice(0, 3).map((article, idx) => (
+                  <ScrollReveal key={article.id || idx} delay={idx * 0.08}>
+                    <article className="group flex flex-col h-full space-y-4">
+                      <div className="relative aspect-[16/10] overflow-hidden rounded-3xl border border-stone-200 bg-stone-100">
+                        <FallbackImage
+                          src={article.image || article.featured_image_url}
+                          alt={article.title || 'Onecore News'}
+                          aspectRatio="aspect-[16/10]"
+                          className="group-hover:scale-105 transition-transform duration-500"
+                        />
+                      </div>
 
-                    <div className="flex items-center justify-between text-xs text-stone-500 pt-1">
-                      <span className="font-bold tracking-wider text-[#D52B1E] uppercase">
-                        {article.category}
-                      </span>
-                      <time dateTime={article.date}>{article.date}</time>
-                    </div>
+                      <div className="flex items-center justify-between text-xs text-stone-500 pt-1">
+                        <span className="font-bold tracking-wider text-[#D52B1E] uppercase">
+                          {article.category || 'UPDATE'}
+                        </span>
+                        <time dateTime={article.date}>{article.date || 'Recent'}</time>
+                      </div>
 
-                    <h3 className="text-lg sm:text-xl font-serif font-medium text-[#121212] group-hover:text-[#D52B1E] transition-colors leading-snug">
-                      <Link to={`/news/${article.slug || article.id}`}>
-                        {article.title}
-                      </Link>
-                    </h3>
+                      <h3 className="text-lg sm:text-xl font-serif font-medium text-[#121212] group-hover:text-[#D52B1E] transition-colors leading-snug">
+                        <Link to={`/news/${article.slug || article.id}`}>
+                          {article.title}
+                        </Link>
+                      </h3>
 
-                    <p className="text-sm text-[#4B5563] leading-relaxed line-clamp-2">
-                      {article.excerpt}
-                    </p>
+                      <p className="text-sm text-[#4B5563] leading-relaxed line-clamp-2">
+                        {article.excerpt}
+                      </p>
 
-                    <div className="pt-2 mt-auto">
-                      <Link
-                        to={`/news/${article.slug || article.id}`}
-                        className="lilly-red-underline text-xs inline-flex items-center gap-1"
-                      >
-                        <span>Read article</span>
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </Link>
-                    </div>
-                  </article>
-                </ScrollReveal>
-              ))}
+                      <div className="pt-2 mt-auto">
+                        <Link
+                          to={`/news/${article.slug || article.id}`}
+                          className="lilly-red-underline text-xs inline-flex items-center gap-1"
+                        >
+                          <span>Read article</span>
+                          <ArrowRight className="w-3.5 h-3.5" />
+                        </Link>
+                      </div>
+                    </article>
+                  </ScrollReveal>
+                ))
+              )}
             </div>
 
           </div>
