@@ -25,7 +25,7 @@ export function useTherapeuticAreas() {
 
             const cleanSlug = (fallback.slug || area.slug || fallback.id || area.id || '').toLowerCase();
             const divConfig = THERAPEUTIC_DIVISIONS[cleanSlug] || THERAPEUTIC_DIVISIONS[area.slug] || THERAPEUTIC_DIVISIONS[area.name?.toLowerCase()] || {};
-            const authoritativeHero = divConfig.heroImage || area.image_url || fallback.heroImage || fallback.image;
+            const authoritativeHero = area.image_url || fallback.image_url || fallback.heroImage || fallback.image || divConfig.heroImage;
 
             return {
               ...fallback,

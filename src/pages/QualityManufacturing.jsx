@@ -4,9 +4,10 @@ import { ArrowRight, CheckCircle2, ShieldCheck, Microscope, Layers } from 'lucid
 import ScrollReveal from '../components/ScrollReveal';
 import { useCmsPage } from '../hooks/useCmsPage';
 import { assetUrl } from '../utils/assetUrl';
+import PageSkeleton from '../components/PageSkeleton';
 
 export default function QualityManufacturing() {
-  const { getSection } = useCmsPage('quality-manufacturing');
+  const { getSection, loading: cmsLoading, isError: cmsError } = useCmsPage('quality-manufacturing');
   const videoRef = useRef(null);
 
   useEffect(() => {
@@ -110,6 +111,10 @@ export default function QualityManufacturing() {
       },
     ]
   });
+
+  if (cmsLoading && !cmsError) {
+    return <PageSkeleton />;
+  }
 
   return (
     <div className="w-full bg-transparent text-[#121212]">

@@ -22,7 +22,6 @@ import { AdminCard } from '../../components/admin/AdminCard';
 import ToastNotification from '../../components/admin/ToastNotification';
 import MediaSelectorModal from '../../components/admin/MediaSelectorModal';
 import { useAdminAuth } from '../../context/AdminAuthContext';
-import { allProducts } from '../../data/allProducts';
 
 function FieldLabel({ children, required }) {
   return (
@@ -213,41 +212,7 @@ export default function AdminProductEditor() {
             safetySections: p.safetySections || p.safety_sections || [],
           });
         } else {
-          // Check static data fallback
-          const fallback = allProducts.find((item) => item.slug === id || String(item.id) === id);
-          if (fallback) {
-            setForm({
-              id: fallback.id || (id !== 'new' ? id : undefined),
-              brand_name: fallback.name,
-              brandName: fallback.name,
-              slug: fallback.slug,
-              therapeutic_area_id: 3,
-              division: fallback.division?.toLowerCase() || 'orthopaedics',
-              divisionSlug: fallback.division?.toLowerCase() || 'orthopaedics',
-              therapeuticArea: fallback.category || fallback.division || 'Orthopaedics',
-              category: fallback.division?.toLowerCase() || 'orthopaedics',
-              short_description: fallback.composition || fallback.usedFor || '',
-              full_description: fallback.description || '',
-              packshot_url: fallback.image || '',
-              status: 'published',
-              display_order: 1,
-              seo_title: '',
-              seo_description: '',
-              images: fallback.image
-                ? [{ image_url: fallback.image, alt_text: fallback.name || '', is_primary: 1, display_order: 1 }]
-                : [],
-              compositions: [
-                { ingredient_name: fallback.composition || fallback.name, ingredient_description: '', strength: '' }
-              ],
-              benefits: [],
-              dosage: { heading: 'How it should be taken.', description: fallback.direction || 'Use as directed by a healthcare professional.' },
-              mechanisms: fallback.mechanism ? [{ title: 'Mechanism of Action', description: fallback.mechanism }] : [],
-              safetySections: (fallback.precautions || []).map((prec, idx) => ({
-                title: `Safety Note ${idx + 1}`,
-                description: prec,
-              })),
-            });
-          }
+          showToast('error', d.message || 'Product not found in database.');
         }
       })
       .catch((err) => {

@@ -30,7 +30,7 @@ export function useAreaDetail(slug) {
           const fallback = getAreaBySlug(slug) || {};
           const cleanSlug = (slug || apiArea.slug || '').toLowerCase().trim();
           const divConfig = THERAPEUTIC_DIVISIONS[cleanSlug] || THERAPEUTIC_DIVISIONS[apiArea.slug] || {};
-          const authoritativeHero = divConfig.heroImage || apiArea.image_url || fallback.heroImage || fallback.image;
+          const authoritativeHero = apiArea.image_url || fallback.image_url || fallback.heroImage || fallback.image || divConfig.heroImage;
 
           const merged = {
             ...fallback,

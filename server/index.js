@@ -25,9 +25,14 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Ensure uploads folder exists (both local and Hostinger production layouts)
+// Ensure uploads folder exists (both local, custom persistent, and Hostinger production layouts)
+const customUploadsDir = process.env.UPLOADS_DIR ? path.resolve(process.env.UPLOADS_DIR) : null;
 const uploadsDir = path.resolve(__dirname, 'uploads');
 const parentUploadsDir = path.resolve(__dirname, '..', 'uploads');
+
+if (customUploadsDir && !fs.existsSync(customUploadsDir)) {
+  try { fs.mkdirSync(customUploadsDir, { recursive: true }); } catch {}
+}
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
@@ -106,11 +111,45 @@ const authLimiter = rateLimit({
 });
 app.use('/api/auth/login', authLimiter);
 
-// Persistent static uploads serving
+// Persistent static uploads serving across all directories
+if (customUploadsDir && fs.existsSync(customUploadsDir)) {
+  app.use('/uploads', express.static(customUploadsDir));
+  app.use('/assets/uploads', express.static(customUploadsDir));
+}
 app.use('/uploads', express.static(uploadsDir));
+app.use('/assets/uploads', express.static(uploadsDir));
 if (fs.existsSync(parentUploadsDir) && parentUploadsDir !== uploadsDir) {
   app.use('/uploads', express.static(parentUploadsDir));
+  app.use('/assets/uploads', express.static(parentUploadsDir));
 }
+
+// Map /images/divisions to public assets
+const divisionImageMap = {
+  'general-medicine.jpg': '/assets/therapeutic-general-medicine.jpg',
+  'ortheon.jpg': '/assets/ortheon.jpg',
+  'orthopaedics.jpg': '/assets/ortheon.jpg',
+  'womens-health.jpg': '/assets/therapeutic-womens-health.jpg',
+  'pediaplus.jpg': '/assets/pediaplus.jpg',
+  'pediatrics.jpg': '/assets/pediaplus.jpg',
+  'paediatrics.jpg': '/assets/pediaplus.jpg',
+  'neurix.jpg': '/assets/neurix.jpg',
+  'neurology.jpg': '/assets/neurix.jpg',
+  'eyerix.jpg': '/assets/eyerix.jpg',
+  'ophthalmology.jpg': '/assets/eyerix.jpg',
+  'vellis.webp': '/assets/vellis.webp',
+  'dermatology.jpg': '/assets/vellis.webp',
+  'otira.jpg': '/assets/otira.jpg',
+  'ent.jpg': '/assets/otira.jpg',
+  'cytos.jpg': '/assets/cytos.jpg',
+  'oncology.jpg': '/assets/cytos.jpg',
+};
+app.use('/images/divisions/:filename', (req, res, next) => {
+  const target = divisionImageMap[req.params.filename];
+  if (target) {
+    return res.redirect(target);
+  }
+  next();
+});
 
 // Public assets & fallback placeholder
 const publicAssetsDir = path.resolve(__dirname, '../public/assets');

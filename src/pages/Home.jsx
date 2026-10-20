@@ -8,9 +8,10 @@ import { useCmsPage } from '../hooks/useCmsPage';
 import { useTherapeuticAreas } from '../hooks/useTherapeuticAreas';
 import { useNews } from '../hooks/useNews';
 import { assetUrl } from '../utils/assetUrl';
+import PageSkeleton from '../components/PageSkeleton';
 
 export default function Home() {
-  const { getSection } = useCmsPage('home');
+  const { getSection, loading: cmsLoading, isError: cmsError } = useCmsPage('home');
   const { areas: dynamicAreas, loading: areasLoading } = useTherapeuticAreas();
   const { articles: dynamicNews } = useNews();
   const carouselRef = useRef(null);
@@ -156,6 +157,10 @@ export default function Home() {
       { name: "PEDIAPLUS", specialty: "Paediatrics", description: "Safe, child-friendly dosage forms and pediatric wellness.", image: "/assets/pediaplus.jpg", path: "/areas-of-care/pediaplus" },
       { name: "OMNARA", specialty: "General Medicine", description: "Essential broad-spectrum therapeutics for daily practice.", image: "/assets/therapeutic-general-medicine.jpg", path: "/areas-of-care/omnara" },
     ];
+
+  if ((cmsLoading && !cmsError) || (areasLoading && !dynamicAreas)) {
+    return <PageSkeleton />;
+  }
 
   return (
     <div className="w-full bg-transparent overflow-x-clip">

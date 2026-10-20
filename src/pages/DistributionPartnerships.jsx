@@ -5,10 +5,11 @@ import ScrollReveal from '../components/ScrollReveal';
 import { useSettings } from '../hooks/useSettings';
 import { useCmsPage } from '../hooks/useCmsPage';
 import { assetUrl } from '../utils/assetUrl';
+import PageSkeleton from '../components/PageSkeleton';
 
 export default function DistributionPartnerships() {
   const { contact } = useSettings();
-  const { getSection } = useCmsPage('partnerships');
+  const { getSection, loading: cmsLoading, isError: cmsError } = useCmsPage('partnerships');
   const heroSection = getSection('hero');
   const pillarsSection = getSection('pillars');
 
@@ -67,6 +68,10 @@ export default function DistributionPartnerships() {
       icon: Users,
     },
   ];
+
+  if (cmsLoading && !cmsError) {
+    return <PageSkeleton />;
+  }
 
   return (
     <div className="w-full bg-transparent text-[#121212]">

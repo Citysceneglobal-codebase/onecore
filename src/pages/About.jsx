@@ -4,9 +4,10 @@ import ScrollReveal from '../components/ScrollReveal';
 import { ArrowRight, CheckCircle2 } from 'lucide-react';
 import { useCmsPage } from '../hooks/useCmsPage';
 import { assetUrl } from '../utils/assetUrl';
+import PageSkeleton from '../components/PageSkeleton';
 
 export default function About() {
-  const { getSection } = useCmsPage('about');
+  const { getSection, loading: cmsLoading, isError: cmsError } = useCmsPage('about');
 
   useEffect(() => {
     document.title = "About Onecore | Purposeful Formulations, Dependable Quality";
@@ -117,6 +118,10 @@ export default function About() {
   const authenticVisionMission = (visionMissionSec.items || []).filter(
     (item) => item.title && !item.title.toLowerCase().includes('purpose')
   ).slice(0, 2);
+
+  if (cmsLoading && !cmsError) {
+    return <PageSkeleton />;
+  }
 
   return (
     <div className="w-full bg-transparent text-[#121212] overflow-x-hidden">

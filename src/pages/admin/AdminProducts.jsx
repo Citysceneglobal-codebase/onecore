@@ -16,7 +16,6 @@ import AdminTable from '../../components/admin/AdminTable';
 import ToastNotification from '../../components/admin/ToastNotification';
 import ConfirmModal from '../../components/admin/ConfirmModal';
 import { useAdminAuth } from '../../context/AdminAuthContext';
-import { allProducts } from '../../data/allProducts';
 
 export default function AdminProducts() {
   const { token } = useAdminAuth();
@@ -37,37 +36,15 @@ export default function AdminProducts() {
       if (res.ok) {
         const data = await res.json();
         const items = Array.isArray(data) ? data : (Array.isArray(data?.data) ? data.data : []);
-        if (items.length > 0) {
-          setProducts(items);
-        } else {
-          // Fallback to allProducts
-          setProducts(allProducts.map((p, idx) => ({
-            id: p.id || idx + 1,
-            brand_name: p.name,
-            name: p.name,
-            slug: p.slug,
-            therapeutic_area_name: p.category || p.division,
-            therapeutic_area_slug: p.division?.toLowerCase() || 'general-medicine',
-            division: p.division?.toLowerCase() || 'general-medicine',
-            divisionSlug: p.division?.toLowerCase() || 'general-medicine',
-            status: 'published',
-            short_description: p.composition || p.description,
-            packshot_url: p.image,
-          })));
-        }
+        setProducts(items);
+      } else {
+        setProducts([]);
+        showToast('error', 'Failed to retrieve products from database.');
       }
-    } catch {
-      setProducts(allProducts.map((p, idx) => ({
-        id: p.id || idx + 1,
-        brand_name: p.name,
-        name: p.name,
-        slug: p.slug,
-        therapeutic_area_name: p.category || p.division,
-        therapeutic_area_slug: p.division?.toLowerCase() || 'orthopaedics',
-        status: 'published',
-        short_description: p.composition || p.description,
-        packshot_url: p.image,
-      })));
+    } catch (err) {
+      console.error('Error fetching products:', err);
+      setProducts([]);
+      showToast('error', 'Network error retrieving products.');
     } finally {
       setLoading(false);
     }

@@ -515,28 +515,30 @@ export const createPageSection = async (req, res, next) => {
       order = (maxOrder?.max_order || 0) + 1;
     }
 
-    const jsonContent = content_json !== undefined ? (typeof content_json === 'object' ? JSON.stringify(content_json) : content_json) : null;
-    const jsonItems = items_json !== undefined ? (typeof items_json === 'object' ? JSON.stringify(items_json) : items_json) : null;
+    const finalHeading = heading || section_title || '';
+    const finalItemsJson = items_json !== undefined 
+      ? (typeof items_json === 'object' ? JSON.stringify(items_json) : items_json) 
+      : (content_json !== undefined ? (typeof content_json === 'object' ? JSON.stringify(content_json) : content_json) : null);
 
     const result = await query(`
       INSERT INTO page_sections 
-        (page_id, section_key, section_type, section_title, eyebrow, heading, subheading, body, items_json, content_json, cta_text, cta_url, image_url, display_order, order_index, is_active)
+        (page_id, section_key, section_type, eyebrow, heading, subheading, body, items_json, cta_text, cta_url, secondary_cta_text, secondary_cta_url, image_url, video_url, display_order, is_active)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `, [
       pageId,
       section_key.trim().toLowerCase().replace(/\s+/g, '_'),
       section_type || 'editorial',
-      section_title || heading || null,
       eyebrow || null,
-      heading || '',
+      finalHeading,
       subheading || null,
       body || null,
-      jsonItems,
-      jsonContent,
+      finalItemsJson,
       cta_text || null,
       cta_url || null,
+      secondary_cta_text || null,
+      secondary_cta_url || null,
       image_url || null,
-      order,
+      video_url || null,
       order,
       is_active !== undefined ? (is_active ? 1 : 0) : 1
     ]);
@@ -580,32 +582,27 @@ export const updatePageSection = async (req, res, next) => {
     const params = [];
 
     if (eyebrow !== undefined) { updates.push('eyebrow = ?'); params.push(eyebrow); }
-    if (heading !== undefined) { updates.push('heading = ?'); params.push(heading); }
+    if (heading !== undefined || section_title !== undefined) { 
+      updates.push('heading = ?'); 
+      params.push(heading !== undefined ? heading : section_title); 
+    }
     if (subheading !== undefined) { updates.push('subheading = ?'); params.push(subheading); }
     if (body !== undefined) { updates.push('body = ?'); params.push(body); }
-    if (items_json !== undefined) {
+    if (items_json !== undefined || content_json !== undefined) {
+      const val = items_json !== undefined ? items_json : content_json;
       updates.push('items_json = ?');
-      params.push(typeof items_json === 'object' ? JSON.stringify(items_json) : items_json);
+      params.push(typeof val === 'object' ? JSON.stringify(val) : val);
     }
-    if (content_json !== undefined) {
-      updates.push('content_json = ?');
-      params.push(typeof content_json === 'object' ? JSON.stringify(content_json) : content_json);
-    }
-    if (section_title !== undefined) { updates.push('section_title = ?'); params.push(section_title); }
     if (cta_text !== undefined) { updates.push('cta_text = ?'); params.push(cta_text); }
     if (cta_url !== undefined) { updates.push('cta_url = ?'); params.push(cta_url); }
+    if (secondary_cta_text !== undefined) { updates.push('secondary_cta_text = ?'); params.push(secondary_cta_text); }
+    if (secondary_cta_url !== undefined) { updates.push('secondary_cta_url = ?'); params.push(secondary_cta_url); }
     if (image_url !== undefined) { updates.push('image_url = ?'); params.push(image_url); }
+    if (video_url !== undefined) { updates.push('video_url = ?'); params.push(video_url); }
     if (is_active !== undefined) { updates.push('is_active = ?'); params.push(is_active ? 1 : 0); }
-    if (display_order !== undefined) {
+    if (display_order !== undefined || order_index !== undefined) {
       updates.push('display_order = ?');
-      params.push(display_order);
-      updates.push('order_index = ?');
-      params.push(display_order);
-    } else if (order_index !== undefined) {
-      updates.push('order_index = ?');
-      params.push(order_index);
-      updates.push('display_order = ?');
-      params.push(order_index);
+      params.push(display_order !== undefined ? display_order : order_index);
     }
     if (section_type !== undefined) { updates.push('section_type = ?'); params.push(section_type); }
 

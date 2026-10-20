@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Mail, Phone, Clock, ArrowRight, ArrowDown, CheckCircle2, ArrowUpRight, MapPin } from 'lucide-react';
 import ScrollReveal from '../components/ScrollReveal';
+import PageSkeleton from '../components/PageSkeleton';
 import { useCmsPage } from '../hooks/useCmsPage';
 import { useSettings } from '../hooks/useSettings';
 import { assetUrl } from '../utils/assetUrl';
 
 export default function Contact() {
-  const { getSection } = useCmsPage('contact');
+  const { getSection, loading: cmsLoading, isError: cmsError } = useCmsPage('contact');
   const { contact } = useSettings();
 
   useEffect(() => {
@@ -59,10 +60,10 @@ export default function Contact() {
     catch { return {}; }
   })() : {}) || {};
 
-  const displayEmail = coords.support_email || contact?.general_email || contact?.email || 'contact@onecorepharma.com';
-  const displayBusinessEmail = coords.business_email || 'business@onecorepharma.com';
-  const displayPhone = coords.primary_phone || contact?.phone || '+91 40 0000 0000';
-  const displayHours = coords.working_hours || contact?.office_hours || contact?.business_hours || 'Monday – Friday: 9:00 AM – 6:00 PM IST';
+  const displayEmail = coords.support_email || contact?.general_email || contact?.email || 'info@onecorepharma.in';
+  const displayBusinessEmail = coords.business_email || contact?.business_email || 'info@onecorepharma.in';
+  const displayPhone = coords.primary_phone || contact?.phone || '8169255034';
+  const displayHours = coords.working_hours || contact?.office_hours || contact?.business_hours || '10 AM to 7 PM';
   const displayOffice = coords.registered_office || channelsSec.body || 'Onecore Pharma Headquarters, Industrial Area, Hyderabad, India';
 
   // Resolved dynamic cards list: use database items if present, otherwise build from coordinates
@@ -211,6 +212,7 @@ export default function Contact() {
   const [errors, setErrors] = useState({});
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState(null);
 
   const handleSelectEnquiryType = (val) => {
     setFormData((prev) => ({ ...prev, natureOfEnquiry: val }));
@@ -255,6 +257,7 @@ export default function Contact() {
     if (!validateForm()) return;
 
     setIsSubmitting(true);
+    setSubmitError(null);
     try {
       const res = await fetch('/api/contact', {
         method: 'POST',
@@ -262,10 +265,12 @@ export default function Contact() {
         body: JSON.stringify(formData),
       });
 
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        console.warn('Contact API response not ok, proceeding with graceful feedback:', errorData.message);
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || 'We could not submit your enquiry at this time. Please try again or reach out via phone.');
       }
+
       setIsSubmitted(true);
       setFormData({
         fullName: '',
@@ -278,19 +283,8 @@ export default function Contact() {
         consent: false,
       });
     } catch (err) {
-      console.warn('Contact submission network fallback:', err);
-      // Graceful local submission fallback
-      setIsSubmitted(true);
-      setFormData({
-        fullName: '',
-        email: '',
-        phone: '',
-        organisation: '',
-        contactType: '',
-        natureOfEnquiry: '',
-        message: '',
-        consent: false,
-      });
+      console.error('Contact submission error:', err);
+      setSubmitError(err.message || 'We encountered a connection issue. Please check your network and try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -309,6 +303,10 @@ export default function Contact() {
     }
     return <Clock className="w-4 h-4 text-[#888888] group-hover:text-[#D52B1E] transition-colors" />;
   };
+
+  if (cmsLoading && !cmsError && !channelsSec.heading) {
+    return <PageSkeleton />;
+  }
 
   return (
     <div className="w-full bg-transparent text-[#121212]">
@@ -618,6 +616,15 @@ export default function Contact() {
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit} noValidate className="space-y-6">
+                    {submitError && (
+                      <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs sm:text-sm flex items-start gap-3">
+                        <span className="text-base">⚠️</span>
+                        <div>
+                          <p className="font-semibold text-rose-900">Unable to Submit Message</p>
+                          <p className="mt-0.5 text-rose-700">{submitError}</p>
+                        </div>
+                      </div>
+                    )}
 
                     {/* Row 1: Full name * & Email address * */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">

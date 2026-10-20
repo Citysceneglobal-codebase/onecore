@@ -4,9 +4,10 @@ import { ArrowRight, ArrowDown, CheckCircle2, ShieldCheck, X } from 'lucide-reac
 import ScrollReveal from '../components/ScrollReveal';
 import { useCmsPage } from '../hooks/useCmsPage';
 import { assetUrl } from '../utils/assetUrl';
+import PageSkeleton from '../components/PageSkeleton';
 
 export default function PatientsCaregivers() {
-  const { getSection } = useCmsPage('patients-caregivers');
+  const { getSection, loading: cmsLoading, isError: cmsError } = useCmsPage('patients-caregivers');
   const [activeSafetyModal, setActiveSafetyModal] = useState(null);
   const [modalSubmitted, setModalSubmitted] = useState(false);
 
@@ -179,6 +180,10 @@ export default function PatientsCaregivers() {
       }
     ]
   });
+
+  if (cmsLoading && !cmsError) {
+    return <PageSkeleton />;
+  }
 
   return (
     <div className="w-full bg-transparent text-[#121212]">

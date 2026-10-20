@@ -17,8 +17,9 @@ export function resolveImageUrl(imagePath) {
   // Strip leading slashes
   let cleaned = imagePath.replace(/^\/+/, '');
 
-  // Fix any duplicate uploads prefix: uploads/uploads/... -> uploads/...
+  // Fix duplicate or nested prefixes: uploads/uploads/... or assets/uploads/... -> uploads/...
   cleaned = cleaned.replace(/^uploads\/uploads\//, 'uploads/');
+  cleaned = cleaned.replace(/^assets\/uploads\//, 'uploads/');
 
   // If it points to /images/divisions/
   if (cleaned.startsWith('images/divisions/')) {
@@ -78,7 +79,7 @@ export function assetUrl(path) {
 
   // If path is an uploaded asset or division hero banner, route through resolveImageUrl
   const clean = path.replace(/^\/+/, '');
-  if (clean.startsWith('uploads/') || clean.startsWith('images/divisions/')) {
+  if (clean.startsWith('uploads/') || clean.startsWith('assets/uploads/') || clean.startsWith('images/divisions/')) {
     return resolveImageUrl(path);
   }
 

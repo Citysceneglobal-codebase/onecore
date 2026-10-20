@@ -328,7 +328,7 @@ export default function AreaOfCareDetail() {
         title: dynamicArea.name || base.title,
         subtitle: dynamicArea.heading || base.subtitle,
         description: dynamicArea.description || base.description,
-        image: division.heroImage || dynamicArea.image_url || base.image,
+        image: dynamicArea.image_url || base.image || division.heroImage,
       };
     }
 
@@ -358,7 +358,7 @@ export default function AreaOfCareDetail() {
   }, [products, searchQuery]);
 
   // Neutral skeleton layout while loading to avoid content flash/jitter
-  if ((areaLoading || loading) && !dynamicArea && !division.name) {
+  if (loading || areaLoading) {
     return (
       <div className="w-full bg-transparent text-[#121212] min-h-screen">
         <div className="pt-24 sm:pt-28 pb-4 border-b border-[#E5E3DC] bg-white/80">
@@ -449,7 +449,7 @@ export default function AreaOfCareDetail() {
             <div className="lg:col-span-5">
               <div className="division-hero-media rounded-[28px] overflow-hidden border border-[#E5E3DC] shadow-sm aspect-[16/10] bg-[#FAF9F6]">
                 <img
-                  src={assetUrl(division.heroImage || currentCategory.image)}
+                  src={assetUrl(currentCategory.image || division.heroImage)}
                   alt={`${division.brand || currentCategory.title} ${division.name || currentCategory.subtitle}`}
                   className="w-full h-full object-cover"
                   loading="lazy"

@@ -5,9 +5,10 @@ import { useNews } from '../hooks/useNews';
 import { useCmsPage } from '../hooks/useCmsPage';
 import { ArrowRight, Clock } from 'lucide-react';
 import { assetUrl } from '../utils/assetUrl';
+import PageSkeleton from '../components/PageSkeleton';
 
 export default function News() {
-  const { getSection } = useCmsPage('news');
+  const { getSection, loading: cmsLoading, isError: cmsError } = useCmsPage('news');
   const { articles: newsArticles, loading: newsLoading } = useNews();
 
   useEffect(() => {
@@ -24,6 +25,10 @@ export default function News() {
   const articlesList = newsArticles || [];
   const featuredArticle = articlesList.length > 0 ? articlesList[0] : null;
   const remainingArticles = articlesList.length > 1 ? articlesList.slice(1) : [];
+
+  if ((cmsLoading && !cmsError) || (newsLoading && !newsArticles)) {
+    return <PageSkeleton />;
+  }
 
   return (
     <div className="w-full bg-transparent text-[#121212] min-h-screen">

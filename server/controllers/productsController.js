@@ -97,21 +97,14 @@ export const getProducts = async (req, res, next) => {
       }
       searchTerms = [...new Set(searchTerms)];
 
-      const regexPattern = searchTerms
-        .map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
-        .map(t => `^${t}$`)
-        .join('|');
-
-      conditions.push(`(
-        p.division REGEXP ? OR
-        p.divisionSlug REGEXP ? OR
-        p.therapeuticArea REGEXP ? OR
-        p.category REGEXP ? OR
-        ta.slug REGEXP ? OR
-        ta.name REGEXP ?
-      )`);
-      for (let i = 0; i < 6; i++) {
-        params.push(regexPattern);
+      const areaId = DIVISION_TO_AREA_ID[slug] || DIVISION_TO_AREA_ID[slugDashed];
+      if (areaId) {
+        conditions.push('(p.therapeutic_area_id = ? OR ta.slug = ?)');
+        params.push(areaId, slugDashed);
+      } else {
+        const placeholders = searchTerms.map(() => '?').join(', ');
+        conditions.push(`(ta.slug IN (${placeholders}) OR ta.name IN (${placeholders}))`);
+        params.push(...searchTerms, ...searchTerms);
       }
     }
 
@@ -127,8 +120,8 @@ export const getProducts = async (req, res, next) => {
       const shortDesc = p.short_description || p.shortDescription || p.composition_summary || p.composition || p.full_description || '';
       const fullDesc = p.full_description || p.fullDescription || p.description || '';
       const packshot = p.packshot_url || p.productPrimaryPackshotImage || p.image || '/assets/placeholder.png';
-      const divSlug = p.divisionSlug || p.division || p.therapeutic_area_slug || 'general-medicine';
-      const taName = p.therapeuticArea || p.therapeutic_area_name || 'General Medicine';
+      const divSlug = p.therapeutic_area_slug || 'general-medicine';
+      const taName = p.therapeutic_area_name || 'General Medicine';
 
       return {
         ...p,
@@ -159,10 +152,13 @@ export const getProducts = async (req, res, next) => {
       };
     });
 
-    return res.status(200).json(products);
+    return res.status(200).json({
+      success: true,
+      data: products,
+    });
   } catch (error) {
-    console.error('Database query error:', error);
-    return res.status(500).json({ error: 'Failed to retrieve products' });
+    console.error('Database query error in getProducts:', error);
+    next(error);
   }
 };
 
@@ -354,9 +350,9 @@ export const createProduct = async (req, res, next) => {
     const result = await query(`
       INSERT INTO products (
         therapeutic_area_id, brand_name, slug, short_description, full_description, packshot_url,
-        status, display_order, seo_title, seo_description, division, divisionSlug, therapeuticArea, category
+        status, display_order, seo_title, seo_description
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `, [
       areaId,
       brandNameVal,
@@ -367,11 +363,7 @@ export const createProduct = async (req, res, next) => {
       status || 'published',
       order,
       seo_title || null,
-      seo_description || null,
-      finalDivisionSlug,
-      finalDivisionSlug,
-      finalTaLabel,
-      finalDivisionSlug
+      seo_description || null
     ]);
 
     const productId = result.insertId;
@@ -496,28 +488,6 @@ export const updateProduct = async (req, res, next) => {
     if (seo_description !== undefined) {
       updates.push('seo_description = ?');
       params.push(seo_description);
-    }
-
-    // Standardize division fields across all keys
-    const canonicalInfo = areaId ? AREA_ID_TO_CANONICAL[areaId] : null;
-    const finalDivisionSlug = chosenDivisionSlug || canonicalInfo?.slug;
-    const finalTaLabel = therapeuticArea || canonicalInfo?.name;
-
-    if (finalDivisionSlug) {
-      updates.push('division = ?');
-      params.push(finalDivisionSlug);
-      updates.push('divisionSlug = ?');
-      params.push(finalDivisionSlug);
-      updates.push('division_slug = ?');
-      params.push(finalDivisionSlug);
-      updates.push('category = ?');
-      params.push(finalDivisionSlug);
-    }
-    if (finalTaLabel) {
-      updates.push('therapeuticArea = ?');
-      params.push(finalTaLabel);
-      updates.push('therapeutic_area = ?');
-      params.push(finalTaLabel);
     }
 
     // Always update timestamp

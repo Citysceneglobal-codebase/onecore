@@ -13,6 +13,7 @@ import { THERAPEUTIC_DIVISIONS } from '../data/areasOfCare';
 import { useCmsPage } from '../hooks/useCmsPage';
 import { assetUrl } from '../utils/assetUrl';
 import { formatProductName } from '../utils/formatProductName';
+import PageSkeleton from '../components/PageSkeleton';
 
 export default function AreasOfCare() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -20,7 +21,7 @@ export default function AreasOfCare() {
 
   const { areas: dynamicAreas, loading: areasLoading } = useTherapeuticAreas();
   const areasList = dynamicAreas || [];
-  const { getSection } = useCmsPage('areas-of-care');
+  const { getSection, loading: cmsLoading, isError: cmsError } = useCmsPage('areas-of-care');
   const heroSection = getSection('hero');
 
   // Local search input
@@ -96,6 +97,10 @@ export default function AreasOfCare() {
       setFormSubmitted(true);
     }, 400);
   };
+
+  if (areasLoading || (cmsLoading && !cmsError && !dynamicAreas)) {
+    return <PageSkeleton />;
+  }
 
   return (
     <div className="w-full bg-transparent text-[#121212] min-h-screen overflow-x-hidden">
@@ -324,7 +329,7 @@ export default function AreasOfCare() {
             const divisionUrl = `/areas-of-care/${divisionSlug}`;
             const formulationCount = area.products ? area.products.length : 0;
             const divisionConfig = THERAPEUTIC_DIVISIONS[divisionSlug] || THERAPEUTIC_DIVISIONS[area.slug] || THERAPEUTIC_DIVISIONS[area.id] || {};
-            const unifiedHeroImage = divisionConfig.heroImage || area.image_url || area.image;
+            const unifiedHeroImage = area.image_url || area.image || divisionConfig.heroImage;
 
             return (
               <div

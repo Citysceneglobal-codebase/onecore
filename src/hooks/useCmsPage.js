@@ -7,7 +7,7 @@ import { pagesContent } from '../data/pagesContent';
  */
 export function useCmsPage(pageKey, fallbackData = {}) {
   const [page, setPage] = useState(null);
-  const [sections, setSections] = useState({});
+  const [sections, setSections] = useState(null);
   const [sectionsList, setSectionsList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isError, setIsError] = useState(false);
@@ -18,7 +18,13 @@ export function useCmsPage(pageKey, fallbackData = {}) {
 
     const fetchPageFromApi = async () => {
       try {
-        const res = await fetch(`/api/pages/${pageKey}`, { cache: 'no-store' });
+        const res = await fetch(`/api/pages/${pageKey}`, {
+          cache: 'no-store',
+          headers: {
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache',
+          },
+        });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const result = await res.json();
 
