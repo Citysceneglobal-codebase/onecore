@@ -137,25 +137,67 @@ export default function Home() {
     secondary_cta_url: '/contact',
   });
 
+  // Division fallback map for distinct specialty imagery
+  const divisionImageMap = {
+    femme: '/assets/therapeutic-womens-health.jpg',
+    'womens-health': '/assets/therapeutic-womens-health.jpg',
+    'women-health': '/assets/therapeutic-womens-health.jpg',
+    pediaplus: '/assets/pediaplus.jpg',
+    pediatrics: '/assets/pediaplus.jpg',
+    paediatrics: '/assets/pediaplus.jpg',
+    ortheon: '/assets/ortheon.jpg',
+    orthopaedics: '/assets/ortheon.jpg',
+    orthopedic: '/assets/ortheon.jpg',
+    orthopedics: '/assets/ortheon.jpg',
+    neurix: '/assets/neurix.jpg',
+    neurology: '/assets/neurix.jpg',
+    neuro: '/assets/neurix.jpg',
+    eyerix: '/assets/eyerix.jpg',
+    ophthalmology: '/assets/eyerix.jpg',
+    ocular: '/assets/eyerix.jpg',
+    vellis: '/assets/vellis.webp',
+    dermatology: '/assets/vellis.webp',
+    derma: '/assets/vellis.webp',
+    otira: '/assets/otira.jpg',
+    ent: '/assets/otira.jpg',
+    'ear-nose-throat': '/assets/otira.jpg',
+    cytos: '/assets/cytos.jpg',
+    oncology: '/assets/cytos.jpg',
+    omnara: '/assets/therapeutic-general-medicine.jpg',
+    'general-medicine': '/assets/therapeutic-general-medicine.jpg',
+    general: '/assets/therapeutic-general-medicine.jpg',
+  };
+
+  const getDivisionFallback = (rawKey) => {
+    const k = (rawKey || '').toLowerCase().trim();
+    return divisionImageMap[k] || '/assets/therapeutic-general-medicine.jpg';
+  };
+
   // Map dynamic areas to division cards
   const divisions = (dynamicAreas && dynamicAreas.length > 0)
-    ? dynamicAreas.map((a) => ({
-      name: a.divisionName || a.displayName || a.title,
-      specialty: a.therapeuticArea || a.displayName || a.title,
-      description: a.description || a.shortDescription || 'Targeted therapeutic formulations developed to address real clinical needs.',
-      image: a.image || a.image_url || '/assets/therapeutic-general-medicine.jpg',
-      path: `/areas-of-care/${(a.slug || a.id || a.divisionName || '').toLowerCase().trim()}`,
-    }))
+    ? dynamicAreas.map((a) => {
+        const key = (a.slug || a.id || a.divisionName || a.name || '').toLowerCase().trim();
+        const fallback = getDivisionFallback(key);
+        const hasCustomImg = a.image_url && !a.image_url.includes('whatsapp-image');
+        return {
+          name: a.divisionName || a.displayName || a.title || a.name,
+          specialty: a.therapeuticArea || a.displayName || a.title || a.name,
+          description: a.description || a.shortDescription || 'Targeted therapeutic formulations developed to address real clinical needs.',
+          image: hasCustomImg ? a.image_url : fallback,
+          fallbackImage: fallback,
+          path: `/areas-of-care/${(a.slug || a.id || a.divisionName || '').toLowerCase().trim()}`,
+        };
+      })
     : [
-      { name: "CYTOS", specialty: "Oncology", description: "Targeted therapeutics and supportive oncology care.", image: "/assets/cytos.jpg", path: "/areas-of-care/cytos" },
-      { name: "FEMME", specialty: "Women’s Health", description: "Formulations supporting maternal wellness and hormonal balance.", image: "/assets/therapeutic-womens-health.jpg", path: "/areas-of-care/femme" },
-      { name: "NEURIX", specialty: "Neurology", description: "Neuroprotective and cognitive formulations for CNS care.", image: "/assets/neurix.jpg", path: "/areas-of-care/neurix" },
-      { name: "ORTHEON", specialty: "Orthopaedics", description: "Musculoskeletal mobility and cartilage protection solutions.", image: "/assets/ortheon.jpg", path: "/areas-of-care/ortheon" },
-      { name: "VELLIS", specialty: "Dermatology", description: "Dermatological formulations restoring barrier integrity.", image: "/assets/vellis.webp", path: "/areas-of-care/vellis" },
-      { name: "EYERIX", specialty: "Ophthalmology", description: "Precision ocular care and anti-inflammatory eye formulations.", image: "/assets/eyerix.jpg", path: "/areas-of-care/eyerix" },
-      { name: "OTIRA", specialty: "ENT", description: "Targeted airway and otolaryngology formulations.", image: "/assets/otira.jpg", path: "/areas-of-care/otira" },
-      { name: "PEDIAPLUS", specialty: "Paediatrics", description: "Safe, child-friendly dosage forms and pediatric wellness.", image: "/assets/pediaplus.jpg", path: "/areas-of-care/pediaplus" },
-      { name: "OMNARA", specialty: "General Medicine", description: "Essential broad-spectrum therapeutics for daily practice.", image: "/assets/therapeutic-general-medicine.jpg", path: "/areas-of-care/omnara" },
+      { name: "CYTOS", specialty: "Oncology", description: "Targeted therapeutics and supportive oncology care.", image: "/assets/cytos.jpg", fallbackImage: "/assets/cytos.jpg", path: "/areas-of-care/cytos" },
+      { name: "FEMME", specialty: "Women’s Health", description: "Formulations supporting maternal wellness and hormonal balance.", image: "/assets/therapeutic-womens-health.jpg", fallbackImage: "/assets/therapeutic-womens-health.jpg", path: "/areas-of-care/femme" },
+      { name: "NEURIX", specialty: "Neurology", description: "Neuroprotective and cognitive formulations for CNS care.", image: "/assets/neurix.jpg", fallbackImage: "/assets/neurix.jpg", path: "/areas-of-care/neurix" },
+      { name: "ORTHEON", specialty: "Orthopaedics", description: "Musculoskeletal mobility and cartilage protection solutions.", image: "/assets/ortheon.jpg", fallbackImage: "/assets/ortheon.jpg", path: "/areas-of-care/ortheon" },
+      { name: "VELLIS", specialty: "Dermatology", description: "Dermatological formulations restoring barrier integrity.", image: "/assets/vellis.webp", fallbackImage: "/assets/vellis.webp", path: "/areas-of-care/vellis" },
+      { name: "EYERIX", specialty: "Ophthalmology", description: "Precision ocular care and anti-inflammatory eye formulations.", image: "/assets/eyerix.jpg", fallbackImage: "/assets/eyerix.jpg", path: "/areas-of-care/eyerix" },
+      { name: "OTIRA", specialty: "ENT", description: "Targeted airway and otolaryngology formulations.", image: "/assets/otira.jpg", fallbackImage: "/assets/otira.jpg", path: "/areas-of-care/otira" },
+      { name: "PEDIAPLUS", specialty: "Paediatrics", description: "Safe, child-friendly dosage forms and pediatric wellness.", image: "/assets/pediaplus.jpg", fallbackImage: "/assets/pediaplus.jpg", path: "/areas-of-care/pediaplus" },
+      { name: "OMNARA", specialty: "General Medicine", description: "Essential broad-spectrum therapeutics for daily practice.", image: "/assets/therapeutic-general-medicine.jpg", fallbackImage: "/assets/therapeutic-general-medicine.jpg", path: "/areas-of-care/omnara" },
     ];
 
   if ((cmsLoading && !cmsError) || (areasLoading && !dynamicAreas)) {
@@ -377,7 +419,7 @@ export default function Home() {
                         loading="lazy"
                         onError={(e) => {
                           e.currentTarget.onerror = null;
-                          e.currentTarget.src = '/assets/therapeutic-general-medicine.jpg';
+                          e.currentTarget.src = item.fallbackImage || '/assets/therapeutic-general-medicine.jpg';
                         }}
                       />
 
@@ -460,10 +502,14 @@ export default function Home() {
                 <ScrollReveal delay={0.15}>
                   <div className="relative rounded-3xl overflow-hidden border border-stone-200 shadow-sm aspect-[16/10] bg-[#FAF9F6]">
                     <img
-                      src={assetUrl(aboutSec.image_url || '/assets/internet/healthcare-team-discussion.jpg')}
+                      src={assetUrl((aboutSec.image_url && !aboutSec.image_url.includes('smiling-doctor')) ? aboutSec.image_url : '/assets/internet/healthcare-team-discussion.jpg')}
                       alt="Onecore Pharma healthcare professionals and clinical dialogue"
                       className="w-full h-full object-cover"
                       loading="lazy"
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = '/assets/internet/healthcare-team-discussion.jpg';
+                      }}
                     />
                   </div>
                 </ScrollReveal>

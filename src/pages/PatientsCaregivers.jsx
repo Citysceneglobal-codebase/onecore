@@ -200,6 +200,10 @@ export default function PatientsCaregivers() {
             alt="Elderly Indian patient in wheelchair with compassionate healthcare caregiver"
             className="w-full h-full object-cover object-center opacity-85 brightness-90"
             loading="eager"
+            onError={(e) => {
+              e.currentTarget.onerror = null;
+              e.currentTarget.src = '/assets/patients-caregivers.jpg';
+            }}
           />
           {/* Directional contrast gradient */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 to-black/20" />
@@ -284,6 +288,10 @@ export default function PatientsCaregivers() {
                     src={assetUrl(perspectivesSec.image_url || '/assets/two-perspectives.jpg')}
                     alt="Clinical consultation and dialogue between Indian doctor and patient"
                     className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = '/assets/two-perspectives.jpg';
+                    }}
                   />
                 </div>
               </ScrollReveal>
@@ -395,6 +403,10 @@ export default function PatientsCaregivers() {
                     src={assetUrl(forPatientsSec.image_url || '/assets/internet/compassionate-care.jpg')}
                     alt="Compassionate healthcare support for patients and families"
                     className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = '/assets/internet/compassionate-care.jpg';
+                    }}
                   />
                 </div>
               </ScrollReveal>
@@ -433,6 +445,10 @@ export default function PatientsCaregivers() {
                       src={assetUrl(forProfessionalsSec.image_url || '/assets/healthcare-professionals.jpg')}
                       alt="Doctor reviewing clinical monographs"
                       className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = '/assets/healthcare-professionals.jpg';
+                      }}
                     />
                   </div>
                 </ScrollReveal>
@@ -493,6 +509,10 @@ export default function PatientsCaregivers() {
               alt="Doctor-patient consultation in Indian healthcare clinic"
               className="w-full h-full object-cover object-center opacity-85 brightness-90"
               loading="lazy"
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = '/assets/treatment-journey.jpg';
+              }}
             />
             {/* Directional contrast gradient */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 to-black/20" />

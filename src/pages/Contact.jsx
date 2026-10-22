@@ -320,10 +320,14 @@ export default function Contact() {
           {/* Hero Background Photograph */}
           <div className="absolute inset-0 z-0">
             <img
-              src={assetUrl(heroSec.image_url || '/assets/internet/contact-direct-helpline.jpg')}
+              src={assetUrl((heroSec.image_url && !heroSec.image_url.includes('focused-tech')) ? heroSec.image_url : '/assets/internet/contact-direct-helpline.jpg')}
               alt="Onecore Pharma medical communication and direct helpline desk"
               className="w-full h-full object-cover object-center opacity-85 brightness-90"
               loading="eager"
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = '/assets/internet/contact-direct-helpline.jpg';
+              }}
             />
             {/* Directional contrast gradient */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 to-black/20" />

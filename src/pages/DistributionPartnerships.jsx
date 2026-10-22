@@ -88,6 +88,10 @@ export default function DistributionPartnerships() {
             alt="Onecore Pharma pan-India pharmaceutical supply network"
             className="w-full h-full object-cover object-center opacity-85 brightness-90"
             loading="eager"
+            onError={(e) => {
+              e.currentTarget.onerror = null;
+              e.currentTarget.src = '/assets/about-facility.jpg';
+            }}
           />
           {/* Directional contrast gradient */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 to-black/20" />

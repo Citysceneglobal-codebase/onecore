@@ -231,10 +231,14 @@ export default function About() {
                 <div className="lg:col-span-6">
                   <div className="rounded-3xl overflow-hidden border border-[#E5E3DC] shadow-sm aspect-[4/3] bg-[#FAF9F6]">
                     <img
-                      src={assetUrl(foundationSec.image_url || '/assets/quality.jpg')}
+                      src={assetUrl((foundationSec.image_url && !foundationSec.image_url.includes('confident-doctor')) ? foundationSec.image_url : '/assets/internet/lab-chemistry.jpg')}
                       alt="Onecore Pharma laboratory analytics and research"
                       className="w-full h-full object-cover"
                       loading="lazy"
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = '/assets/internet/lab-chemistry.jpg';
+                      }}
                     />
                   </div>
                 </div>
@@ -279,10 +283,14 @@ export default function About() {
               {/* Background Doctor Consultation Image */}
               <div className="absolute inset-0 z-0">
                 <img
-                  src={assetUrl(principlesSec.image_url || '/assets/healthcare-professionals.jpg')}
+                  src={assetUrl((principlesSec.image_url && !principlesSec.image_url.includes('medical-professional')) ? principlesSec.image_url : '/assets/healthcare-professionals.jpg')}
                   alt="Principles guiding every decision — Healthcare professional consultation in Indian clinical practice"
                   className="w-full h-full object-cover object-center opacity-85 brightness-90"
                   loading="lazy"
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = '/assets/healthcare-professionals.jpg';
+                  }}
                 />
                 {/* Contrast Gradients for Clear Readability */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/45 to-transparent" />
@@ -337,10 +345,14 @@ export default function About() {
                 {/* Background Two-Perspectives Photograph */}
                 <div className="absolute inset-0 z-0">
                   <img
-                    src={assetUrl(commitmentsSec.image_url || '/assets/two-perspectives.jpg')}
+                    src={assetUrl((commitmentsSec.image_url && !commitmentsSec.image_url.includes('caregivers-sharing')) ? commitmentsSec.image_url : '/assets/two-perspectives.jpg')}
                     alt="Doctor and patient perspective in everyday care — Disciplined science, human focus"
                     className="w-full h-full object-cover object-center opacity-75 brightness-90"
                     loading="lazy"
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = '/assets/two-perspectives.jpg';
+                    }}
                   />
                   {/* Contrast Gradients for Clear Readability */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/75 to-black/45" />
