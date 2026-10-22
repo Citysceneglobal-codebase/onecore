@@ -13,7 +13,16 @@ import {
 import { authenticateToken } from '../middleware/authMiddleware.js';
 import { requireEditorOrAbove, requireAdminOrAbove } from '../middleware/roleMiddleware.js';
 
-const router = Router();
+// Master Catalog Sync
+router.post('/sync-catalog', authenticateToken, requireAdminOrAbove, async (req, res, next) => {
+  try {
+    const { syncCatalogToDatabase } = await import('../scripts/syncProducts.js');
+    const result = await syncCatalogToDatabase();
+    res.json({ success: true, message: `Successfully synchronized ${result.count} products into MySQL!`, count: result.count });
+  } catch (error) {
+    next(error);
+  }
+});
 
 router.get('/', getProducts);
 router.get('/:identifier', getProductByIdOrSlug);

@@ -9,6 +9,7 @@ import {
   Search,
   CheckCircle2,
   Clock,
+  RefreshCw,
 } from 'lucide-react';
 import AdminLayout from '../../components/admin/AdminLayout';
 import { AdminCard } from '../../components/admin/AdminCard';
@@ -24,8 +25,37 @@ export default function AdminProducts() {
   const [toast, setToast] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [syncing, setSyncing] = useState(false);
 
   const showToast = (type, message) => setToast({ type, message });
+
+  const handleSyncCatalog = async () => {
+    if (!window.confirm('This will synchronize all 163 products from your Master Excel sheet into MySQL and link their verified packaging images. Proceed?')) {
+      return;
+    }
+    setSyncing(true);
+    try {
+      const res = await fetch('/api/products/sync-catalog', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        showToast('success', data.message || '163 products synchronized successfully!');
+        fetchProducts();
+      } else {
+        showToast('error', data.message || 'Failed to sync catalog.');
+      }
+    } catch (err) {
+      console.error('Error syncing catalog:', err);
+      showToast('error', 'Network error during catalog sync.');
+    } finally {
+      setSyncing(false);
+    }
+  };
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -105,6 +135,15 @@ export default function AdminProducts() {
               />
               <Search size={13} className="absolute left-2.5 top-2.5 text-slate-400 pointer-events-none" />
             </div>
+            <button
+              onClick={handleSyncCatalog}
+              disabled={syncing}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg transition-all shadow-xs disabled:opacity-50"
+              title="Synchronize all 163 products from Master Excel catalog into MySQL"
+            >
+              <RefreshCw size={13} className={syncing ? 'animate-spin' : ''} />
+              <span>{syncing ? 'Syncing...' : 'Sync Master Catalog'}</span>
+            </button>
             <Link
               to="/admin/products/new"
               className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-[#1B365D] hover:bg-[#152a48] text-white rounded-lg transition-all shadow-xs"
