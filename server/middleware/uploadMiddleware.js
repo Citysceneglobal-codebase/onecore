@@ -6,11 +6,29 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Auto-detect Hostinger hbuilds shared storage
+let detectedSharedDir = null;
+try {
+  const hbuildsDir = path.resolve(__dirname, '../../../../');
+  if (path.basename(hbuildsDir) === 'hbuilds') {
+    detectedSharedDir = path.join(hbuildsDir, 'shared_uploads');
+    if (!fs.existsSync(detectedSharedDir)) {
+      try { fs.mkdirSync(detectedSharedDir, { recursive: true }); } catch {}
+    }
+  }
+} catch {}
+
 const uploadDir = process.env.UPLOADS_DIR 
   ? path.resolve(process.env.UPLOADS_DIR) 
-  : path.join(__dirname, '..', 'uploads');
+  : (detectedSharedDir || path.join(__dirname, '..', 'uploads'));
+
 if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
+  try { fs.mkdirSync(uploadDir, { recursive: true }); } catch {}
+}
+
+const localUploadsDir = path.join(__dirname, '..', 'uploads');
+if (!fs.existsSync(localUploadsDir)) {
+  try { fs.mkdirSync(localUploadsDir, { recursive: true }); } catch {}
 }
 
 const storage = multer.diskStorage({
@@ -24,7 +42,22 @@ const storage = multer.diskStorage({
       .toLowerCase()
       .replace(/[^a-z0-9]/g, '-');
     const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
-    cb(null, `${safeBaseName}-${uniqueSuffix}${ext}`);
+    const finalFilename = `${safeBaseName}-${uniqueSuffix}${ext}`;
+    
+    // Asynchronously mirror to localUploadsDir if uploadDir is external/shared
+    if (uploadDir !== localUploadsDir) {
+      setTimeout(() => {
+        try {
+          const src = path.join(uploadDir, finalFilename);
+          const dest = path.join(localUploadsDir, finalFilename);
+          if (fs.existsSync(src) && !fs.existsSync(dest)) {
+            fs.copyFileSync(src, dest);
+          }
+        } catch {}
+      }, 500);
+    }
+    
+    cb(null, finalFilename);
   },
 });
 

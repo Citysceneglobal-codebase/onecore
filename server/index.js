@@ -25,8 +25,20 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Ensure uploads folder exists (both local, custom persistent, and Hostinger production layouts)
+// Auto-detect Hostinger hbuilds shared storage
+let detectedSharedDir = null;
+try {
+  const hbuildsDir = path.resolve(__dirname, '../../../../');
+  if (path.basename(hbuildsDir) === 'hbuilds') {
+    detectedSharedDir = path.join(hbuildsDir, 'shared_uploads');
+    if (!fs.existsSync(detectedSharedDir)) {
+      try { fs.mkdirSync(detectedSharedDir, { recursive: true }); } catch {}
+    }
+  }
+} catch {}
+
 const customUploadsDir = process.env.UPLOADS_DIR ? path.resolve(process.env.UPLOADS_DIR) : null;
+const sharedUploadsDir = detectedSharedDir;
 const uploadsDir = path.resolve(__dirname, 'uploads');
 const parentUploadsDir = path.resolve(__dirname, '..', 'uploads');
 
@@ -37,9 +49,7 @@ if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
 if (!fs.existsSync(parentUploadsDir)) {
-  try {
-    fs.mkdirSync(parentUploadsDir, { recursive: true });
-  } catch {}
+  try { fs.mkdirSync(parentUploadsDir, { recursive: true }); } catch {}
 }
 
 const app = express();
@@ -111,17 +121,90 @@ const authLimiter = rateLimit({
 });
 app.use('/api/auth/login', authLimiter);
 
-// Persistent static uploads serving across all directories
-if (customUploadsDir && fs.existsSync(customUploadsDir)) {
-  app.use('/uploads', express.static(customUploadsDir));
-  app.use('/assets/uploads', express.static(customUploadsDir));
+// Dedicated multi-location upload resolver (Auto-discovers images across all Hostinger versions)
+function findUploadedFile(filename) {
+  const cleanName = path.basename(filename);
+  if (!cleanName || cleanName === '.' || cleanName === '..') return null;
+
+  // 1. Primary directories in order of priority
+  const searchDirs = [
+    customUploadsDir,
+    uploadsDir,
+    parentUploadsDir,
+    sharedUploadsDir,
+    path.resolve(__dirname, '../public/assets/uploads'),
+    path.resolve(__dirname, '../public/assets'),
+  ].filter(Boolean);
+
+  for (const dir of searchDirs) {
+    if (fs.existsSync(dir)) {
+      const candidate = path.join(dir, cleanName);
+      if (fs.existsSync(candidate)) {
+        try {
+          if (fs.statSync(candidate).isFile()) return candidate;
+        } catch {}
+      }
+    }
+  }
+
+  // 2. Hostinger Versioned Builds Auto-Discovery:
+  // If running inside Hostinger's hbuilds/versions/<version-id>/nodejs/server,
+  // scan across all sibling build versions in hbuilds/versions/*/nodejs/server/uploads!
+  try {
+    const versionsDir = path.resolve(__dirname, '../../..');
+    if (fs.existsSync(versionsDir) && path.basename(versionsDir) === 'versions') {
+      const versionEntries = fs.readdirSync(versionsDir);
+      for (const ver of versionEntries) {
+        const candidatePaths = [
+          path.join(versionsDir, ver, 'nodejs', 'server', 'uploads', cleanName),
+          path.join(versionsDir, ver, 'server', 'uploads', cleanName),
+          path.join(versionsDir, ver, 'uploads', cleanName),
+          path.join(versionsDir, ver, 'nodejs', 'uploads', cleanName),
+        ];
+        for (const cand of candidatePaths) {
+          if (fs.existsSync(cand)) {
+            try {
+              if (fs.statSync(cand).isFile()) {
+                // Auto-sync into current uploadsDir & sharedUploadsDir so subsequent requests are immediate
+                if (uploadsDir && fs.existsSync(uploadsDir)) {
+                  try { fs.copyFileSync(cand, path.join(uploadsDir, cleanName)); } catch {}
+                }
+                if (sharedUploadsDir && fs.existsSync(sharedUploadsDir)) {
+                  try { fs.copyFileSync(cand, path.join(sharedUploadsDir, cleanName)); } catch {}
+                }
+                return cand;
+              }
+            } catch {}
+          }
+        }
+      }
+    }
+  } catch {}
+
+  return null;
 }
-app.use('/uploads', express.static(uploadsDir));
-app.use('/assets/uploads', express.static(uploadsDir));
-if (fs.existsSync(parentUploadsDir) && parentUploadsDir !== uploadsDir) {
-  app.use('/uploads', express.static(parentUploadsDir));
-  app.use('/assets/uploads', express.static(parentUploadsDir));
-}
+
+const serveUploadHandler = (req, res) => {
+  const reqFile = req.params.filename || req.params[0] || '';
+  const cleanName = path.basename(reqFile);
+  const found = findUploadedFile(cleanName);
+
+  if (found) {
+    res.setHeader('Cache-Control', 'public, max-age=86400');
+    return res.sendFile(found);
+  }
+
+  // File not found — return 404 image/placeholder, NEVER return index.html!
+  const placeholder = path.resolve(__dirname, '../public/placeholder.png');
+  if (fs.existsSync(placeholder)) {
+    res.setHeader('Content-Type', 'image/png');
+    return res.status(404).sendFile(placeholder);
+  }
+  return res.status(404).send('Image not found');
+};
+
+app.get('/uploads/:filename(*)', serveUploadHandler);
+app.get('/assets/uploads/:filename(*)', serveUploadHandler);
 
 // Map /images/divisions to public assets
 const divisionImageMap = {
@@ -188,7 +271,19 @@ const distPath = path.join(__dirname, '../dist');
 if (fs.existsSync(distPath)) {
   app.use(express.static(distPath));
   app.get('*', (req, res, next) => {
-    if (req.path.startsWith('/api')) return next();
+    // Strictly prevent HTML catch-all for missing API calls, uploads, or images
+    if (
+      req.path.startsWith('/api') ||
+      req.path.startsWith('/uploads') ||
+      req.path.startsWith('/assets') ||
+      req.path.endsWith('.jpg') ||
+      req.path.endsWith('.jpeg') ||
+      req.path.endsWith('.png') ||
+      req.path.endsWith('.webp') ||
+      req.path.endsWith('.svg')
+    ) {
+      return res.status(404).send('Not found');
+    }
     res.sendFile(path.join(distPath, 'index.html'));
   });
 }

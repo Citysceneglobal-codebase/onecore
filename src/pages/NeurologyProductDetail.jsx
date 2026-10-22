@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { getNeurologyProductBySlug } from '../data/neurologyProducts';
 import { assetUrl } from '../utils/assetUrl';
 import ProductImageGallery from '../components/ProductImageGallery';
+import PageSkeleton from '../components/PageSkeleton';
 
 // Helper to parse Mechanism into 3 steps for the dark flow section
 function parseMechanismSteps(mechanismText) {
@@ -162,9 +162,7 @@ import { formatProductName } from '../utils/formatProductName';
 
 export default function NeurologyProductDetail() {
   const { productSlug } = useParams();
-  const staticProduct = getNeurologyProductBySlug(productSlug);
-  const { product: cmsProduct, loading } = useProduct(productSlug);
-  const product = cmsProduct || (loading ? null : staticProduct);
+  const { product, loading } = useProduct(productSlug);
   const listingRoute = getAreaListingRoute(product, 'neurix');
 
   useEffect(() => {
@@ -175,16 +173,8 @@ export default function NeurologyProductDetail() {
     }
   }, [product]);
 
-  if (loading && !product) {
-    return (
-      <div className="w-full bg-[#FAF9F6] min-h-screen py-24 flex items-center justify-center">
-        <div className="space-y-4 max-w-md w-full px-6 text-center">
-          <div className="h-8 w-48 bg-gray-200 animate-pulse rounded mx-auto" />
-          <div className="h-4 w-64 bg-gray-200 animate-pulse rounded mx-auto" />
-          <div className="h-64 w-full bg-gray-200 animate-pulse rounded-2xl" />
-        </div>
-      </div>
-    );
+  if (loading) {
+    return <PageSkeleton />;
   }
 
   if (!product) {
