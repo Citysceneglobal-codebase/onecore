@@ -120,20 +120,6 @@ const serveUploadHandler = (req, res) => {
     return res.sendFile(found);
   }
 
-  // Graceful fallback for doctor/hero consultation imagery if upload was missing
-  if (
-    cleanName.includes('doctor') ||
-    cleanName.includes('consultation') ||
-    cleanName.includes('hero')
-  ) {
-    const heroFallback = path.resolve(__dirname, '../public/assets/hero-healthcare.jpg');
-    if (fs.existsSync(heroFallback)) {
-      res.setHeader('Cache-Control', 'public, max-age=3600');
-      res.setHeader('Content-Type', 'image/jpeg');
-      return res.sendFile(heroFallback);
-    }
-  }
-
   // File not found — return 404 text response so frontend onError handles it cleanly.
   // NEVER send wide brand logo as an image payload that blows up into "NE" on mobile viewports!
   return res.status(404).send('Image not found');
