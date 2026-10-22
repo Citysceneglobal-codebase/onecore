@@ -1,3 +1,4 @@
+import './config/env.js';
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -5,7 +6,6 @@ import rateLimit from 'express-rate-limit';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
-import dotenv from 'dotenv';
 
 import authRoutes from './routes/authRoutes.js';
 import dashboardRoutes from './routes/dashboardRoutes.js';
@@ -19,8 +19,6 @@ import settingsRoutes from './routes/settingsRoutes.js';
 import adminUsersRoutes from './routes/adminUsersRoutes.js';
 import { errorHandler } from './middleware/errorMiddleware.js';
 import { testConnection } from './config/db.js';
-
-dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
