@@ -44,6 +44,8 @@ import AdminEnquiries from './pages/admin/AdminEnquiries';
 import AdminSettings from './pages/admin/AdminSettings';
 import AdminUsers from './pages/admin/AdminUsers';
 
+import ProductDetailDispatcher from './components/ProductDetailDispatcher';
+
 function HashRedirect() {
   const navigate = useNavigate();
 
@@ -197,6 +199,8 @@ function PublicRoutes() {
             <Route path="/patients-caregivers" element={<PatientsCaregivers />} />
             <Route path="/areas-of-care" element={<AreasOfCare />} />
             <Route path="/areas-of-care/femme/:productSlug" element={<FemmeProductDetail />} />
+            <Route path="/areas-of-care/womens-health/:productSlug" element={<FemmeProductDetail />} />
+            <Route path="/areas-of-care/women-health/:productSlug" element={<FemmeProductDetail />} />
             <Route path="/areas-of-care/pediaplus/:productSlug" element={<PediatricsProductDetail />} />
             <Route path="/areas-of-care/pediatrics/:productSlug" element={<PediatricsProductDetail />} />
             <Route path="/areas-of-care/paediatrics/:productSlug" element={<PediatricsProductDetail />} />
@@ -227,6 +231,7 @@ function PublicRoutes() {
             <Route path="/areas-of-care/cytos/:productSlug" element={<OncologyProductDetail />} />
             <Route path="/areas-of-care/oncology/:productSlug" element={<OncologyProductDetail />} />
             <Route path="/areas-of-care/cancer-care/:productSlug" element={<OncologyProductDetail />} />
+            <Route path="/areas-of-care/:divisionSlug/:productSlug" element={<ProductDetailDispatcher />} />
             <Route path="/areas-of-care/:slug" element={<AreaOfCareDetail />} />
             <Route path="/news" element={<News />} />
             <Route path="/news/:slug" element={<NewsDetail />} />

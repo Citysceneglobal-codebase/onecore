@@ -155,7 +155,7 @@ export default function AdminProducts() {
                     <span>Edit</span>
                   </Link>
                   <a
-                    href={`/areas-of-care/${p.divisionSlug || p.division || p.therapeutic_area_slug || 'general-medicine'}/${p.slug}`}
+                    href={p.productUrl || `/areas-of-care/${p.divisionSlug || p.division || p.therapeutic_area_slug || 'general-medicine'}/${p.slug}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
