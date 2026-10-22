@@ -151,3 +151,61 @@ export function findUploadedFile(filename, customUploadsDir = null) {
 
   return null;
 }
+
+/**
+ * Diagnostic tool to inspect Hostinger filesystem structure, discovery paths,
+ * and recover any orphan uploaded files across server restarts or deploys.
+ */
+export function getStorageDiagnostic() {
+  const { sharedDir, versionsDir } = getStoragePaths(__dirname);
+  const cwd = process.cwd();
+  const dirTree = [];
+
+  let curr = path.resolve(__dirname);
+  for (let i = 0; i < 6; i++) {
+    try {
+      const entries = fs.readdirSync(curr).slice(0, 30);
+      dirTree.push({ path: curr, entries });
+    } catch (e) {
+      dirTree.push({ path: curr, error: e.message });
+    }
+    const parent = path.dirname(curr);
+    if (!parent || parent === curr) break;
+    curr = parent;
+  }
+
+  const foundImages = [];
+  function scan(dir, depth = 0) {
+    if (depth > 4 || foundImages.length > 200) return;
+    try {
+      const files = fs.readdirSync(dir);
+      for (const f of files) {
+        if (f.startsWith('.') || f === 'node_modules' || f === '.git' || f === 'dist') continue;
+        const p = path.join(dir, f);
+        try {
+          const stat = fs.statSync(p);
+          if (stat.isDirectory()) {
+            scan(p, depth + 1);
+          } else if (f.match(/\.(png|jpg|jpeg|webp)$/i)) {
+            foundImages.push({ name: f, path: p, size: stat.size, mtime: stat.mtime });
+          }
+        } catch {}
+      }
+    } catch {}
+  }
+
+  try {
+    scan(curr);
+  } catch {}
+
+  return {
+    cwd,
+    dirname: __dirname,
+    uploadsEnv: process.env.UPLOADS_DIR || null,
+    sharedDir,
+    versionsDir,
+    dirTree,
+    foundImagesCount: foundImages.length,
+    foundImages: foundImages.slice(0, 50),
+  };
+}
