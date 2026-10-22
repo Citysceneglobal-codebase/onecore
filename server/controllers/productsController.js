@@ -69,6 +69,7 @@ export const getProducts = async (req, res, next) => {
     res.setHeader('Expires', '0');
 
     const divisionQuery = req.query.division || req.query.divisionSlug || req.query.category || req.query.therapeuticArea || req.query.slug;
+    const searchQuery = req.query.search || req.query.q;
     const isPublic = !req.user;
 
     let sql = `
@@ -108,6 +109,12 @@ export const getProducts = async (req, res, next) => {
       }
     }
 
+    if (searchQuery && typeof searchQuery === 'string' && searchQuery.trim()) {
+      const term = `%${searchQuery.trim()}%`;
+      conditions.push('(p.brand_name LIKE ? OR p.short_description LIKE ? OR p.full_description LIKE ? OR p.composition_summary LIKE ? OR ta.name LIKE ? OR ta.slug LIKE ?)');
+      params.push(term, term, term, term, term, term);
+    }
+
     if (conditions.length > 0) {
       sql += ' WHERE ' + conditions.join(' AND ');
     }
@@ -122,6 +129,9 @@ export const getProducts = async (req, res, next) => {
       const packshot = p.packshot_url || p.productPrimaryPackshotImage || p.image || '/assets/placeholder.png';
       const divSlug = p.therapeutic_area_slug || 'general-medicine';
       const taName = p.therapeutic_area_name || 'General Medicine';
+      const productUrl = (p.slug === 'oneflexo' || brandName.toLowerCase() === 'oneflexo')
+        ? '/areas-of-care/orthopaedics/oneflexo'
+        : `/areas-of-care/${divSlug}/${p.slug}`;
 
       return {
         ...p,
@@ -149,6 +159,7 @@ export const getProducts = async (req, res, next) => {
         status: p.status || 'published',
         display_order: p.display_order || 0,
         updatedAt: p.updated_at || new Date(),
+        productUrl,
       };
     });
 

@@ -186,8 +186,55 @@ export function useCmsPage(pageKey, fallbackData = {}) {
       };
     }
 
-    const titleVal = sec.heading || sec.title || fallbackTitle;
-    const subVal = sec.subheading || sec.subtitle || fallbackSubtitle;
+    const isNonEmptyStr = (val) => typeof val === 'string' && val.trim().length > 0;
+
+    const titleVal = isNonEmptyStr(sec.heading)
+      ? sec.heading
+      : (isNonEmptyStr(sec.title) ? sec.title : fallbackTitle);
+
+    const subVal = isNonEmptyStr(sec.subheading)
+      ? sec.subheading
+      : (isNonEmptyStr(sec.subtitle) ? sec.subtitle : fallbackSubtitle);
+
+    const eyebrowVal = isNonEmptyStr(sec.eyebrow)
+      ? sec.eyebrow
+      : (fallback.eyebrow || '');
+
+    const bodyVal = isNonEmptyStr(sec.body)
+      ? sec.body
+      : (fallback.body || '');
+
+    const imageVal = isNonEmptyStr(sec.image_url)
+      ? sec.image_url
+      : (fallback.image_url || fallback.poster_url || fallback.image || '');
+
+    const posterVal = isNonEmptyStr(sec.poster_url)
+      ? sec.poster_url
+      : (imageVal || fallback.poster_url || fallback.image_url || '');
+
+    const videoVal = isNonEmptyStr(sec.video_url)
+      ? sec.video_url
+      : (fallback.video_url || '');
+
+    const ctaTextVal = isNonEmptyStr(sec.cta_text)
+      ? sec.cta_text
+      : (fallback.cta_text || '');
+
+    const ctaUrlVal = isNonEmptyStr(sec.cta_url)
+      ? sec.cta_url
+      : (fallback.cta_url || '');
+
+    const secondaryCtaTextVal = isNonEmptyStr(sec.secondary_cta_text)
+      ? sec.secondary_cta_text
+      : (fallback.secondary_cta_text || '');
+
+    const secondaryCtaUrlVal = isNonEmptyStr(sec.secondary_cta_url)
+      ? sec.secondary_cta_url
+      : (fallback.secondary_cta_url || '');
+
+    const itemsVal = (Array.isArray(sec.items) && sec.items.length > 0)
+      ? sec.items
+      : (Array.isArray(fallback.items) ? fallback.items : []);
 
     return {
       ...fallback,
@@ -198,19 +245,17 @@ export function useCmsPage(pageKey, fallbackData = {}) {
       heading: titleVal,
       subtitle: subVal,
       subheading: subVal,
-      eyebrow: sec.eyebrow !== undefined && sec.eyebrow !== null ? sec.eyebrow : fallback.eyebrow || '',
-      body: sec.body !== undefined && sec.body !== null ? sec.body : fallback.body || '',
-      image_url: sec.image_url || fallback.image_url || '',
-      poster_url: sec.poster_url || sec.image_url || fallback.poster_url || fallback.image_url || '',
-      video_url: sec.video_url || fallback.video_url || '',
-      cta_text: sec.cta_text !== undefined && sec.cta_text !== null ? sec.cta_text : fallback.cta_text || '',
-      cta_url: sec.cta_url !== undefined && sec.cta_url !== null ? sec.cta_url : fallback.cta_url || '',
-      secondary_cta_text: sec.secondary_cta_text !== undefined && sec.secondary_cta_text !== null ? sec.secondary_cta_text : fallback.secondary_cta_text || '',
-      secondary_cta_url: sec.secondary_cta_url !== undefined && sec.secondary_cta_url !== null ? sec.secondary_cta_url : fallback.secondary_cta_url || '',
+      eyebrow: eyebrowVal,
+      body: bodyVal,
+      image_url: imageVal,
+      poster_url: posterVal,
+      video_url: videoVal,
+      cta_text: ctaTextVal,
+      cta_url: ctaUrlVal,
+      secondary_cta_text: secondaryCtaTextVal,
+      secondary_cta_url: secondaryCtaUrlVal,
       is_active: sec.is_active !== false,
-      items: (Array.isArray(sec.items) && sec.items.length > 0)
-        ? sec.items
-        : (Array.isArray(fallback.items) ? fallback.items : []),
+      items: itemsVal,
     };
   };
 

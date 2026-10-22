@@ -7,7 +7,6 @@ import {
   CheckCircle2, 
   ArrowLeft 
 } from 'lucide-react';
-import { allProducts, searchFormulations } from '../data/allProducts';
 import { useTherapeuticAreas } from '../hooks/useTherapeuticAreas';
 import { THERAPEUTIC_DIVISIONS } from '../data/areasOfCare';
 import { useCmsPage } from '../hooks/useCmsPage';
@@ -27,13 +26,9 @@ export default function AreasOfCare() {
   // Local search input
   const [searchQuery, setSearchQuery] = useState(urlQuery);
   const [activeSpecialtyId, setActiveSpecialtyId] = useState(areasList[0]?.id || 'femme');
-
-  // Sync state if urlQuery changes
-  useEffect(() => {
-    if (urlQuery) {
-      setSearchQuery(urlQuery);
-    }
-  }, [urlQuery]);
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [totalProductsCount, setTotalProductsCount] = useState(null);
 
   // Form state for institutional catalogue request
   const [formState, setFormState] = useState({
@@ -47,10 +42,62 @@ export default function AreasOfCare() {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Search Results
-  const searchResults = useMemo(() => {
-    if (!searchQuery.trim()) return [];
-    return searchFormulations(searchQuery);
+  // Sync state if urlQuery changes
+  useEffect(() => {
+    if (urlQuery) {
+      setSearchQuery(urlQuery);
+    }
+  }, [urlQuery]);
+
+  // Fetch total products count from database for stats counter
+  useEffect(() => {
+    fetch('/api/products', {
+      cache: 'no-store',
+      headers: { 'Cache-Control': 'no-cache' },
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then((data) => {
+        const items = Array.isArray(data) ? data : (Array.isArray(data?.data) ? data.data : []);
+        setTotalProductsCount(items.length);
+      })
+      .catch(() => {});
+  }, []);
+
+  // Search exclusively from database
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setSearchResults([]);
+      return;
+    }
+    let isMounted = true;
+    setSearchLoading(true);
+
+    fetch(`/api/products?q=${encodeURIComponent(searchQuery.trim())}`, {
+      cache: 'no-store',
+      headers: { 'Cache-Control': 'no-cache' },
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then((data) => {
+        if (!isMounted) return;
+        const items = Array.isArray(data) ? data : (Array.isArray(data?.data) ? data.data : []);
+        setSearchResults(items);
+      })
+      .catch(() => {
+        if (isMounted) setSearchResults([]);
+      })
+      .finally(() => {
+        if (isMounted) setSearchLoading(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
   }, [searchQuery]);
 
   // Handle Search Input submit
@@ -135,7 +182,7 @@ export default function AreasOfCare() {
               <div className="h-10 w-[1px] bg-[#E5E3DC]" />
               <div>
                 <span className="block text-3xl sm:text-4xl font-serif font-light text-[#D52B1E]">
-                  {allProducts.length}+
+                  {totalProductsCount !== null ? `${totalProductsCount}+` : '60+'}
                 </span>
                 <span className="text-xs font-semibold uppercase tracking-wider text-[#777777]">
                   Formulations
@@ -212,7 +259,11 @@ export default function AreasOfCare() {
               </button>
             </div>
 
-            {searchResults.length === 0 ? (
+            {searchLoading ? (
+              <div className="py-12 text-center text-xs text-[#777777] font-mono tracking-wider uppercase">
+                Searching active database formulations...
+              </div>
+            ) : searchResults.length === 0 ? (
               <div className="py-12 text-center bg-[#FAF9F6] rounded-3xl border border-[#E5E3DC] p-8 space-y-3 max-w-lg mx-auto">
                 <p className="text-base font-serif font-medium text-[#121212]">
                   No matching formulations found
@@ -230,31 +281,40 @@ export default function AreasOfCare() {
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {searchResults.map((product) => {
-                  const productImage = product.image || '/assets/therapeutic-general-medicine.jpg';
+                  const divSlug = product.division || product.divisionSlug || product.therapeutic_area_slug || 'general-medicine';
+                  const productUrl = product.productUrl || (product.slug === 'oneflexo' ? '/areas-of-care/orthopaedics/oneflexo' : `/areas-of-care/${divSlug}/${product.slug}`);
+                  const title = product.brandName || product.name || product.brand_name || 'Unnamed Product';
+                  const comp = product.composition || product.composition_summary || product.shortDescription || '';
+                  const productImage = product.packshot_url || product.productPrimaryPackshotImage || product.image || '/assets/therapeutic-general-medicine.jpg';
+
                   return (
                     <Link
-                      key={product.division + product.slug + product.name}
-                      to={product.productUrl}
+                      key={product.id || divSlug + product.slug + title}
+                      to={productUrl}
                       className="bg-white/80 backdrop-blur-xs border border-[#E5E3DC] hover:border-[#D52B1E] transition-all duration-300 rounded-3xl overflow-hidden flex flex-col group shadow-xs hover:shadow-md block cursor-pointer"
                     >
                       {/* Product Image — Flush to top, left, and right */}
                       <div className="w-full aspect-[4/3] bg-[#FAF9F6] overflow-hidden">
                         <img
                           src={assetUrl(productImage)}
-                          alt={`${product.name} - Onecore Pharma`}
+                          alt={`${title} - Onecore Pharma`}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                           loading="lazy"
+                          onError={(e) => {
+                            e.currentTarget.onerror = null;
+                            e.currentTarget.src = '/placeholder.png';
+                          }}
                         />
                       </div>
 
                       {/* Product Details: Just Name and Salt */}
                       <div className="p-5 sm:p-6 flex flex-col flex-1">
                         <h3 className="text-xl sm:text-2xl font-serif font-medium text-[#121212] group-hover:text-[#D52B1E] transition-colors mb-2 leading-snug">
-                          {formatProductName(product.name)}
+                          {formatProductName(title)}
                         </h3>
 
                         <p className="text-xs sm:text-sm text-[#555555] font-light leading-relaxed">
-                          {product.composition}
+                          {comp}
                         </p>
                       </div>
                     </Link>
