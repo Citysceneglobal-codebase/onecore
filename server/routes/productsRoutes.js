@@ -13,6 +13,8 @@ import {
 import { authenticateToken } from '../middleware/authMiddleware.js';
 import { requireEditorOrAbove, requireAdminOrAbove } from '../middleware/roleMiddleware.js';
 
+const router = Router();
+
 // Master Catalog Sync
 router.post('/sync-catalog', authenticateToken, requireAdminOrAbove, async (req, res, next) => {
   try {
