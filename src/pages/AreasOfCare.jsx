@@ -293,12 +293,12 @@ export default function AreasOfCare() {
                       to={productUrl}
                       className="bg-white/80 backdrop-blur-xs border border-[#E5E3DC] hover:border-[#D52B1E] transition-all duration-300 rounded-3xl overflow-hidden flex flex-col group shadow-xs hover:shadow-md block cursor-pointer"
                     >
-                      {/* Product Image — Flush to top, left, and right */}
-                      <div className="w-full aspect-[4/3] bg-[#FAF9F6] overflow-hidden">
+                      {/* Product Image — Contained with padding to avoid carton clipping */}
+                      <div className="w-full aspect-[4/3] bg-[#FAF9F6] overflow-hidden flex items-center justify-center p-3 sm:p-4">
                         <img
                           src={assetUrl(productImage)}
                           alt={`${title} - Onecore Pharma`}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          className={`w-full h-full ${productImage.includes('/products/') ? 'object-contain mix-blend-multiply' : 'object-cover'} group-hover:scale-105 transition-transform duration-500`}
                           loading="lazy"
                           onError={(e) => {
                             e.currentTarget.onerror = null;
@@ -307,13 +307,13 @@ export default function AreasOfCare() {
                         />
                       </div>
 
-                      {/* Product Details: Just Name and Salt */}
+                      {/* Product Details: Clear Legible Name and Active Salt */}
                       <div className="p-5 sm:p-6 flex flex-col flex-1">
                         <h3 className="text-xl sm:text-2xl font-serif font-medium text-[#121212] group-hover:text-[#D52B1E] transition-colors mb-2 leading-snug">
                           {formatProductName(title)}
                         </h3>
 
-                        <p className="text-xs sm:text-sm text-[#555555] font-light leading-relaxed">
+                        <p className="text-sm sm:text-base text-[#222222] font-normal leading-relaxed line-clamp-3">
                           {comp}
                         </p>
                       </div>

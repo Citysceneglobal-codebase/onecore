@@ -25,11 +25,15 @@ export async function syncCatalogToDatabase() {
 
     console.log('🧹 Purging outdated product child records...');
     await connection.query('SET FOREIGN_KEY_CHECKS = 0');
+    try {
+      await connection.query('ALTER TABLE products MODIFY COLUMN short_description TEXT NULL');
+    } catch {}
     await connection.query('TRUNCATE TABLE product_safety_sections');
     await connection.query('TRUNCATE TABLE product_mechanisms');
     await connection.query('TRUNCATE TABLE product_dosage');
     await connection.query('TRUNCATE TABLE product_benefits');
     await connection.query('TRUNCATE TABLE product_compositions');
+    await connection.query('TRUNCATE TABLE product_images');
     await connection.query('TRUNCATE TABLE products');
     await connection.query('SET FOREIGN_KEY_CHECKS = 1');
 
@@ -111,6 +115,15 @@ export async function syncCatalogToDatabase() {
             [pid, item.section_key, item.title, item.description, s + 1]
           );
         }
+      }
+
+      // 7. Insert primary packaging packshot image
+      if (p.packshot_url && !p.packshot_url.startsWith('/assets/therapeutic-')) {
+        await connection.query(
+          `INSERT INTO product_images (product_id, image_url, alt_text, is_primary, display_order)
+           VALUES (?, ?, ?, 1, 0)`,
+          [pid, p.packshot_url, `${p.brand_name} Packaging Packshot`]
+        );
       }
     }
 

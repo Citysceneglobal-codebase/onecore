@@ -261,6 +261,8 @@ CUSTOM_IMAGE_MAP = {
 }
 
 def find_image(slug, brand_name):
+    if slug == 'frecox-gel':
+        return None
     if slug in CUSTOM_IMAGE_MAP:
         return CUSTOM_IMAGE_MAP[slug]
     for k, v in CUSTOM_IMAGE_MAP.items():
@@ -319,10 +321,29 @@ for row in web_upload_rows[1:]:
     moa = row[7].strip() if len(row) > 7 else ''
     safety = row[8].strip() if len(row) > 8 else ''
     
+    # Normalize TM: strictly on first brand word only
+    pure_name = raw_brand.replace('™', '').strip()
+    brand_match = re.match(r'^([A-Za-z0-9]+)(.*)$', pure_name)
+    if brand_match:
+        normalized_brand = f"{brand_match.group(1)}™{brand_match.group(2)}"
+    else:
+        normalized_brand = raw_brand.strip()
+    
+    # Extract first complete sentence for short_description to avoid awkward word truncation
+    short_desc = ''
+    if desc:
+        sent_m = re.match(r'^(.*?\.)(?:\s|$)', desc.strip())
+        if sent_m and len(sent_m.group(1)) > 30:
+            short_desc = sent_m.group(1).strip()
+        else:
+            short_desc = desc.strip()
+    elif comp:
+        short_desc = comp.strip()
+    
     area_id = sno_to_spec.get(sno, 8)
     area_meta = AREA_METADATA.get(area_id, AREA_METADATA[8])
     
-    base_slug = slugify(raw_brand)
+    base_slug = slugify(normalized_brand)
     slug = base_slug
     idx = 2
     while slug in used_slugs:
@@ -330,7 +351,7 @@ for row in web_upload_rows[1:]:
         idx += 1
     used_slugs.add(slug)
     
-    matched_img = find_image(slug, raw_brand)
+    matched_img = find_image(slug, normalized_brand)
     packshot_url = None
     if matched_img:
         packshot_url = optimize_image(matched_img, slug)
@@ -373,15 +394,15 @@ for row in web_upload_rows[1:]:
             
     products_list.append({
         'sno': int(sno) if sno.isdigit() else 0,
-        'brand_name': raw_brand.strip(),
-        'display_brand': raw_brand.strip(),
+        'brand_name': normalized_brand,
+        'display_brand': normalized_brand,
         'slug': slug,
         'therapeutic_area_id': area_id,
         'therapeutic_area_name': area_meta['name'],
         'therapeutic_area_slug': area_meta['slug'],
         'composition_summary': comp,
         'product_type': prod_type,
-        'short_description': desc[:255] if desc else comp[:255],
+        'short_description': short_desc,
         'full_description': desc,
         'packshot_url': packshot_url,
         'dosage_guidance': dosage,

@@ -9,6 +9,7 @@ import PageSkeleton from '../components/PageSkeleton';
 export default function QualityManufacturing() {
   const { getSection, loading: cmsLoading, isError: cmsError } = useCmsPage('quality-manufacturing');
   const videoRef = useRef(null);
+  const [videoReady, setVideoReady] = useState(false);
 
   useEffect(() => {
     document.title = "Quality & Manufacturing | Onecore Pharma";
@@ -63,7 +64,7 @@ export default function QualityManufacturing() {
     ]
   });
 
-  const manufacturingSec = getSection('manufacturing_standards', {
+  const manufacturingSec = getSection('manufacturing_standards') || getSection('manufacturing_excellence') || getSection('manufacturing_standards', {
     eyebrow: 'MANUFACTURING DISCIPLINES',
     title: 'Manufacturing with discipline and control.',
     body: 'Onecore formulations are produced in qualified manufacturing environments adhering strictly to cGMP and regulatory standards.',
@@ -125,17 +126,17 @@ export default function QualityManufacturing() {
           ========================================================================= */}
       <section className="relative min-h-[85vh] sm:min-h-[90vh] flex items-end pb-16 sm:pb-24 pt-32 px-4 sm:px-8 lg:px-12 bg-[#071324] overflow-hidden">
         {/* Background Video with Cinematic Grading & Color Filter */}
-        <div className="absolute inset-0 z-0 overflow-hidden">
+        <div className="absolute inset-0 z-0 overflow-hidden bg-[#071324]">
           <video
             ref={videoRef}
             src={assetUrl(heroSec.video_url || '/assets/quality-manufacturing.mp4')}
-            poster={assetUrl(heroSec.image_url || '/assets/quality.jpg')}
             autoPlay
             loop
             muted
             playsInline
             preload="auto"
-            className="w-full h-full object-cover object-center scale-[1.02] filter brightness-[0.72] contrast-[1.12] saturate-[0.88]"
+            onLoadedData={() => setVideoReady(true)}
+            className={`w-full h-full object-cover object-center scale-[1.02] filter brightness-[0.72] contrast-[1.12] saturate-[0.88] transition-opacity duration-700 ${videoReady ? 'opacity-100' : 'opacity-0'}`}
           />
 
           {/* Clinical Color Contrast Grading Filters */}

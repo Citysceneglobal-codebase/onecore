@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { assetUrl } from '../utils/assetUrl';
 import ProductImageGallery from '../components/ProductImageGallery';
@@ -200,7 +200,26 @@ export default function OncologyProductDetail() {
   const precautionsAccordions = parsePrecautionsAccordions(product.precautions);
   const hasPrecautions = precautionsAccordions && precautionsAccordions.length > 0;
 
+  const [activeTab, setActiveTab] = useState('overview');
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = ['precautions', 'directions', 'indications', 'mechanism', 'overview'];
+      const scrollPos = window.scrollY + 140;
+      for (const id of sections) {
+        const el = document.getElementById(id);
+        if (el && el.offsetTop <= scrollPos) {
+          setActiveTab(id);
+          break;
+        }
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   const scrollToSection = (id) => {
+    setActiveTab(id);
     const el = document.getElementById(id) || document.getElementById(id === 'used' ? 'indications' : (id === 'indications' ? 'used' : id));
     if (el) {
       const yOffset = -90;
@@ -274,46 +293,66 @@ export default function OncologyProductDetail() {
             {product.composition}
           </div>
           <p className="text-lg sm:text-xl text-[#575159] leading-relaxed max-w-2xl font-sans">
-            {product.description} {product.usedFor || ''}
+            {product.full_description || product.description}
           </p>
         </div>
       </div>
 
       {/* STICKY ANCHOR NAVIGATION */}
-      <div className="sticky top-0 z-30 bg-white border-b border-[#d9d4cf] px-6 sm:px-12 py-3 flex gap-6 sm:gap-10 overflow-x-auto text-xs uppercase tracking-widest font-semibold text-[#777078] scrollbar-none">
+      <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-[#d9d4cf] px-6 sm:px-12 py-3 flex gap-6 sm:gap-10 overflow-x-auto text-xs uppercase tracking-widest font-semibold text-[#777078] scrollbar-none">
         <button
           type="button"
           onClick={() => scrollToSection('overview')}
-          className="hover:text-[#1f4e5b] transition-colors whitespace-nowrap cursor-pointer uppercase tracking-widest text-xs font-semibold text-[#777078]"
+          className={`py-2 px-1 transition-all whitespace-nowrap cursor-pointer uppercase tracking-widest text-xs font-semibold border-b-2 ${
+            activeTab === 'overview'
+              ? 'border-[#D52B1E] text-[#121212] font-bold'
+              : 'border-transparent text-[#777078] hover:text-[#121212]'
+          }`}
         >
           Overview
         </button>
         <button
           type="button"
           onClick={() => scrollToSection('mechanism')}
-          className="hover:text-[#1f4e5b] transition-colors whitespace-nowrap cursor-pointer uppercase tracking-widest text-xs font-semibold text-[#777078]"
+          className={`py-2 px-1 transition-all whitespace-nowrap cursor-pointer uppercase tracking-widest text-xs font-semibold border-b-2 ${
+            activeTab === 'mechanism'
+              ? 'border-[#D52B1E] text-[#121212] font-bold'
+              : 'border-transparent text-[#777078] hover:text-[#121212]'
+          }`}
         >
           Mechanism of Action
         </button>
         <button
           type="button"
           onClick={() => scrollToSection('indications')}
-          className="hover:text-[#1f4e5b] transition-colors whitespace-nowrap cursor-pointer uppercase tracking-widest text-xs font-semibold text-[#777078]"
+          className={`py-2 px-1 transition-all whitespace-nowrap cursor-pointer uppercase tracking-widest text-xs font-semibold border-b-2 ${
+            activeTab === 'indications' || activeTab === 'used'
+              ? 'border-[#D52B1E] text-[#121212] font-bold'
+              : 'border-transparent text-[#777078] hover:text-[#121212]'
+          }`}
         >
           Therapeutic Role
         </button>
         <button
           type="button"
           onClick={() => scrollToSection('directions')}
-          className="hover:text-[#1f4e5b] transition-colors whitespace-nowrap cursor-pointer uppercase tracking-widest text-xs font-semibold text-[#777078]"
+          className={`py-2 px-1 transition-all whitespace-nowrap cursor-pointer uppercase tracking-widest text-xs font-semibold border-b-2 ${
+            activeTab === 'directions'
+              ? 'border-[#D52B1E] text-[#121212] font-bold'
+              : 'border-transparent text-[#777078] hover:text-[#121212]'
+          }`}
         >
-          Administration
+          Administration & Dosage
         </button>
         {hasPrecautions && (
           <button
             type="button"
             onClick={() => scrollToSection('precautions')}
-            className="hover:text-[#1f4e5b] transition-colors whitespace-nowrap cursor-pointer uppercase tracking-widest text-xs font-semibold text-[#777078]"
+            className={`py-2 px-1 transition-all whitespace-nowrap cursor-pointer uppercase tracking-widest text-xs font-semibold border-b-2 ${
+              activeTab === 'precautions'
+                ? 'border-[#D52B1E] text-[#121212] font-bold'
+                : 'border-transparent text-[#777078] hover:text-[#121212]'
+            }`}
           >
             Safety Profile
           </button>
@@ -323,7 +362,12 @@ export default function OncologyProductDetail() {
       {/* SECTION: MECHANISM OF ACTION */}
       <section id="mechanism" className="bg-[#232126] text-white py-20 px-6 sm:px-16 scroll-mt-24">
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
-          <div className="lg:col-span-3" />
+          <div className="lg:col-span-3">
+            <span className="text-xs uppercase tracking-[0.2em] font-mono text-[#D52B1E] font-bold block mb-2">
+              BIOCHEMICAL PATHWAY
+            </span>
+            <span className="text-sm text-[#a8a1ab]">Mechanism of Action</span>
+          </div>
           <div className="lg:col-span-9 space-y-8">
             <h2 className="font-serif text-4xl sm:text-5xl font-normal leading-tight max-w-3xl">
               How the formula operates in the body.
@@ -358,9 +402,34 @@ export default function OncologyProductDetail() {
           <h2 className="font-serif text-3xl sm:text-4xl text-[#232126] font-normal mb-6">
             Therapeutic Role & Indications
           </h2>
-          <p className="text-[#575159] text-base sm:text-lg max-w-3xl leading-relaxed">
+          <p className="text-[#333333] text-base sm:text-lg max-w-3xl leading-relaxed font-normal">
             {product.usedFor}
           </p>
+
+          {/* In-section exploration links */}
+          <div className="flex flex-wrap items-center gap-3 pt-6 border-t border-[#e5e3dc] mt-6">
+            <span className="text-xs text-[#736c74] font-medium">Explore Details:</span>
+            <button
+              type="button"
+              onClick={() => scrollToSection('mechanism')}
+              className="text-xs font-semibold px-3.5 py-1.5 rounded-full bg-[#FAF9F6] text-[#232126] border border-[#d4cfc9] hover:border-[#D52B1E] transition-all cursor-pointer shadow-2xs"
+            >
+              Mechanism of Action →
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollToSection('directions')}
+              className="text-xs font-semibold px-3.5 py-1.5 rounded-full bg-[#FAF9F6] text-[#232126] border border-[#d4cfc9] hover:border-[#D52B1E] transition-all cursor-pointer shadow-2xs"
+            >
+              Administration & Dosage →
+            </button>
+            <Link
+              to={listingRoute}
+              className="text-xs font-semibold px-3.5 py-1.5 rounded-full bg-transparent text-[#736c74] hover:text-[#232126] underline transition-all ml-auto"
+            >
+              All Oncology Formulations
+            </Link>
+          </div>
         </div>
       </section>
 

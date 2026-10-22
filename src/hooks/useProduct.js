@@ -53,15 +53,21 @@ export function useProduct(slugOrId = 'oneflexo') {
           const precautionsList = safety.map((s) => s.description || s.content).filter(Boolean);
 
           const rawImages = apiProd.images || [];
-          let galleryImages = rawImages.map((img) => ({
-            id: img.id,
-            image_url: img.image_url,
-            alt_text: img.alt_text || apiProd.brand_name || '',
-            is_primary: img.is_primary === 1 || img.is_primary === true,
-          }));
+          let galleryImages = rawImages
+            .filter((img) => img.image_url && !img.image_url.startsWith('/assets/therapeutic-'))
+            .map((img) => ({
+              id: img.id,
+              image_url: img.image_url,
+              alt_text: img.alt_text || apiProd.brand_name || '',
+              is_primary: img.is_primary === 1 || img.is_primary === true,
+            }));
 
-          if (galleryImages.length === 0 && apiProd.packshot_url) {
-            galleryImages = [{ image_url: apiProd.packshot_url, alt_text: apiProd.brand_name || '', is_primary: true }];
+          if (apiProd.packshot_url && !galleryImages.some((img) => img.image_url === apiProd.packshot_url)) {
+            galleryImages.unshift({
+              image_url: apiProd.packshot_url,
+              alt_text: apiProd.brand_name || '',
+              is_primary: true,
+            });
           }
 
           const normalized = {

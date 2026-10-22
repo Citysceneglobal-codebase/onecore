@@ -109,6 +109,14 @@ export function useCmsPage(pageKey, fallbackData = {}) {
                 if (!mapped['quality_assurance']) mapped['quality_assurance'] = normalizedSec;
                 if (!mapped['quality_highlight']) mapped['quality_highlight'] = normalizedSec;
               }
+              if (sec.section_key === 'manufacturing_excellence' || sec.section_key === 'manufacturing_standards') {
+                if (!mapped['manufacturing_standards'] || (sec.image_url && sec.image_url !== '/assets/hero-healthcare.jpg')) {
+                  mapped['manufacturing_standards'] = normalizedSec;
+                }
+                if (!mapped['manufacturing_excellence'] || (sec.image_url && sec.image_url !== '/assets/hero-healthcare.jpg')) {
+                  mapped['manufacturing_excellence'] = normalizedSec;
+                }
+              }
               if (sec.section_key === 'contact_info_cards') mapped['direct_channels'] = normalizedSec;
               if (sec.section_key === 'direct_channels') mapped['contact_info_cards'] = normalizedSec;
               if (sec.section_key === 'contact_form_settings') mapped['form_intro'] = normalizedSec;

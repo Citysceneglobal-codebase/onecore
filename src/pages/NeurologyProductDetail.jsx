@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { assetUrl } from '../utils/assetUrl';
 import ProductImageGallery from '../components/ProductImageGallery';
@@ -206,7 +206,26 @@ export default function NeurologyProductDetail() {
   const precautionsAccordions = parsePrecautionsAccordions(product.precautions);
   const hasPrecautions = precautionsAccordions && precautionsAccordions.length > 0;
 
+  const [activeTab, setActiveTab] = useState('overview');
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = ['precautions', 'directions', 'used', 'mechanism', 'overview'];
+      const scrollPos = window.scrollY + 140;
+      for (const id of sections) {
+        const el = document.getElementById(id);
+        if (el && el.offsetTop <= scrollPos) {
+          setActiveTab(id);
+          break;
+        }
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   const scrollToSection = (id) => {
+    setActiveTab(id);
     const el = document.getElementById(id) || document.getElementById(id === 'used' ? 'indications' : (id === 'indications' ? 'used' : id));
     if (el) {
       const yOffset = -90;
@@ -284,47 +303,67 @@ export default function NeurologyProductDetail() {
             {product.composition}
           </div>
           <p className="text-lg sm:text-xl text-[#575159] leading-relaxed max-w-2xl font-sans">
-            {product.description} {product.usedFor || ''}
+            {product.full_description || product.description}
           </p>
         </div>
       </div>
 
       {/* 5. STICKY ANCHOR NAVIGATION */}
       <div className="sticky top-0 z-20 bg-white/95 backdrop-blur-md border-t border-[#eeeae6] border-b border-[#d9d4cf] px-6 sm:px-12">
-        <div className="max-w-6xl mx-auto flex gap-8 overflow-x-auto py-4 scrollbar-none no-scrollbar">
+        <div className="max-w-6xl mx-auto flex gap-6 sm:gap-8 overflow-x-auto py-3 scrollbar-none no-scrollbar">
           <button
             type="button"
             onClick={() => scrollToSection('overview')}
-            className="text-xs uppercase tracking-wider font-semibold text-[#514b53] hover:text-[#5b2a70] transition-colors whitespace-nowrap cursor-pointer"
+            className={`text-xs uppercase tracking-wider font-semibold py-2 px-1 transition-all whitespace-nowrap cursor-pointer border-b-2 ${
+              activeTab === 'overview'
+                ? 'border-[#D52B1E] text-[#121212] font-bold'
+                : 'border-transparent text-[#514b53] hover:text-[#121212]'
+            }`}
           >
             Overview
           </button>
           <button
             type="button"
             onClick={() => scrollToSection('mechanism')}
-            className="text-xs uppercase tracking-wider font-semibold text-[#514b53] hover:text-[#5b2a70] transition-colors whitespace-nowrap cursor-pointer"
+            className={`text-xs uppercase tracking-wider font-semibold py-2 px-1 transition-all whitespace-nowrap cursor-pointer border-b-2 ${
+              activeTab === 'mechanism'
+                ? 'border-[#D52B1E] text-[#121212] font-bold'
+                : 'border-transparent text-[#514b53] hover:text-[#121212]'
+            }`}
           >
             Mechanism of Action
           </button>
           <button
             type="button"
             onClick={() => scrollToSection('used')}
-            className="text-xs uppercase tracking-wider font-semibold text-[#514b53] hover:text-[#5b2a70] transition-colors whitespace-nowrap cursor-pointer"
+            className={`text-xs uppercase tracking-wider font-semibold py-2 px-1 transition-all whitespace-nowrap cursor-pointer border-b-2 ${
+              activeTab === 'used'
+                ? 'border-[#D52B1E] text-[#121212] font-bold'
+                : 'border-transparent text-[#514b53] hover:text-[#121212]'
+            }`}
           >
             Therapeutic Role
           </button>
           <button
             type="button"
             onClick={() => scrollToSection('directions')}
-            className="text-xs uppercase tracking-wider font-semibold text-[#514b53] hover:text-[#5b2a70] transition-colors whitespace-nowrap cursor-pointer"
+            className={`text-xs uppercase tracking-wider font-semibold py-2 px-1 transition-all whitespace-nowrap cursor-pointer border-b-2 ${
+              activeTab === 'directions'
+                ? 'border-[#D52B1E] text-[#121212] font-bold'
+                : 'border-transparent text-[#514b53] hover:text-[#121212]'
+            }`}
           >
-            Administration
+            Administration & Dosage
           </button>
           {hasPrecautions && (
             <button
               type="button"
               onClick={() => scrollToSection('precautions')}
-              className="text-xs uppercase tracking-wider font-semibold text-[#514b53] hover:text-[#5b2a70] transition-colors whitespace-nowrap cursor-pointer"
+              className={`text-xs uppercase tracking-wider font-semibold py-2 px-1 transition-all whitespace-nowrap cursor-pointer border-b-2 ${
+                activeTab === 'precautions'
+                  ? 'border-[#D52B1E] text-[#121212] font-bold'
+                  : 'border-transparent text-[#514b53] hover:text-[#121212]'
+              }`}
             >
               Safety Profile
             </button>
@@ -335,7 +374,12 @@ export default function NeurologyProductDetail() {
       {/* 6. MECHANISM OF WORK (DARK SECTION) */}
       <section id="mechanism" className="bg-[#232126] text-white py-20 px-6 sm:px-16 scroll-mt-24">
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
-          <div className="lg:col-span-3" />
+          <div className="lg:col-span-3">
+            <span className="text-xs uppercase tracking-[0.2em] font-mono text-[#D52B1E] font-bold block mb-2">
+              BIOCHEMICAL PATHWAY
+            </span>
+            <span className="text-sm text-[#a8a1ab]">Mechanism of Action</span>
+          </div>
           <div className="lg:col-span-9 space-y-8">
             <h2 className="font-serif text-4xl sm:text-5xl font-normal leading-tight max-w-3xl">
               How the formula operates in the body.
@@ -361,18 +405,47 @@ export default function NeurologyProductDetail() {
         </div>
       </section>
 
-      {/* 7. WHEN IS IT USED? (STONE/NEUTRAL SECTION) */}
+      {/* 7. WHEN IS IT USED? (THERAPEUTIC ROLE) */}
       <section id="used" className="bg-[#ebe7e1] text-[#232126] py-20 px-6 sm:px-16 scroll-mt-24">
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
-          <div className="lg:col-span-3" />
+          <div className="lg:col-span-3">
+            <span className="text-xs uppercase tracking-[0.2em] font-mono text-[#5b2a70] font-bold block mb-2">
+              CLINICAL USE
+            </span>
+            <span className="text-sm text-[#736c74]">Therapeutic Indications</span>
+          </div>
           <div className="lg:col-span-9 space-y-8">
             <h2 className="font-serif text-4xl sm:text-5xl font-normal leading-tight max-w-3xl">
               When is it used?
             </h2>
-            <p className="text-base sm:text-lg text-[#625d64] leading-relaxed max-w-3xl">
+            <p className="text-base sm:text-lg text-[#333333] leading-relaxed max-w-3xl font-normal">
               {product.usedFor}
             </p>
 
+            {/* In-section exploration links */}
+            <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-[#d8d3cb]">
+              <span className="text-xs text-[#736c74] font-medium">Explore Details:</span>
+              <button
+                type="button"
+                onClick={() => scrollToSection('mechanism')}
+                className="text-xs font-semibold px-3.5 py-1.5 rounded-full bg-white text-[#232126] border border-[#d4cfc9] hover:border-[#D52B1E] transition-all cursor-pointer shadow-2xs"
+              >
+                Mechanism of Action →
+              </button>
+              <button
+                type="button"
+                onClick={() => scrollToSection('directions')}
+                className="text-xs font-semibold px-3.5 py-1.5 rounded-full bg-white text-[#232126] border border-[#d4cfc9] hover:border-[#D52B1E] transition-all cursor-pointer shadow-2xs"
+              >
+                Administration & Dosage →
+              </button>
+              <Link
+                to={listingRoute}
+                className="text-xs font-semibold px-3.5 py-1.5 rounded-full bg-transparent text-[#736c74] hover:text-[#232126] underline transition-all ml-auto"
+              >
+                All Neurology Formulations
+              </Link>
+            </div>
           </div>
         </div>
       </section>

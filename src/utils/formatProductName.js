@@ -1,51 +1,92 @@
 import React from 'react';
 
 /**
- * Formats a product brand name by appending a styled smaller trademark symbol (™)
- * positioned as a subtle superscript mark at the upper-right of the product name.
+ * Normalizes a brand name so that the trademark symbol (™) strictly appears
+ * on the first brand word only, never duplicated on suffixes or numbers.
+ *
+ * Examples:
+ *   "Frecox™ Gel™"  -> "Frecox™ Gel"
+ *   "Frecox™-R™"    -> "Frecox™-R"
+ *   "Trypcor™-BR™"  -> "Trypcor™-BR"
+ *   "Tofcore™-11™"  -> "Tofcore™-11"
+ *   "Frecox Gel"     -> "Frecox™ Gel"
+ */
+function normalizeBrandNameWithSingleTM(name) {
+  if (!name || typeof name !== 'string') return '';
+  let str = name.trim();
+
+  // If there are multiple ™ marks, retain only the first one
+  const tmMatches = str.match(/™/g);
+  if (tmMatches && tmMatches.length > 1) {
+    let seenFirst = false;
+    str = str.replace(/™/g, () => {
+      if (!seenFirst) {
+        seenFirst = true;
+        return '™';
+      }
+      return '';
+    });
+  }
+
+  // If no ™ is present, attach ™ strictly to the first brand word
+  if (!str.includes('™')) {
+    str = str.replace(/^([A-Za-z0-9]+)/, '$1™');
+  }
+
+  return str.trim();
+}
+
+/**
+ * Formats a product brand name with a styled superscript trademark symbol (™)
+ * placed strictly on the primary brand name word.
  *
  * @param {string} name - Product name to format
- * @returns {React.ReactNode} React element containing the product name and smaller superscript ™
+ * @returns {React.ReactNode} React element with superscript ™ on first word
  */
 export function formatProductName(name) {
   if (!name || typeof name !== 'string') return name || '';
-  const trimmed = name.trim();
-  // Strip trailing trademark marks if already present to prevent duplicate symbols
-  const baseName = trimmed.replace(/(?:™|&trade;|&#8482;|\s*™)$/i, '').trim();
+  const clean = normalizeBrandNameWithSingleTM(name);
+
+  if (!clean.includes('™')) {
+    return clean;
+  }
+
+  const parts = clean.split('™');
+  const brandRoot = parts[0];
+  const suffix = parts.slice(1).join('');
 
   return React.createElement(
     React.Fragment,
     null,
-    baseName,
+    brandRoot,
     React.createElement(
       'span',
       {
-        className: 'product-trademark text-[0.62em] font-normal align-super leading-none inline-block ml-[0.08em] select-none',
+        className: 'product-trademark text-[0.6em] font-normal align-super leading-none inline-block ml-[0.05em] select-none text-current',
         style: {
-          fontSize: '0.62em',
+          fontSize: '0.6em',
           verticalAlign: 'super',
           lineHeight: 1,
-          marginLeft: '0.08em',
+          marginLeft: '0.05em',
           display: 'inline-block',
           fontWeight: 'normal',
         },
       },
       '™'
-    )
+    ),
+    suffix
   );
 }
 
 /**
- * Formats a product brand name as plain text (e.g. for HTML attributes or document title).
+ * Formats a product brand name as plain text (e.g. for HTML attributes or document title)
+ * ensuring only a single ™ exists on the primary brand word.
  *
  * @param {string} name - Product name to format
- * @returns {string} Product name with ™ as text
+ * @returns {string} Product name with clean single ™
  */
 export function formatProductNameText(name) {
-  if (!name || typeof name !== 'string') return name || '';
-  const trimmed = name.trim();
-  const baseName = trimmed.replace(/(?:™|&trade;|&#8482;|\s*™)$/i, '').trim();
-  return `${baseName}™`;
+  return normalizeBrandNameWithSingleTM(name);
 }
 
 export default formatProductName;
