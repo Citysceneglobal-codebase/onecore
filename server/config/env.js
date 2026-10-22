@@ -16,10 +16,42 @@ export function loadEnvironment() {
   // If required environment variables are already set (e.g. from Hostinger hPanel Environment Variables), we're good
   if (process.env.DB_USER && process.env.DB_PASSWORD) {
     console.log('✅ Environment variables already present in process.env (Hostinger System / hPanel):', {
-      DB_HOST: process.env.DB_HOST || '127.0.0.1',
+      DB_HOST: process.env.DB_HOST || 'localhost',
       DB_USER: process.env.DB_USER,
-      DB_NAME: process.env.DB_NAME || 'onecore_pharma',
+      DB_NAME: process.env.DB_NAME || 'u222341186_onecore',
     });
+
+    // Write a permanent backup to hbuilds/.env and server/.env so credentials never get lost
+    try {
+      const envContent = [
+        `PORT=${process.env.PORT || 5000}`,
+        `NODE_ENV=${process.env.NODE_ENV || 'production'}`,
+        `JWT_SECRET=${process.env.JWT_SECRET || 'onecore_pharma_jwt_secure_key_2026_super_secret_token'}`,
+        `JWT_EXPIRES_IN=${process.env.JWT_EXPIRES_IN || '7d'}`,
+        `DB_HOST=${process.env.DB_HOST || 'localhost'}`,
+        `DB_PORT=${process.env.DB_PORT || 3306}`,
+        `DB_USER=${process.env.DB_USER}`,
+        `DB_PASSWORD=${process.env.DB_PASSWORD}`,
+        `DB_NAME=${process.env.DB_NAME || 'u222341186_onecore'}`,
+      ].join('\n') + '\n';
+
+      const primaryEnv = path.resolve(__dirname, '..', '.env');
+      if (!fs.existsSync(primaryEnv)) {
+        fs.writeFileSync(primaryEnv, envContent, 'utf-8');
+      }
+
+      let cur = __dirname;
+      for (let i = 0; i < 7; i++) {
+        cur = path.dirname(cur);
+        if (path.basename(cur) === 'hbuilds') {
+          const hbuildsEnv = path.join(cur, '.env');
+          fs.writeFileSync(hbuildsEnv, envContent, 'utf-8');
+          console.log(`✅ Persisted backup environment to: ${hbuildsEnv}`);
+          break;
+        }
+      }
+    } catch {}
+
     return 'process.env';
   }
 
