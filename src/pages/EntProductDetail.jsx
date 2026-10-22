@@ -162,6 +162,7 @@ export default function EntProductDetail() {
   const { productSlug } = useParams();
   const { product, loading } = useProduct(productSlug);
   const listingRoute = getAreaListingRoute(product, 'otira');
+  const [activeTab, setActiveTab] = useState('overview');
 
   useEffect(() => {
     if (product) {
@@ -170,6 +171,22 @@ export default function EntProductDetail() {
       document.title = "Product Not Found | Onecore Pharma";
     }
   }, [product]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = ['precautions', 'directions', 'used', 'mechanism', 'overview'];
+      const scrollPos = window.scrollY + 140;
+      for (const id of sections) {
+        const el = document.getElementById(id);
+        if (el && el.offsetTop <= scrollPos) {
+          setActiveTab(id);
+          break;
+        }
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   if (loading) {
     return <PageSkeleton />;
@@ -203,24 +220,6 @@ export default function EntProductDetail() {
   const directionSteps = parseDirectionSteps(product.direction);
   const precautionsAccordions = parsePrecautionsAccordions(product.precautions);
   const hasPrecautions = precautionsAccordions && precautionsAccordions.length > 0;
-
-  const [activeTab, setActiveTab] = useState('overview');
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const sections = ['precautions', 'directions', 'used', 'mechanism', 'overview'];
-      const scrollPos = window.scrollY + 140;
-      for (const id of sections) {
-        const el = document.getElementById(id);
-        if (el && el.offsetTop <= scrollPos) {
-          setActiveTab(id);
-          break;
-        }
-      }
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   const scrollToSection = (id) => {
     setActiveTab(id);

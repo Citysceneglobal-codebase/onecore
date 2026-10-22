@@ -50,16 +50,29 @@ export function resolveImageUrl(imagePath) {
 
   // If it points to public assets
   if (cleaned.startsWith('assets/')) {
-    return `/${cleaned}`;
+    return withCacheBuster(`/${cleaned}`);
   }
 
   // If it already starts with uploads/
   if (cleaned.startsWith('uploads/')) {
-    return `/${cleaned}`;
+    return withCacheBuster(`/${cleaned}`);
   }
 
   // Otherwise treat as an uploaded file name
-  return `/uploads/${cleaned}`;
+  return withCacheBuster(`/uploads/${cleaned}`);
+}
+
+/**
+ * Appends a cache-busting version token to local assets so mobile browsers
+ * never serve stale disk-cached images after an update.
+ */
+function withCacheBuster(url) {
+  if (!url || typeof url !== 'string') return url;
+  if (url.startsWith('data:') || url.startsWith('blob:') || url.includes('?v=') || url.includes('&v=')) {
+    return url;
+  }
+  const separator = url.includes('?') ? '&' : '?';
+  return `${url}${separator}v=20261022v1`;
 }
 
 /**
@@ -88,7 +101,7 @@ export function assetUrl(path) {
   const base = import.meta.env.BASE_URL || '/';
   const cleanBase = base.endsWith('/') ? base : `${base}/`;
 
-  return `${cleanBase}${cleanPath}`;
+  return withCacheBuster(`${cleanBase}${cleanPath}`);
 }
 
 export default assetUrl;
