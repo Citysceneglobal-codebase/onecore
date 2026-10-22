@@ -72,7 +72,7 @@ function withCacheBuster(url) {
     return url;
   }
   const separator = url.includes('?') ? '&' : '?';
-  return `${url}${separator}v=20261022v2`;
+  return `${url}${separator}v=20261023v1`;
 }
 
 /**

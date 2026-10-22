@@ -178,7 +178,7 @@ export default function Home() {
     ? dynamicAreas.map((a) => {
         const key = (a.slug || a.id || a.divisionName || a.name || '').toLowerCase().trim();
         const fallback = getDivisionFallback(key);
-        const hasCustomImg = a.image_url && !a.image_url.includes('whatsapp-image');
+        const hasCustomImg = a.image_url && a.image_url.trim().length > 0;
         return {
           name: a.divisionName || a.displayName || a.title || a.name,
           specialty: a.therapeuticArea || a.displayName || a.title || a.name,
@@ -502,7 +502,7 @@ export default function Home() {
                 <ScrollReveal delay={0.15}>
                   <div className="relative rounded-3xl overflow-hidden border border-stone-200 shadow-sm aspect-[16/10] bg-[#FAF9F6]">
                     <img
-                      src={assetUrl((aboutSec.image_url && !aboutSec.image_url.includes('smiling-doctor')) ? aboutSec.image_url : '/assets/internet/healthcare-team-discussion.jpg')}
+                      src={assetUrl(aboutSec.image_url || '/assets/internet/healthcare-team-discussion.jpg')}
                       alt="Onecore Pharma healthcare professionals and clinical dialogue"
                       className="w-full h-full object-cover"
                       loading="lazy"

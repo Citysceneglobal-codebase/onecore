@@ -326,24 +326,21 @@ export const autoSeedPageSections = async (page) => {
 
     await query(
       `INSERT INTO page_sections 
-        (page_id, section_key, section_type, section_title, eyebrow, heading, subheading, body, cta_text, cta_url, image_url, display_order, order_index, is_active, content_json, items_json, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, NOW(), NOW())`,
+        (page_id, section_key, section_type, eyebrow, heading, subheading, body, cta_text, cta_url, image_url, display_order, is_active, items_json, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, NOW(), NOW())`,
       [
         page.id,
         secKey,
         secType,
-        secTitle,
         def.content?.eyebrow || def.eyebrow || null,
-        heading,
+        heading || secTitle || '',
         subheading,
         body,
         ctaText,
         ctaUrl,
         imageUrl,
         i + 1,
-        i,
-        contentJson,
-        itemsJson
+        itemsJson || contentJson
       ]
     );
   }

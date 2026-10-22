@@ -25,6 +25,7 @@ import ToastNotification from '../../components/admin/ToastNotification';
 import ConfirmModal from '../../components/admin/ConfirmModal';
 import MediaSelectorModal from '../../components/admin/MediaSelectorModal';
 import { useAdminAuth } from '../../context/AdminAuthContext';
+import { assetUrl } from '../../utils/assetUrl';
 
 // ─── Inline Repeatable Items Manager ──────────────────────────────────────────
 function SectionItemsManager({ items, onChange, onOpenMedia }) {
@@ -863,20 +864,31 @@ function SectionEditorPanel({ section, onSave, onCancel, onOpenMedia }) {
             <button
               type="button"
               onClick={() => onOpenMedia((url) => setForm((p) => ({ ...p, image_url: url })))}
-              className="shrink-0 flex items-center gap-1.5 px-3 py-2 bg-slate-50 border border-slate-200 hover:bg-slate-100 rounded-lg text-xs font-semibold text-slate-700 transition-all"
+              className="shrink-0 flex items-center gap-1.5 px-3 py-2 bg-slate-50 border border-slate-200 hover:bg-slate-100 rounded-lg text-xs font-semibold text-slate-700 transition-all cursor-pointer"
             >
               <ImageIcon size={14} />
               <span>Choose</span>
             </button>
+            {form.image_url && (
+              <button
+                type="button"
+                onClick={() => setForm((p) => ({ ...p, image_url: '' }))}
+                className="shrink-0 px-2.5 py-2 bg-slate-50 border border-slate-200 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 rounded-lg text-xs font-semibold text-slate-500 transition-all cursor-pointer"
+                title="Clear image (reset to section default)"
+              >
+                Clear
+              </button>
+            )}
           </div>
           {form.image_url && (
             <div className="mt-2.5 flex items-center gap-3 p-2 bg-slate-50 border border-slate-200 rounded-lg">
               <img
-                src={form.image_url}
+                src={assetUrl(form.image_url)}
                 alt="Section Preview"
                 className="w-16 h-10 object-cover rounded border border-slate-200 bg-white"
                 onError={(e) => {
-                  e.target.style.display = 'none';
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = '/placeholder.png';
                 }}
               />
               <span className="text-[11px] text-slate-500 font-mono truncate">{form.image_url}</span>

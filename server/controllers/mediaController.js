@@ -1,9 +1,20 @@
 import { query } from '../config/db.js';
 import path from 'path';
 import fs from 'fs';
+import { fileURLToPath } from 'url';
+import { getStoragePaths, rescueAllOrphanUploads } from '../utils/storage.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export const getMediaList = async (req, res, next) => {
   try {
+    // 1. Run auto-rescue to ensure all historical uploads across builds are in sharedDir
+    try {
+      rescueAllOrphanUploads();
+    } catch {}
+
+    // 2. Fetch existing media records from database
     const media = await query(
       `SELECT m.*, u.name as uploaded_by_name
        FROM media m
@@ -11,7 +22,59 @@ export const getMediaList = async (req, res, next) => {
        ORDER BY m.created_at DESC`
     );
 
-    const normalizedMedia = (media || []).map((item) => {
+    const existingFilenames = new Set((media || []).map((m) => m.filename));
+
+    // 3. Scan physical upload directories to auto-register any missing files into media table
+    const { sharedDir } = getStoragePaths(__dirname);
+    const candidateDirs = [
+      path.resolve(__dirname, '../../public/assets/uploads'),
+      path.resolve(__dirname, '../public/assets/uploads'),
+      sharedDir,
+      path.resolve(__dirname, '../uploads'),
+    ].filter(Boolean);
+
+    for (const dir of candidateDirs) {
+      try {
+        if (fs.existsSync(dir) && fs.statSync(dir).isDirectory()) {
+          const files = fs.readdirSync(dir);
+          for (const file of files) {
+            if (!file || file.startsWith('.')) continue;
+            if (file.match(/\.(png|jpg|jpeg|webp|gif|svg)$/i) && !existingFilenames.has(file)) {
+              try {
+                const stat = fs.statSync(path.join(dir, file));
+                const ext = path.extname(file).toLowerCase();
+                const mime =
+                  ext === '.png'
+                    ? 'image/png'
+                    : ext === '.webp'
+                    ? 'image/webp'
+                    : ext === '.svg'
+                    ? 'image/svg+xml'
+                    : 'image/jpeg';
+                const relativePath = `/uploads/${file}`;
+
+                await query(
+                  `INSERT INTO media (filename, original_filename, file_path, mime_type, file_size, alt_text, created_at)
+                   VALUES (?, ?, ?, ?, ?, ?, NOW())`,
+                  [file, file, relativePath, mime, stat.size, file]
+                );
+                existingFilenames.add(file);
+              } catch {}
+            }
+          }
+        }
+      } catch {}
+    }
+
+    // 4. Re-query so all newly cataloged media are included
+    const refreshedMedia = await query(
+      `SELECT m.*, u.name as uploaded_by_name
+       FROM media m
+       LEFT JOIN admin_users u ON m.uploaded_by = u.id
+       ORDER BY m.created_at DESC`
+    );
+
+    const normalizedMedia = (refreshedMedia || []).map((item) => {
       const file = item.file_path || item.url || item.path || item.filename || '';
 
       let cleanUrl = '';

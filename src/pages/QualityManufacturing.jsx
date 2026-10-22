@@ -237,7 +237,7 @@ export default function QualityManufacturing() {
                 <ScrollReveal delay={0.1}>
                   <div className="relative rounded-[28px] overflow-hidden border border-[#E5E3DC] shadow-lg aspect-video bg-[#FAF9F6]">
                     <img
-                      src={assetUrl((manufacturingSec.image_url && !manufacturingSec.image_url.includes('amber-bottles')) ? manufacturingSec.image_url : '/assets/pharma.jpg')}
+                      src={assetUrl(manufacturingSec.image_url || '/assets/pharma.jpg')}
                       alt="Onecore Pharma Manufacturing & Facility Operations"
                       className="w-full h-full object-cover"
                       onError={(e) => {
