@@ -302,7 +302,7 @@ export default function AreasOfCare() {
                           loading="lazy"
                           onError={(e) => {
                             e.currentTarget.onerror = null;
-                            e.currentTarget.src = '/placeholder.png';
+                            e.currentTarget.src = '/assets/therapeutic-general-medicine.jpg';
                           }}
                         />
                       </div>
@@ -454,7 +454,7 @@ export default function AreasOfCare() {
                         loading="lazy"
                         onError={(e) => {
                           e.currentTarget.onerror = null;
-                          e.currentTarget.src = '/placeholder.png';
+                          e.currentTarget.src = '/assets/therapeutic-general-medicine.jpg';
                         }}
                       />
                     </Link>

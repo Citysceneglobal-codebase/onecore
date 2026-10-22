@@ -455,7 +455,7 @@ export default function AreaOfCareDetail() {
                   loading="lazy"
                   onError={(e) => {
                     e.currentTarget.onerror = null;
-                    e.currentTarget.src = '/placeholder.png';
+                    e.currentTarget.src = '/assets/therapeutic-general-medicine.jpg';
                   }}
                 />
               </div>
@@ -518,7 +518,7 @@ export default function AreaOfCareDetail() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredProducts.map((product, index) => {
               const productUrl = getProductRoute(product);
-              const productImage = product.productPrimaryPackshotImage || product.image || product.packshot_url || currentCategory.image || '/assets/placeholder.png';
+              const productImage = product.productPrimaryPackshotImage || product.image || product.packshot_url || currentCategory.image || '/assets/therapeutic-general-medicine.jpg';
               const title = product.brandName || product.name || product.brand_name || 'Unnamed Product';
               const description = product.shortDescription || product.description || product.composition || product.fullDescription || product.short_description || 'Active pharmaceutical formulation';
 

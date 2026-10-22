@@ -178,6 +178,13 @@ export default function Home() {
               alt="Onecore Pharma — Prescribing a better tomorrow"
               className="w-full h-full object-cover object-center opacity-85 brightness-90"
               loading="eager"
+              onError={(e) => {
+                const target = e.currentTarget;
+                if (!target.dataset.fallbackApplied) {
+                  target.dataset.fallbackApplied = 'true';
+                  target.src = '/assets/hero-healthcare.jpg';
+                }
+              }}
             />
             {/* Directional contrast gradient */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 to-black/20" />
@@ -370,7 +377,7 @@ export default function Home() {
                         loading="lazy"
                         onError={(e) => {
                           e.currentTarget.onerror = null;
-                          e.currentTarget.src = '/placeholder.png';
+                          e.currentTarget.src = '/assets/therapeutic-general-medicine.jpg';
                         }}
                       />
 

@@ -6,21 +6,14 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Auto-detect Hostinger hbuilds shared storage
-let detectedSharedDir = null;
-try {
-  const hbuildsDir = path.resolve(__dirname, '../../../../');
-  if (path.basename(hbuildsDir) === 'hbuilds') {
-    detectedSharedDir = path.join(hbuildsDir, 'shared_uploads');
-    if (!fs.existsSync(detectedSharedDir)) {
-      try { fs.mkdirSync(detectedSharedDir, { recursive: true }); } catch {}
-    }
-  }
-} catch {}
+import { getStoragePaths } from '../utils/storage.js';
+
+// Auto-detect Hostinger persistent shared storage
+const { sharedDir } = getStoragePaths(__dirname);
 
 const uploadDir = process.env.UPLOADS_DIR 
   ? path.resolve(process.env.UPLOADS_DIR) 
-  : (detectedSharedDir || path.join(__dirname, '..', 'uploads'));
+  : (sharedDir || path.join(__dirname, '..', 'uploads'));
 
 if (!fs.existsSync(uploadDir)) {
   try { fs.mkdirSync(uploadDir, { recursive: true }); } catch {}
@@ -44,18 +37,26 @@ const storage = multer.diskStorage({
     const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
     const finalFilename = `${safeBaseName}-${uniqueSuffix}${ext}`;
     
-    // Asynchronously mirror to localUploadsDir if uploadDir is external/shared
-    if (uploadDir !== localUploadsDir) {
-      setTimeout(() => {
-        try {
-          const src = path.join(uploadDir, finalFilename);
-          const dest = path.join(localUploadsDir, finalFilename);
-          if (fs.existsSync(src) && !fs.existsSync(dest)) {
-            fs.copyFileSync(src, dest);
+    // Asynchronously guarantee file is replicated to both sharedDir and localUploadsDir
+    setTimeout(() => {
+      try {
+        const savedFile = path.join(uploadDir, finalFilename);
+        if (fs.existsSync(savedFile)) {
+          if (sharedDir && uploadDir !== sharedDir) {
+            const sharedDest = path.join(sharedDir, finalFilename);
+            if (!fs.existsSync(sharedDest)) {
+              fs.copyFileSync(savedFile, sharedDest);
+            }
           }
-        } catch {}
-      }, 500);
-    }
+          if (localUploadsDir && uploadDir !== localUploadsDir) {
+            const localDest = path.join(localUploadsDir, finalFilename);
+            if (!fs.existsSync(localDest)) {
+              fs.copyFileSync(savedFile, localDest);
+            }
+          }
+        }
+      } catch {}
+    }, 200);
     
     cb(null, finalFilename);
   },

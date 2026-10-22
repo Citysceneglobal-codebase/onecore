@@ -74,7 +74,7 @@ export default function NewsDetail() {
               loading="lazy"
               onError={(e) => {
                 e.currentTarget.onerror = null;
-                e.currentTarget.src = '/placeholder.png';
+                e.currentTarget.src = '/assets/hero-healthcare.jpg';
               }}
             />
           </div>
