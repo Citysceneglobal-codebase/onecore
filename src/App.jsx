@@ -26,6 +26,7 @@ import DistributionPartnerships from './pages/DistributionPartnerships';
 import Privacy from './pages/Privacy';
 import Disclaimer from './pages/Disclaimer';
 import NotFound from './pages/NotFound';
+import ErrorBoundary from './components/ErrorBoundary';
 
 // Admin Context & Components
 import { AdminAuthProvider } from './context/AdminAuthContext';
@@ -276,7 +277,9 @@ export default function App() {
       <AdminAuthProvider>
         <HashRedirect />
         <ScrollToTop />
-        <AppRoutes />
+        <ErrorBoundary>
+          <AppRoutes />
+        </ErrorBoundary>
       </AdminAuthProvider>
     </BrowserRouter>
   );
