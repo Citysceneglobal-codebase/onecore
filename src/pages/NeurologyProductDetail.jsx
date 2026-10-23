@@ -96,17 +96,39 @@ function parseUsedForItems(usedForText) {
 function parseDirectionSteps(directionText) {
   if (!directionText) return [];
 
-  const sentences = directionText
+  const text = directionText.trim();
+  const parts = text.split(/\n\s*\n/).map(p => p.trim()).filter(Boolean);
+
+  if (parts.length >= 2) {
+    return parts.slice(0, 2).map((part, idx) => {
+      let lines = part.split('\n').map(l => l.trim()).filter(Boolean);
+      let heading = idx === 0 ? "Dosing & Schedule" : "Administration Advice";
+      let body = part;
+
+      if (lines.length > 1 && /^(dosing\s*(and|&)\s*schedule|administration\s*advice)/i.test(lines[0])) {
+        body = lines.slice(1).join(' ');
+      } else {
+        body = body.replace(/^(dosing\s*(and|&)\s*schedule|administration\s*advice)[:\s-]*/i, '').trim();
+      }
+
+      const cleanSentence = body.endsWith('.') ? body : body + '.';
+      return {
+        num: String(idx + 1).padStart(2, '0'),
+        title: heading,
+        desc: cleanSentence
+      };
+    });
+  }
+
+  const sentences = text
     .split(/\.\s+/)
     .map(s => s.trim())
     .filter(s => s.length > 0 && !s.toLowerCase().startsWith('use as prescribed'));
 
   return sentences.slice(0, 2).map((sentence, idx) => {
-    let title = "Administration Guidance";
-    if (idx === 0) title = "Dosing & Schedule";
-    else if (idx === 1) title = "Administration Advice";
-
-    const cleanSentence = sentence.endsWith('.') ? sentence : sentence + '.';
+    let title = idx === 0 ? "Dosing & Schedule" : "Administration Advice";
+    let body = sentence.replace(/^(dosing\s*(and|&)\s*schedule|administration\s*advice)[:\s-]*/i, '').trim();
+    const cleanSentence = body.endsWith('.') ? body : body + '.';
 
     return {
       num: String(idx + 1).padStart(2, '0'),
