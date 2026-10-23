@@ -451,25 +451,29 @@ export default function OrthopaedicsProductDetail() {
             </p>
 
             {/* In-section exploration links */}
-            <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-[#d8d3cb]">
-              <span className="text-xs text-[#736c74] font-medium">Explore Details:</span>
-              <button
-                type="button"
-                onClick={() => scrollToSection('mechanism')}
-                className="text-xs font-semibold px-3.5 py-1.5 rounded-full bg-white text-[#232126] border border-[#d4cfc9] hover:border-[#D52B1E] transition-all cursor-pointer shadow-2xs"
-              >
-                Mechanism of Action →
-              </button>
-              <button
-                type="button"
-                onClick={() => scrollToSection('directions')}
-                className="text-xs font-semibold px-3.5 py-1.5 rounded-full bg-white text-[#232126] border border-[#d4cfc9] hover:border-[#D52B1E] transition-all cursor-pointer shadow-2xs"
-              >
-                Administration & Dosage →
-              </button>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-4 border-t border-[#d8d3cb]">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+                <span className="text-xs text-[#736c74] font-medium shrink-0">Explore Details:</span>
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => scrollToSection('mechanism')}
+                    className="text-xs font-semibold px-3.5 py-1.5 rounded-full bg-white text-[#232126] border border-[#d4cfc9] hover:border-[#D52B1E] transition-all cursor-pointer shadow-2xs"
+                  >
+                    Mechanism of Action →
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => scrollToSection('directions')}
+                    className="text-xs font-semibold px-3.5 py-1.5 rounded-full bg-white text-[#232126] border border-[#d4cfc9] hover:border-[#D52B1E] transition-all cursor-pointer shadow-2xs"
+                  >
+                    Administration & Dosage →
+                  </button>
+                </div>
+              </div>
               <Link
                 to={listingRoute}
-                className="text-xs font-semibold px-3.5 py-1.5 rounded-full bg-transparent text-[#736c74] hover:text-[#232126] underline transition-all ml-auto"
+                className="text-xs font-semibold text-[#736c74] hover:text-[#232126] underline transition-all self-start sm:self-auto sm:ml-auto"
               >
                 All Orthopaedics Formulations
               </Link>
