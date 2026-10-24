@@ -238,7 +238,13 @@ export default function OphthalmologyProductDetail() {
     );
   }
 
-  const mechanismSteps = parseMechanismSteps(product.mechanism);
+  const mechanismSteps = (product.mechanisms && product.mechanisms.length > 0)
+    ? product.mechanisms.map((m, idx) => ({
+        num: String(idx + 1).padStart(2, '0'),
+        title: (m.title || `Action Step ${idx + 1}`).replace(/^(?:0?[1-9]\s*[-—:.]\s*)+/, '').trim(),
+        desc: (m.description || '').replace(/^(?:0?[1-9]\s*[-—:.]\s*)+/, '').trim(),
+      }))
+    : parseMechanismSteps(product.mechanism);
   const directionSteps = parseDirectionSteps(product.direction);
   const precautionsAccordions = parsePrecautionsAccordions(product.precautions);
   const hasPrecautions = precautionsAccordions && precautionsAccordions.length > 0;
@@ -394,10 +400,9 @@ export default function OphthalmologyProductDetail() {
       <section id="mechanism" className="bg-[#232126] text-white py-20 px-6 sm:px-16 scroll-mt-24">
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
           <div className="lg:col-span-3">
-            <span className="text-xs uppercase tracking-[0.2em] font-mono text-[#D52B1E] font-bold block mb-2">
-              BIOCHEMICAL PATHWAY
+            <span className="text-xs uppercase tracking-[0.2em] font-mono text-[#D52B1E] font-bold block">
+              Mechanism of Action
             </span>
-            <span className="text-sm text-[#a8a1ab]">Mechanism of Action</span>
           </div>
           <div className="lg:col-span-9 space-y-8">
             <h2 className="font-serif text-4xl sm:text-5xl font-normal leading-tight max-w-3xl">
@@ -428,35 +433,45 @@ export default function OphthalmologyProductDetail() {
       <section id="used" className="bg-[#ebe7e1] text-[#232126] py-20 px-6 sm:px-16 scroll-mt-24">
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
           <div className="lg:col-span-3">
-            <span className="text-xs uppercase tracking-[0.2em] font-mono text-[#5b2a70] font-bold block mb-2">
-              CLINICAL USE
+            <span className="text-xs uppercase tracking-[0.2em] font-mono text-[#5b2a70] font-bold block">
+              Therapeutic Indications
             </span>
-            <span className="text-sm text-[#736c74]">Therapeutic Indications</span>
           </div>
           <div className="lg:col-span-9 space-y-8">
             <h2 className="font-serif text-4xl sm:text-5xl font-normal leading-tight max-w-3xl">
               When is it used?
             </h2>
-            <p className="text-base sm:text-lg text-[#333333] leading-relaxed max-w-3xl font-normal">
-              {product.usedFor}
-            </p>
+            {product.benefits && product.benefits.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                {product.benefits.map((b, idx) => (
+                  <div key={idx} className="bg-white/80 backdrop-blur-xs border border-[#d8d3cb] p-6 rounded-2xl shadow-2xs space-y-2">
+                    <h3 className="font-serif text-xl font-medium text-[#232126]">{b.title}</h3>
+                    <p className="text-sm text-[#4a454d] leading-relaxed">{b.description}</p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-base sm:text-lg text-[#333333] leading-relaxed max-w-3xl font-normal">
+                {product.usedFor}
+              </p>
+            )}
 
             {/* In-section exploration links */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-4 border-t border-[#d8d3cb]">
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-t border-[#d8d3cb]">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2.5 sm:gap-3 w-full sm:w-auto">
                 <span className="text-xs text-[#736c74] font-medium shrink-0">Explore Details:</span>
-                <div className="flex flex-wrap items-center gap-2">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
                   <button
                     type="button"
                     onClick={() => scrollToSection('mechanism')}
-                    className="text-xs font-semibold px-3.5 py-1.5 rounded-full bg-white text-[#232126] border border-[#d4cfc9] hover:border-[#D52B1E] transition-all cursor-pointer shadow-2xs"
+                    className="text-xs font-semibold px-4 py-2 sm:py-1.5 rounded-full bg-white text-[#232126] border border-[#d4cfc9] hover:border-[#D52B1E] transition-all cursor-pointer shadow-2xs text-center"
                   >
                     Mechanism of Action →
                   </button>
                   <button
                     type="button"
                     onClick={() => scrollToSection('directions')}
-                    className="text-xs font-semibold px-3.5 py-1.5 rounded-full bg-white text-[#232126] border border-[#d4cfc9] hover:border-[#D52B1E] transition-all cursor-pointer shadow-2xs"
+                    className="text-xs font-semibold px-4 py-2 sm:py-1.5 rounded-full bg-white text-[#232126] border border-[#d4cfc9] hover:border-[#D52B1E] transition-all cursor-pointer shadow-2xs text-center"
                   >
                     Administration & Dosage →
                   </button>

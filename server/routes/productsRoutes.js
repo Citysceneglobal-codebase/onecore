@@ -26,6 +26,17 @@ router.post('/sync-catalog', authenticateToken, requireAdminOrAbove, async (req,
   }
 });
 
+// Purge all products at once
+router.delete('/delete-all', authenticateToken, requireAdminOrAbove, async (req, res, next) => {
+  try {
+    const { deleteAllProductsFromDatabase } = await import('../scripts/syncProducts.js');
+    await deleteAllProductsFromDatabase();
+    res.json({ success: true, message: 'All products successfully purged from the database.' });
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.get('/', getProducts);
 router.get('/:identifier', getProductByIdOrSlug);
 router.post('/', authenticateToken, requireEditorOrAbove, createProduct);

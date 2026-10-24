@@ -40,3 +40,5 @@ server/.env
 # Temporary raw downloads
 drive-download*
 *.xlsx
+Onecore Images/
+

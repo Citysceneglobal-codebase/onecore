@@ -26,8 +26,36 @@ export default function AdminProducts() {
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [loading, setLoading] = useState(true);
   const [syncing, setSyncing] = useState(false);
+  const [showDeleteAllModal, setShowDeleteAllModal] = useState(false);
+  const [deletingAll, setDeletingAll] = useState(false);
 
   const showToast = (type, message) => setToast({ type, message });
+
+  const handleDeleteAll = async () => {
+    setDeletingAll(true);
+    try {
+      const res = await fetch('/api/products/delete-all', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        showToast('success', data.message || 'All products deleted from the live database.');
+        setProducts([]);
+      } else {
+        showToast('error', data.message || 'Failed to delete products.');
+      }
+    } catch (err) {
+      console.error('Error deleting all products:', err);
+      showToast('error', 'Network error while deleting all products.');
+    } finally {
+      setDeletingAll(false);
+      setShowDeleteAllModal(false);
+    }
+  };
 
   const handleSyncCatalog = async () => {
     if (!window.confirm('This will synchronize all 163 products from your Master Excel sheet into MySQL and link their verified packaging images. Proceed?')) {
@@ -136,13 +164,22 @@ export default function AdminProducts() {
               <Search size={13} className="absolute left-2.5 top-2.5 text-slate-400 pointer-events-none" />
             </div>
             <button
+              onClick={() => setShowDeleteAllModal(true)}
+              disabled={deletingAll || products.length === 0}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-rose-700 hover:bg-rose-800 text-white rounded-lg transition-all shadow-xs disabled:opacity-50 cursor-pointer"
+              title="Delete all products from the live database"
+            >
+              <Trash2 size={13} className={deletingAll ? 'animate-spin' : ''} />
+              <span>{deletingAll ? 'Deleting...' : 'Delete All Products'}</span>
+            </button>
+            <button
               onClick={handleSyncCatalog}
               disabled={syncing}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg transition-all shadow-xs disabled:opacity-50"
-              title="Synchronize all 163 products from Master Excel catalog into MySQL"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg transition-all shadow-xs disabled:opacity-50 cursor-pointer"
+              title="Synchronize all 163 products from Master Excel catalog into MySQL and link images"
             >
               <RefreshCw size={13} className={syncing ? 'animate-spin' : ''} />
-              <span>{syncing ? 'Syncing...' : 'Sync Master Catalog'}</span>
+              <span>{syncing ? 'Syncing...' : 'Add All Products & Images'}</span>
             </button>
             <Link
               to="/admin/products/new"
@@ -223,6 +260,16 @@ export default function AdminProducts() {
         confirmLabel="Delete Product"
         onConfirm={handleDelete}
         onCancel={() => setDeleteTarget(null)}
+        dangerous
+      />
+
+      <ConfirmModal
+        isOpen={showDeleteAllModal}
+        title="Delete All Products from Live Website?"
+        message="This will completely remove ALL 163 products, compositions, dosages, indications, and images from the live MySQL database. The website will immediately show 0 products. You can re-add them at any time by clicking 'Add All Products & Images'."
+        confirmLabel={deletingAll ? 'Deleting All...' : 'Yes, Delete All Products'}
+        onConfirm={handleDeleteAll}
+        onCancel={() => setShowDeleteAllModal(false)}
         dangerous
       />
 

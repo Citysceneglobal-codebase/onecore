@@ -44,7 +44,7 @@ export function useTherapeuticAreas() {
               heroImage: authoritativeHero,
               image_url: area.image_url || authoritativeHero,
               tags: area.tags && area.tags.length > 0 ? area.tags : fallback.tags || [],
-              sampleProducts: fallback.sampleProducts || [],
+              sampleProducts: (area.products && area.products.length > 0) ? area.products : [],
               route: fallback.route || `/areas-of-care/${fallback.slug || area.slug}`,
             };
           });

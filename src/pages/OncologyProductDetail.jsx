@@ -234,7 +234,13 @@ export default function OncologyProductDetail() {
     );
   }
 
-  const mechanismSteps = parseMechanismSteps(product.mechanism);
+  const mechanismSteps = (product.mechanisms && product.mechanisms.length > 0)
+    ? product.mechanisms.map((m, idx) => ({
+        num: String(idx + 1).padStart(2, '0'),
+        title: (m.title || `Action Step ${idx + 1}`).replace(/^(?:0?[1-9]\s*[-—:.]\s*)+/, '').trim(),
+        desc: (m.description || '').replace(/^(?:0?[1-9]\s*[-—:.]\s*)+/, '').trim(),
+      }))
+    : parseMechanismSteps(product.mechanism);
   const directionSteps = parseDirectionSteps(product.direction);
   const precautionsAccordions = parsePrecautionsAccordions(product.precautions);
   const hasPrecautions = precautionsAccordions && precautionsAccordions.length > 0;
@@ -384,10 +390,9 @@ export default function OncologyProductDetail() {
       <section id="mechanism" className="bg-[#232126] text-white py-20 px-6 sm:px-16 scroll-mt-24">
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
           <div className="lg:col-span-3">
-            <span className="text-xs uppercase tracking-[0.2em] font-mono text-[#D52B1E] font-bold block mb-2">
-              BIOCHEMICAL PATHWAY
+            <span className="text-xs uppercase tracking-[0.2em] font-mono text-[#D52B1E] font-bold block">
+              Mechanism of Action
             </span>
-            <span className="text-sm text-[#a8a1ab]">Mechanism of Action</span>
           </div>
           <div className="lg:col-span-9 space-y-8">
             <h2 className="font-serif text-4xl sm:text-5xl font-normal leading-tight max-w-3xl">
@@ -418,31 +423,42 @@ export default function OncologyProductDetail() {
       <section id="indications" className="py-16 sm:py-24 px-6 sm:px-12 lg:px-20 bg-white scroll-mt-24">
         <div className="max-w-6xl mx-auto">
           <div className="text-[11px] tracking-[0.2em] uppercase font-bold text-[#1f4e5b] mb-3">
-            CLINICAL APPLICATION
+            Therapeutic Indications
           </div>
           <h2 className="font-serif text-3xl sm:text-4xl text-[#232126] font-normal mb-6">
-            Therapeutic Role & Indications
+            When is it used?
           </h2>
-          <p className="text-[#333333] text-base sm:text-lg max-w-3xl leading-relaxed font-normal">
-            {product.usedFor}
-          </p>
+          {product.benefits && product.benefits.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+              {product.benefits.map((b, idx) => (
+                <div key={idx} className="bg-[#FAF9F6] border border-[#e5e3dc] p-6 rounded-2xl shadow-2xs space-y-2">
+                  <h3 className="font-serif text-xl font-medium text-[#232126]">{b.title}</h3>
+                  <p className="text-sm text-[#4a454d] leading-relaxed">{b.description}</p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-[#333333] text-base sm:text-lg max-w-3xl leading-relaxed font-normal">
+              {product.usedFor}
+            </p>
+          )}
 
           {/* In-section exploration links */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-6 border-t border-[#e5e3dc] mt-6">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-6 border-t border-[#e5e3dc] mt-6">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2.5 sm:gap-3 w-full sm:w-auto">
               <span className="text-xs text-[#736c74] font-medium shrink-0">Explore Details:</span>
-              <div className="flex flex-wrap items-center gap-2">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
                 <button
                   type="button"
                   onClick={() => scrollToSection('mechanism')}
-                  className="text-xs font-semibold px-3.5 py-1.5 rounded-full bg-[#FAF9F6] text-[#232126] border border-[#d4cfc9] hover:border-[#D52B1E] transition-all cursor-pointer shadow-2xs"
+                  className="text-xs font-semibold px-4 py-2 sm:py-1.5 rounded-full bg-[#FAF9F6] text-[#232126] border border-[#d4cfc9] hover:border-[#D52B1E] transition-all cursor-pointer shadow-2xs text-center"
                 >
                   Mechanism of Action →
                 </button>
                 <button
                   type="button"
                   onClick={() => scrollToSection('directions')}
-                  className="text-xs font-semibold px-3.5 py-1.5 rounded-full bg-[#FAF9F6] text-[#232126] border border-[#d4cfc9] hover:border-[#D52B1E] transition-all cursor-pointer shadow-2xs"
+                  className="text-xs font-semibold px-4 py-2 sm:py-1.5 rounded-full bg-[#FAF9F6] text-[#232126] border border-[#d4cfc9] hover:border-[#D52B1E] transition-all cursor-pointer shadow-2xs text-center"
                 >
                   Administration & Dosage →
                 </button>

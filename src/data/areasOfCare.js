@@ -19,24 +19,7 @@ export const areasOfCare = [
       "Gynaecological Infection Management",
       "Intimate Hygiene & Wellness Solutions"
     ],
-    sampleProducts: [
-      {
-        id: "femme-folic",
-        brand_name: "FemmeFOLIC",
-        slug: "femme-folic",
-        short_description: "Advanced active folate and micronutrient formulation for maternal health and pregnancy planning.",
-        packshot_url: "/assets/therapeutic-womens-health.jpg",
-        status: "published"
-      },
-      {
-        id: "femme-cal",
-        brand_name: "FemmeCAL D3",
-        slug: "femme-cal",
-        short_description: "Elemental calcium citrate malate with Vitamin D3 and K2-7 for bone mineral density support.",
-        packshot_url: "/assets/therapeutic-womens-health.jpg",
-        status: "published"
-      }
-    ]
+    sampleProducts: []
   },
   {
     id: "pediaplus",
@@ -58,24 +41,7 @@ export const areasOfCare = [
       "Respiratory & Allergy Care Liquids",
       "Palatability-Optimized Liquid Dosage Formats"
     ],
-    sampleProducts: [
-      {
-        id: "pediaplus-multi",
-        brand_name: "Pediaplus DROPS",
-        slug: "pediaplus-multi",
-        short_description: "Pediatric multivitamin and essential mineral drops formulated for infancy and early childhood.",
-        packshot_url: "/assets/pediaplus.jpg",
-        status: "published"
-      },
-      {
-        id: "pediaplus-growth",
-        brand_name: "Pediaplus GROW",
-        slug: "pediaplus-growth",
-        short_description: "Balanced macronutrient and DHA suspension for physical and cognitive developmental milestones.",
-        packshot_url: "/assets/pediaplus.jpg",
-        status: "published"
-      }
-    ]
+    sampleProducts: []
   },
   {
     id: "ortheon",
@@ -97,25 +63,7 @@ export const areasOfCare = [
       "Bone Density & Calcium Homeostasis Regimens",
       "Post-Surgical Joint Rehabilitation Protocols"
     ],
-    sampleProducts: [
-      {
-        id: "oneflexo",
-        brand_name: "OneFLEXO",
-        slug: "oneflexo",
-        short_description: "Specialised joint health formulation combining Aflapin®, native undenatured Type II collagen and Mobilee® in a single capsule.",
-        packshot_url: "/assets/products/oneflexo-packshot.png",
-        status: "published",
-        customRoute: "/areas-of-care/orthopaedics/oneflexo"
-      },
-      {
-        id: "ortheon-d3",
-        brand_name: "Ortheon D3 60K",
-        slug: "ortheon-d3",
-        short_description: "High-potency Cholecalciferol softgel capsules for corrective bone mineral treatment.",
-        packshot_url: "/assets/ortheon.jpg",
-        status: "published"
-      }
-    ]
+    sampleProducts: []
   },
   {
     id: "neurix",
@@ -137,24 +85,7 @@ export const areasOfCare = [
       "Migraine Prophylaxis & Neuro-Vascular Support",
       "Central Nervous System Supportive Care"
     ],
-    sampleProducts: [
-      {
-        id: "neurix-forte",
-        brand_name: "Neurix FORTE",
-        slug: "neurix-forte",
-        short_description: "Neuro-restorative formulation combining Methylcobalamin, Alpha Lipoic Acid, and Pregabalin.",
-        packshot_url: "/assets/neurix.jpg",
-        status: "published"
-      },
-      {
-        id: "neurix-gaba",
-        brand_name: "Neurix GABA",
-        slug: "neurix-gaba",
-        short_description: "Targeted central agent for neuropathic pain and nerve hyper-excitability relief.",
-        packshot_url: "/assets/neurix.jpg",
-        status: "published"
-      }
-    ]
+    sampleProducts: []
   },
   {
     id: "eyerix",
@@ -176,24 +107,7 @@ export const areasOfCare = [
       "Antioxidant Macular Protection Formulations",
       "Post-Operative Cataract Recovery Regimens"
     ],
-    sampleProducts: [
-      {
-        id: "eyerix-tears",
-        brand_name: "Eyerix TEARS",
-        slug: "eyerix-tears",
-        short_description: "Preservative-free Sodium Hyaluronate artificial tear drops for chronic dry eye relief.",
-        packshot_url: "/assets/eyerix.jpg",
-        status: "published"
-      },
-      {
-        id: "eyerix-lutein",
-        brand_name: "Eyerix VISION",
-        slug: "eyerix-lutein",
-        short_description: "Carotenoid Macular Complex featuring Lutein, Zeaxanthin, and Astaxanthin for retinal health.",
-        packshot_url: "/assets/eyerix.jpg",
-        status: "published"
-      }
-    ]
+    sampleProducts: []
   },
   {
     id: "vellis",
@@ -215,24 +129,7 @@ export const areasOfCare = [
       "Hyperpigmentation & Brightening Formulations",
       "Emollient Moisture Preservation Creams"
     ],
-    sampleProducts: [
-      {
-        id: "vellis-derm",
-        brand_name: "Vellis DERM Cream",
-        slug: "vellis-derm",
-        short_description: "Targeted topical antifungal and anti-inflammatory dermatological application.",
-        packshot_url: "/assets/vellis.webp",
-        status: "published"
-      },
-      {
-        id: "vellis-clean",
-        brand_name: "Vellis ACNE Cleanser",
-        slug: "vellis-clean",
-        short_description: "Salicylic acid and Niacinamide medicated face cleanser for blemish-prone skin.",
-        packshot_url: "/assets/vellis.webp",
-        status: "published"
-      }
-    ]
+    sampleProducts: []
   },
   {
     id: "otira",
@@ -254,24 +151,7 @@ export const areasOfCare = [
       "Sinus Rinse & Nasal Irrigants",
       "Earwax Softening Drops"
     ],
-    sampleProducts: [
-      {
-        id: "otira-spray",
-        brand_name: "OTIRA NASAL Spray",
-        slug: "otira-spray",
-        short_description: "Isotonic sea mineral and Fluticasone aqueous nasal spray for seasonal rhinitis.",
-        packshot_url: "/assets/otira.jpg",
-        status: "published"
-      },
-      {
-        id: "otira-ear",
-        brand_name: "OTIRA OTIC Drops",
-        slug: "otira-ear",
-        short_description: "Combination Ciprofloxacin and Hydrocortisone ear drops for painful acute otitis.",
-        packshot_url: "/assets/otira.jpg",
-        status: "published"
-      }
-    ]
+    sampleProducts: []
   },
   {
     id: "omnara",
@@ -293,24 +173,7 @@ export const areasOfCare = [
       "Non-Sedating Antihistamines & Anti-Allergics",
       "Cardio-Metabolic Supportive Nutriceuticals"
     ],
-    sampleProducts: [
-      {
-        id: "omnara-pan",
-        brand_name: "Omnara PAN D",
-        slug: "omnara-pan",
-        short_description: "Pantoprazole and Domperidone sustained-release capsules for acid peptic disorders.",
-        packshot_url: "/assets/therapeutic-general-medicine.jpg",
-        status: "published"
-      },
-      {
-        id: "omnara-cold",
-        brand_name: "Omnara RELIEF",
-        slug: "omnara-cold",
-        short_description: "Multi-symptom cold, fever, and congestion relief tablets.",
-        packshot_url: "/assets/therapeutic-general-medicine.jpg",
-        status: "published"
-      }
-    ]
+    sampleProducts: []
   },
   {
     id: "cytos",
@@ -332,16 +195,7 @@ export const areasOfCare = [
       "Cancer Cachexia Nutritional Intervention",
       "Pain & Symptom Management Protocols"
     ],
-    sampleProducts: [
-      {
-        id: "cytos-onco",
-        brand_name: "Cytos SUPPORT",
-        slug: "cytos-onco",
-        short_description: "Specialized high-protein nutritional supplement for oncology patients.",
-        packshot_url: "/assets/cytos.jpg",
-        status: "published"
-      }
-    ]
+    sampleProducts: []
   }
 ];
 

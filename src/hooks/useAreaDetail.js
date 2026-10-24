@@ -46,7 +46,7 @@ export function useAreaDetail(slug) {
             heroImage: authoritativeHero,
             image_url: apiArea.image_url || authoritativeHero,
             tags: apiArea.tags && apiArea.tags.length > 0 ? apiArea.tags : fallback?.tags || [],
-            sampleProducts: (apiArea.products && apiArea.products.length > 0) ? apiArea.products : fallback?.sampleProducts || [],
+            sampleProducts: (apiArea.products && apiArea.products.length > 0) ? apiArea.products : [],
           };
 
           setArea(merged);
@@ -68,7 +68,7 @@ export function useAreaDetail(slug) {
               image: authoritativeHero,
               heroImage: authoritativeHero,
             });
-            setProducts(fallback.sampleProducts || []);
+            setProducts([]);
             setError(null);
           } else {
             setArea(null);
@@ -81,6 +81,7 @@ export function useAreaDetail(slug) {
         if (isMounted) setLoading(false);
       }
     };
+
 
     fetchDetail();
 

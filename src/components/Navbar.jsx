@@ -4,6 +4,7 @@ import { Menu, X, Search, ArrowRight, ArrowUpRight, ShieldCheck } from 'lucide-r
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSettings } from '../hooks/useSettings';
 import { assetUrl } from '../utils/assetUrl';
+import { formatProductName } from '../utils/formatProductName';
 
 export default function Navbar() {
   const { siteSettings } = useSettings();
@@ -253,7 +254,7 @@ export default function Navbar() {
                         >
                           <div className="flex items-baseline justify-between gap-4">
                             <h4 className="text-base font-bold text-white group-hover:text-[#D52B1E] transition-colors">
-                              {title}
+                              {formatProductName(title)}
                             </h4>
                             <span className="text-[11px] font-semibold tracking-wider uppercase text-white/50 group-hover:text-white/80">
                               {division}

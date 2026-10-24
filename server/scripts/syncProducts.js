@@ -27,7 +27,20 @@ export async function syncCatalogToDatabase() {
     await connection.query('SET FOREIGN_KEY_CHECKS = 0');
     try {
       await connection.query('ALTER TABLE products MODIFY COLUMN short_description TEXT NULL');
-    } catch {}
+      await connection.query('ALTER TABLE products MODIFY COLUMN composition_summary TEXT NULL');
+      await connection.query('ALTER TABLE products MODIFY COLUMN seo_description TEXT NULL');
+      await connection.query('ALTER TABLE product_compositions MODIFY COLUMN ingredient_name TEXT NULL');
+      await connection.query('ALTER TABLE product_mechanisms MODIFY COLUMN title TEXT NULL');
+      await connection.query('ALTER TABLE product_mechanisms MODIFY COLUMN description TEXT NULL');
+      await connection.query('ALTER TABLE product_benefits MODIFY COLUMN title TEXT NULL');
+      await connection.query('ALTER TABLE product_benefits MODIFY COLUMN description TEXT NULL');
+      await connection.query('ALTER TABLE product_dosage MODIFY COLUMN description TEXT NULL');
+      await connection.query('ALTER TABLE product_safety_sections MODIFY COLUMN title TEXT NULL');
+      await connection.query('ALTER TABLE product_safety_sections MODIFY COLUMN description TEXT NULL');
+    } catch (alterErr) {
+      console.warn('⚠️ Column modification notice:', alterErr.message);
+    }
+
     await connection.query('TRUNCATE TABLE product_safety_sections');
     await connection.query('TRUNCATE TABLE product_mechanisms');
     await connection.query('TRUNCATE TABLE product_dosage');
@@ -139,6 +152,32 @@ export async function syncCatalogToDatabase() {
   }
 }
 
+export async function deleteAllProductsFromDatabase() {
+  console.log('🗑️ Purging all products and related child tables from database...');
+  const connection = await pool.getConnection();
+  try {
+    await connection.beginTransaction();
+    await connection.query('SET FOREIGN_KEY_CHECKS = 0');
+    await connection.query('TRUNCATE TABLE product_safety_sections');
+    await connection.query('TRUNCATE TABLE product_mechanisms');
+    await connection.query('TRUNCATE TABLE product_dosage');
+    await connection.query('TRUNCATE TABLE product_benefits');
+    await connection.query('TRUNCATE TABLE product_compositions');
+    await connection.query('TRUNCATE TABLE product_images');
+    await connection.query('TRUNCATE TABLE products');
+    await connection.query('SET FOREIGN_KEY_CHECKS = 1');
+    await connection.commit();
+    console.log('✅ Successfully purged all products from MySQL database.');
+    return { success: true };
+  } catch (err) {
+    await connection.rollback();
+    console.error('❌ Failed to purge products from database:', err);
+    throw err;
+  } finally {
+    connection.release();
+  }
+}
+
 // Allow direct CLI execution: node server/scripts/syncProducts.js
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   syncCatalogToDatabase()
@@ -148,3 +187,4 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
       process.exit(1);
     });
 }
+
