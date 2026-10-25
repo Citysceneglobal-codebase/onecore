@@ -115,17 +115,21 @@ export default function CatalogImportModal({ isOpen, onClose, onSuccess, token }
               </div>
               <div className="text-xs text-slate-700 space-y-2">
                 <div className="font-semibold text-slate-900">
-                  How Multi-Specialty & Image Auto-Arrangement Works:
+                  Spreadsheet Schema & Multi-Specialty Rules:
                 </div>
-                <ul className="list-disc pl-4 space-y-1 text-slate-600">
+                <ul className="list-disc pl-4 space-y-1.5 text-slate-600">
                   <li>
-                    <strong className="text-slate-900">Multi-Category Formulations:</strong> If the same product belongs to 2 or more specialties (e.g.{' '}
-                    <em>Frecox™-SP</em> in both <span className="font-semibold text-[#0D5C75]">Ortheon</span> and{' '}
-                    <span className="font-semibold text-[#0D5C75]">Omnara</span>), enter that product into each respective sheet. The system automatically links the brand so it displays on every division page!
+                    <strong className="text-slate-900">Columns Match Client Excel & Product Form:</strong> The template includes all 11 columns matching the client master spreadsheet (<em>Composition, Classification, Description, Indication, Administration & Dosage, Mechanism of Action, Safety & Precautions</em>) plus <em>Pack Size</em> and <em>Image File Name</em>. Both the client's redrafted sheet and the downloaded template upload seamlessly!
                   </li>
                   <li>
-                    <strong className="text-slate-900">Packaging Photos (ZIP):</strong> Put all images into a folder and compress it as a ZIP. Files named after the brand (e.g.{' '}
-                    <code>frecox-sp.png</code>, <code>glypocal-lp.jpg</code>) match automatically.
+                    <strong className="text-slate-900">Multi-Category Formulations:</strong> If the same product belongs to 2 or more specialties (e.g.{' '}
+                    <em>Glypocal™-LP</em> in <span className="font-semibold text-[#0D5C75]">Femme</span> &amp;{' '}
+                    <span className="font-semibold text-[#0D5C75]">Ortheon</span>, or <em>Frecox™-SP</em> in <span className="font-semibold text-[#0D5C75]">Ortheon</span> &amp;{' '}
+                    <span className="font-semibold text-[#0D5C75]">Omnara</span>), enter that product into each respective sheet. The system links them automatically so the card displays on all selected division pages!
+                  </li>
+                  <li>
+                    <strong className="text-slate-900">Packaging Photos (ZIP):</strong> Put all packshots into a folder and compress as a ZIP. Files matching brand names (e.g.{' '}
+                    <code>folatis.png</code>, <code>frecox-sp.jpg</code>) or the <em>Image File Name</em> column match automatically.
                   </li>
                 </ul>
               </div>
@@ -133,7 +137,7 @@ export default function CatalogImportModal({ isOpen, onClose, onSuccess, token }
 
             <div className="pt-2 border-t border-blue-200/60 flex items-center justify-between">
               <span className="text-[11px] text-slate-500 font-medium">
-                Need the standard 9-division Excel format?
+                Need the standard 9-division Excel format pre-filled with samples?
               </span>
               <button
                 type="button"
