@@ -41,12 +41,23 @@ export async function syncCatalogToDatabase() {
       console.warn('⚠️ Column modification notice:', alterErr.message);
     }
 
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS product_therapeutic_areas (
+        product_id INT UNSIGNED NOT NULL,
+        therapeutic_area_id INT UNSIGNED NOT NULL,
+        display_order INT NOT NULL DEFAULT 0,
+        PRIMARY KEY (product_id, therapeutic_area_id),
+        KEY (therapeutic_area_id)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `);
+
     await connection.query('TRUNCATE TABLE product_safety_sections');
     await connection.query('TRUNCATE TABLE product_mechanisms');
     await connection.query('TRUNCATE TABLE product_dosage');
     await connection.query('TRUNCATE TABLE product_benefits');
     await connection.query('TRUNCATE TABLE product_compositions');
     await connection.query('TRUNCATE TABLE product_images');
+    await connection.query('TRUNCATE TABLE product_therapeutic_areas');
     await connection.query('TRUNCATE TABLE products');
     await connection.query('SET FOREIGN_KEY_CHECKS = 1');
 
@@ -75,6 +86,22 @@ export async function syncCatalogToDatabase() {
           p.short_description,
         ]
       );
+
+      // 1b. Insert into product_therapeutic_areas junction table
+      const areas = Array.isArray(p.therapeutic_areas) && p.therapeutic_areas.length > 0
+        ? p.therapeutic_areas
+        : (Array.isArray(p.therapeutic_area_ids) ? p.therapeutic_area_ids.map(id => ({ id, display_order: pid })) : [{ id: p.therapeutic_area_id, display_order: pid }]);
+
+      for (const a of areas) {
+        const targetAreaId = a.id || a.area_id || a;
+        const order = a.display_order || pid;
+        await connection.query(
+          `INSERT INTO product_therapeutic_areas (product_id, therapeutic_area_id, display_order)
+           VALUES (?, ?, ?)
+           ON DUPLICATE KEY UPDATE display_order = VALUES(display_order)`,
+          [pid, targetAreaId, order]
+        );
+      }
 
       // 2. Insert Composition
       if (p.composition_summary) {
@@ -164,6 +191,7 @@ export async function deleteAllProductsFromDatabase() {
     await connection.query('TRUNCATE TABLE product_benefits');
     await connection.query('TRUNCATE TABLE product_compositions');
     await connection.query('TRUNCATE TABLE product_images');
+    await connection.query('TRUNCATE TABLE product_therapeutic_areas');
     await connection.query('TRUNCATE TABLE products');
     await connection.query('SET FOREIGN_KEY_CHECKS = 1');
     await connection.commit();

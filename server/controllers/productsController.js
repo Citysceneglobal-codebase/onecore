@@ -72,11 +72,7 @@ export const getProducts = async (req, res, next) => {
     const searchQuery = req.query.search || req.query.q;
     const isPublic = !req.user;
 
-    let sql = `
-      SELECT p.*, ta.name as therapeutic_area_name, ta.slug as therapeutic_area_slug
-      FROM products p
-      LEFT JOIN therapeutic_areas ta ON p.therapeutic_area_id = ta.id
-    `;
+    let joinPta = 'LEFT JOIN product_therapeutic_areas pta ON p.id = pta.product_id';
     const conditions = [];
     const params = [];
 
@@ -100,14 +96,24 @@ export const getProducts = async (req, res, next) => {
 
       const areaId = DIVISION_TO_AREA_ID[slug] || DIVISION_TO_AREA_ID[slugDashed];
       if (areaId) {
-        conditions.push('(p.therapeutic_area_id = ? OR ta.slug = ?)');
-        params.push(areaId, slugDashed);
+        joinPta = 'LEFT JOIN product_therapeutic_areas pta ON p.id = pta.product_id AND pta.therapeutic_area_id = ?';
+        params.push(areaId);
+        conditions.push('(p.therapeutic_area_id = ? OR pta.therapeutic_area_id = ?)');
+        params.push(areaId, areaId);
       } else {
         const placeholders = searchTerms.map(() => '?').join(', ');
         conditions.push(`(ta.slug IN (${placeholders}) OR ta.name IN (${placeholders}))`);
         params.push(...searchTerms, ...searchTerms);
       }
     }
+
+    let sql = `
+      SELECT DISTINCT p.*, ta.name as therapeutic_area_name, ta.slug as therapeutic_area_slug,
+             COALESCE(pta.display_order, p.display_order) as active_display_order
+      FROM products p
+      LEFT JOIN therapeutic_areas ta ON p.therapeutic_area_id = ta.id
+      ${joinPta}
+    `;
 
     if (searchQuery && typeof searchQuery === 'string' && searchQuery.trim()) {
       const term = `%${searchQuery.trim()}%`;
@@ -118,7 +124,7 @@ export const getProducts = async (req, res, next) => {
     if (conditions.length > 0) {
       sql += ' WHERE ' + conditions.join(' AND ');
     }
-    sql += ' ORDER BY p.display_order ASC, p.id ASC';
+    sql += ' ORDER BY active_display_order ASC, p.id ASC';
 
     const rawProducts = await query(sql, params);
 
@@ -127,7 +133,7 @@ export const getProducts = async (req, res, next) => {
       const shortDesc = p.short_description || p.shortDescription || p.composition_summary || p.composition || p.full_description || '';
       const fullDesc = p.full_description || p.fullDescription || p.description || '';
       const packshot = p.packshot_url || p.productPrimaryPackshotImage || p.image || '/assets/placeholder.png';
-      const divSlug = p.therapeutic_area_slug || 'general-medicine';
+      const divSlug = divisionQuery || p.therapeutic_area_slug || 'general-medicine';
       const taName = p.therapeutic_area_name || 'General Medicine';
       const productUrl = (p.slug === 'oneflexo' || brandName.toLowerCase() === 'oneflexo')
         ? '/areas-of-care/orthopaedics/oneflexo'

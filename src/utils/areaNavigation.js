@@ -79,6 +79,11 @@ const AREA_ID_MAP = {
  * @returns {string} Target route (e.g. '/areas-of-care/cytos')
  */
 export function getAreaListingRoute(product, defaultSlug) {
+  if (defaultSlug) {
+    const s = String(defaultSlug).toLowerCase().trim();
+    return AREA_ROUTE_MAP[s] || `/areas-of-care/${s}`;
+  }
+
   if (product) {
     if (product.categoryUrl) {
       return product.categoryUrl;
@@ -99,11 +104,6 @@ export function getAreaListingRoute(product, defaultSlug) {
       const c = String(product.category).toLowerCase().trim().replace(/[^a-z0-9]+/g, '-');
       if (AREA_ROUTE_MAP[c]) return AREA_ROUTE_MAP[c];
     }
-  }
-
-  if (defaultSlug) {
-    const s = String(defaultSlug).toLowerCase().trim();
-    return AREA_ROUTE_MAP[s] || `/areas-of-care/${s}`;
   }
 
   return '/areas-of-care';
