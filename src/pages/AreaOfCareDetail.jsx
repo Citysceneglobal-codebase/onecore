@@ -550,8 +550,8 @@ function DivisionProductCard({ product, getProductRoute }) {
   
   // Packshot extraction
   const rawImage = product.productPrimaryPackshotImage || product.image || product.packshot_url;
-  // Guard against any leftover stock photo strings
-  const isStockPhoto = Boolean(rawImage && (rawImage.includes('therapeutic-') || rawImage.includes('pediaplus')));
+  // Guard against any leftover stock photo or synthetic mockup strings
+  const isStockPhoto = Boolean(rawImage && (rawImage.includes('therapeutic-') || rawImage.includes('pediaplus') || rawImage.includes('oneflexo')));
   const hasValidImage = Boolean(rawImage && !isStockPhoto && !imgError);
 
   const title = product.brandName || product.name || product.brand_name || 'Unnamed Product';

@@ -230,12 +230,43 @@ export default function ProductOneFlexo() {
               </div>
             </div>
 
-            <div className="lg:col-span-5 flex justify-center w-full">
-              <ProductImageGallery
-                images={product?.images || product?.gallery}
-                fallbackImage={packshotUrl}
-                brandName={brandName}
-              />
+            <div className="lg:col-span-5 relative w-full min-h-[380px] bg-gradient-to-br from-[#e9e5df] to-[#f1eee9] rounded-3xl p-6 sm:p-8 flex items-center justify-center">
+              {(product?.images && product.images.length > 0) ? (
+                <ProductImageGallery
+                  images={product.images}
+                  fallbackImage={product.image || product.packshot_url}
+                  brandName={brandName}
+                  className="max-w-[340px]"
+                />
+              ) : (product?.image || (product?.packshot_url && !product.packshot_url.includes('oneflexo'))) ? (
+                <div className="w-full h-full flex items-center justify-center overflow-hidden">
+                  <img
+                    src={assetUrl(product.image || product.packshot_url)}
+                    alt={brandName}
+                    className="w-full h-full object-contain p-6 mix-blend-multiply drop-shadow-2xl"
+                  />
+                </div>
+              ) : (
+                <div className="w-[240px] sm:w-[280px] bg-white border border-[#d4cfc9] rounded-[20px] shadow-lg p-6 flex flex-col items-center text-center relative min-h-[340px]">
+                  <div className="w-full pb-3 border-b border-[#eeeae6] flex items-center justify-between">
+                    <span className="text-[10px] tracking-[0.2em] font-bold text-[#D52B1E] uppercase">ONECORE</span>
+                    <span className="text-[9px] font-mono uppercase tracking-wider text-[#777777] bg-[#F5F4F0] px-2 py-0.5 rounded">Rx Monograph</span>
+                  </div>
+                  <div className="my-auto py-8 space-y-2">
+                    <h3 className="font-serif text-3xl text-[#121212] font-normal tracking-tight">
+                      {formatProductName(brandName)}
+                    </h3>
+                    <p className="text-[11px] text-[#555555] leading-relaxed max-w-[220px] mx-auto font-sans">
+                      Aflapin® + Native Type II Collagen + Mobilee® Joint Support
+                    </p>
+                  </div>
+                  <div className="w-full pt-3 border-t border-[#eeeae6]">
+                    <span className="text-[9px] font-mono uppercase tracking-widest text-[#887e8c]">
+                      ORTHOPAEDICS & REHABILITATION
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
 
           </div>
