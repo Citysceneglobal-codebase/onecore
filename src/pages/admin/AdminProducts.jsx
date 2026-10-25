@@ -99,7 +99,16 @@ export default function AdminProducts() {
       });
       if (res.ok) {
         const data = await res.json();
-        const items = Array.isArray(data) ? data : (Array.isArray(data?.data) ? data.data : []);
+        const rawItems = Array.isArray(data) ? data : (Array.isArray(data?.data) ? data.data : []);
+        // Strict deduplication by ID
+        const seen = new Set();
+        const items = [];
+        for (const it of rawItems) {
+          if (it && it.id && !seen.has(it.id)) {
+            seen.add(it.id);
+            items.push(it);
+          }
+        }
         setProducts(items);
       } else {
         setProducts([]);
@@ -312,8 +321,8 @@ export default function AdminProducts() {
         <AdminTable
           headers={['Product Name', 'Therapeutic Area / Division', 'Active Composition', 'Status', 'Actions']}
         >
-          {filtered.map((p) => (
-            <tr key={p.id} className="hover:bg-slate-50 transition-colors">
+          {filtered.map((p, idx) => (
+            <tr key={`${p.id}-${p.slug || ''}-${idx}`} className="hover:bg-slate-50 transition-colors">
               <td className="py-3 px-4 font-semibold text-slate-900">
                 <div className="flex items-center gap-2.5">
                   <div className="p-1.5 rounded-md bg-slate-100 text-[#1B365D]">

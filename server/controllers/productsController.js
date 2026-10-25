@@ -73,7 +73,7 @@ export const getProducts = async (req, res, next) => {
     const searchQuery = req.query.search || req.query.q;
     const isPublic = !req.user;
 
-    let joinPta = 'LEFT JOIN product_therapeutic_areas pta ON p.id = pta.product_id';
+    let joinPta = '';
     const conditions = [];
     const params = [];
 
@@ -110,7 +110,7 @@ export const getProducts = async (req, res, next) => {
 
     let sql = `
       SELECT DISTINCT p.*, ta.name as therapeutic_area_name, ta.slug as therapeutic_area_slug,
-             COALESCE(pta.display_order, p.display_order) as active_display_order
+             ${joinPta ? 'COALESCE(pta.display_order, p.display_order)' : 'p.display_order'} as active_display_order
       FROM products p
       LEFT JOIN therapeutic_areas ta ON p.therapeutic_area_id = ta.id
       ${joinPta}
@@ -129,7 +129,16 @@ export const getProducts = async (req, res, next) => {
 
     const rawProducts = await query(sql, params);
 
-    const products = rawProducts.map(p => {
+    // Guaranteed deduplication by product ID
+    const uniqueRawMap = new Map();
+    for (const r of rawProducts) {
+      if (!uniqueRawMap.has(r.id)) {
+        uniqueRawMap.set(r.id, r);
+      }
+    }
+    const dedupedProducts = Array.from(uniqueRawMap.values());
+
+    const products = dedupedProducts.map(p => {
       const brandName = p.brand_name || p.brandName || p.name || '';
       const shortDesc = p.short_description || p.shortDescription || p.composition_summary || p.composition || p.full_description || '';
       const fullDesc = p.full_description || p.fullDescription || p.description || '';
