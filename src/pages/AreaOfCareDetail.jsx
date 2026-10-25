@@ -516,40 +516,13 @@ export default function AreaOfCareDetail() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filteredProducts.map((product, index) => {
-              const productUrl = getProductRoute(product);
-              const productImage = product.productPrimaryPackshotImage || product.image || product.packshot_url || currentCategory.image || '/assets/therapeutic-general-medicine.jpg';
-              const title = product.brandName || product.name || product.brand_name || 'Unnamed Product';
-              const description = product.shortDescription || product.description || product.composition || product.fullDescription || product.short_description || 'Active pharmaceutical formulation';
-
-              return (
-                <Link
-                  key={product.slug || product.id || index}
-                  to={productUrl}
-                  className="bg-white/80 backdrop-blur-xs border border-[#E5E3DC] hover:border-[#D52B1E] rounded-3xl overflow-hidden flex flex-col group shadow-xs hover:shadow-md transition-all duration-300 block cursor-pointer"
-                >
-                  {/* Product Packshot / Image — Contained with padding to avoid carton clipping */}
-                  <div className="w-full aspect-[4/3] bg-[#FAF9F6] overflow-hidden flex items-center justify-center p-3 sm:p-4">
-                    <img
-                      src={assetUrl(productImage)}
-                      alt={`${title} - Onecore Pharma`}
-                      className={`w-full h-full ${productImage.includes('/products/') ? 'object-contain mix-blend-multiply' : 'object-cover'} group-hover:scale-105 transition-transform duration-500`}
-                      loading="lazy"
-                    />
-                  </div>
-
-                  {/* Product Details: Product Name and Clear Legible Active Salt / Description */}
-                  <div className="p-5 sm:p-6 flex flex-col flex-1">
-                    <h3 className="text-xl sm:text-2xl font-serif font-medium text-[#121212] tracking-tight group-hover:text-[#D52B1E] transition-colors mb-2 leading-snug">
-                      {formatProductName(title)}
-                    </h3>
-                    <p className="text-sm sm:text-base text-[#222222] font-normal leading-relaxed line-clamp-3">
-                      {description}
-                    </p>
-                  </div>
-                </Link>
-              );
-            })}
+            {filteredProducts.map((product, index) => (
+              <DivisionProductCard
+                key={product.slug || product.id || index}
+                product={product}
+                getProductRoute={getProductRoute}
+              />
+            ))}
           </div>
         )}
 
@@ -570,3 +543,68 @@ export default function AreaOfCareDetail() {
     </div>
   );
 }
+
+function DivisionProductCard({ product, getProductRoute }) {
+  const [imgError, setImgError] = useState(false);
+  const productUrl = getProductRoute(product);
+  
+  // Packshot extraction
+  const rawImage = product.productPrimaryPackshotImage || product.image || product.packshot_url;
+  // Guard against any leftover stock photo strings
+  const isStockPhoto = Boolean(rawImage && (rawImage.includes('therapeutic-') || rawImage.includes('pediaplus')));
+  const hasValidImage = Boolean(rawImage && !isStockPhoto && !imgError);
+
+  const title = product.brandName || product.name || product.brand_name || 'Unnamed Product';
+  const description = product.shortDescription || product.description || product.composition || product.fullDescription || product.short_description || 'Active pharmaceutical formulation';
+
+  return (
+    <Link
+      to={productUrl}
+      className="bg-white/80 backdrop-blur-xs border border-[#E5E3DC] hover:border-[#D52B1E] rounded-3xl overflow-hidden flex flex-col group shadow-xs hover:shadow-md transition-all duration-300 block cursor-pointer"
+    >
+      {/* Product Packshot / Formulation Monograph Card */}
+      <div className="w-full aspect-[4/3] bg-[#FAF9F6] overflow-hidden flex items-center justify-center p-3 sm:p-4">
+        {hasValidImage ? (
+          <img
+            src={assetUrl(rawImage)}
+            alt={`${title} - Onecore Pharma`}
+            className="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-500"
+            loading="lazy"
+            onError={() => setImgError(true)}
+          />
+        ) : (
+          <div className="w-full h-full bg-white border border-[#E5E3DC] rounded-2xl shadow-xs p-4 flex flex-col justify-between items-center text-center group-hover:border-[#D52B1E]/40 transition-colors">
+            <div className="w-full pb-2 border-b border-[#F0EFEB] flex items-center justify-between">
+              <span className="text-[9px] tracking-[0.2em] font-bold text-[#D52B1E] uppercase">ONECORE</span>
+              <span className="text-[8px] font-mono uppercase tracking-wider text-[#777777] bg-[#F5F4F0] px-1.5 py-0.5 rounded">Rx</span>
+            </div>
+            <div className="my-auto py-2">
+              <h4 className="font-serif text-lg sm:text-xl text-[#121212] font-semibold leading-tight mb-1 group-hover:text-[#D52B1E] transition-colors">
+                {formatProductName(title)}
+              </h4>
+              <p className="text-[11px] text-[#555555] line-clamp-2 leading-relaxed">
+                {description}
+              </p>
+            </div>
+            <div className="w-full pt-1.5 border-t border-[#F0EFEB] text-center">
+              <span className="text-[8px] font-mono uppercase tracking-widest text-[#999999]">
+                Formulation Monograph
+              </span>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Product Details: Product Name and Clear Legible Active Salt / Description */}
+      <div className="p-5 sm:p-6 flex flex-col flex-1">
+        <h3 className="text-xl sm:text-2xl font-serif font-medium text-[#121212] tracking-tight group-hover:text-[#D52B1E] transition-colors mb-2 leading-snug">
+          {formatProductName(title)}
+        </h3>
+        <p className="text-sm sm:text-base text-[#222222] font-normal leading-relaxed line-clamp-3">
+          {description}
+        </p>
+      </div>
+    </Link>
+  );
+}
+

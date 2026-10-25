@@ -179,7 +179,7 @@
     "product_type": "Drug",
     "short_description": "Duvia™-10 contains dydrogesterone, an oral progestogen used in conditions associated with insufficient progesterone activity.",
     "full_description": "Duvia™-10 contains dydrogesterone, an oral progestogen used in conditions associated with insufficient progesterone activity. It acts on the uterine lining to support normal hormonal responses. The tablet is used in the management of menstrual disorders, endometriosis and luteal-phase support as part of prescribed gynaecological care.",
-    "packshot_url": "/assets/therapeutic-womens-health.jpg",
+    "packshot_url": null,
     "dosage_guidance": "Dosing and Schedule\nAdults — irregular cycles: take 1 tablet (10 mg) twice daily on cycle days 11–25. Endometriosis: take 1 tablet twice daily on days 5–25 or continuously under the selected treatment plan. Infertility due to luteal insufficiency: take 1 tablet twice daily on days 11–25 for at least 6 cycles. The prescriber must select one indication-specific schedule.\n\nAdministration Advice\nSwallow with water, with or without food. Day 1 is the first day of menstrual bleeding. Space divided doses evenly. Pregnancy or assisted-reproduction support requires a separate specialist protocol; do not stop it independently.",
     "benefits": [
       {
@@ -351,7 +351,7 @@
     "product_type": "Nutraceutical",
     "short_description": "Chromolyn™ combines myo-inositol, N-acetylcysteine, ashwagandha, magnesium, zinc, chromium and vitamin D2 for women’s nutritional support.",
     "full_description": "Chromolyn™ combines myo-inositol, N-acetylcysteine, ashwagandha, magnesium, zinc, chromium and vitamin D2 for women’s nutritional support. The formulation brings together ingredients involved in cellular signalling, nutrient metabolism and antioxidant pathways. It complements balanced dietary intake and clinician-directed nutritional care for women with metabolic and reproductive concerns.",
-    "packshot_url": "/assets/therapeutic-womens-health.jpg",
+    "packshot_url": null,
     "dosage_guidance": "Dosing and Schedule\nTake this powder in the dose and duration as advised by your doctor.\n\nAdministration Advice\nMix the prescribed measured serving in water and consume promptly after a meal. Do not estimate a serving using an uncalibrated household spoon.",
     "benefits": [
       {
@@ -751,7 +751,7 @@
     "product_type": "Nutraceutical",
     "short_description": "Ferticore™ combines myo-inositol with L-methylfolate and vitamin D3 for women’s reproductive nutritional support.",
     "full_description": "Ferticore™ combines myo-inositol with L-methylfolate and vitamin D3 for women’s reproductive nutritional support. Myo-inositol participates in cellular signalling, folate supports normal cell division, and vitamin D contributes to normal physiological function. The sachet complements dietary planning in preconception nutrition and clinician-directed PCOS care.",
-    "packshot_url": "/assets/therapeutic-womens-health.jpg",
+    "packshot_url": null,
     "dosage_guidance": "Dosing and Schedule\nAdults: take one 5 g sachet once daily. This supplies 2 g myo-inositol, 500 mcg methylfolate and 1000 IU vitamin D3.\n\nAdministration Advice\nDissolve the entire sachet in a glass of water, stir and drink promptly after a meal. Do not divide the powder by eye.",
     "benefits": [
       {
@@ -863,7 +863,7 @@
     "product_type": "Nutraceutical",
     "short_description": "Ecofem™-BV combines Lactobacillus crispatus, L.",
     "full_description": "Ecofem™-BV combines Lactobacillus crispatus, L. gasseri, L. jensenii and L. rhamnosus with fructooligosaccharides for microbial balance support. The probiotic organisms complement the body’s microbiota, while the prebiotic provides a substrate for beneficial bacteria. The capsule forms part of daily microbiota-focused and intimate-wellness nutritional care.",
-    "packshot_url": "/assets/therapeutic-general-health.jpg",
+    "packshot_url": null,
     "dosage_guidance": "Dosing and Schedule\nOne capsule daily for a minimum of one month.\n\n\nAdministration Advice\nFor an oral product, swallow with water and separate antibiotics by at least 2 hours.",
     "benefits": [
       {
@@ -2215,7 +2215,7 @@
     "product_type": "Drug",
     "short_description": "Mesolac™ contains lactulose, an osmotic laxative that increases water in the bowel and softens stools.",
     "full_description": "Mesolac™ contains lactulose, an osmotic laxative that increases water in the bowel and softens stools. It helps relieve constipation and supports regular bowel movements. In hepatic encephalopathy, lactulose reduces intestinal ammonia absorption as part of a medically supervised treatment programme for patients with liver disease.",
-    "packshot_url": "/assets/therapeutic-general-health.jpg",
+    "packshot_url": null,
     "dosage_guidance": "Dosing and Schedule\nConstipation in adults: start with 15–30 mL once daily and adjust to produce a soft stool; allow 2–3 days for effect. Hepatic encephalopathy in adults: start with 30–45 mL three or four times daily and titrate to 2–3 soft stools per day under medical monitoring.\n\nAdministration Advice\nMeasure with a calibrated cup. Take the constipation dose at the same time daily, with or without food; dilute in water or juice if needed. Maintain adequate fluids unless fluid restriction has been prescribed.",
     "benefits": [
       {
@@ -2327,7 +2327,7 @@
     "product_type": "Drug",
     "short_description": "Goodfate™-O combines sucralfate with oxetacaine for mucosal protection and relief of upper gastrointestinal burning pain.",
     "full_description": "Goodfate™-O combines sucralfate with oxetacaine for mucosal protection and relief of upper gastrointestinal burning pain. Sucralfate forms a protective barrier over damaged stomach and duodenal lining, while oxetacaine provides local anaesthetic action. The oral formulation supports prescribed management of ulcer-related discomfort and painful gastric irritation.",
-    "packshot_url": "/assets/therapeutic-general-health.jpg",
+    "packshot_url": null,
     "dosage_guidance": "Dosing and Schedule\nAdults being treated for an active peptic ulcer: take 10 mL four times daily, before the three main meals and at bedtime, for the prescribed course. Each dose supplies sucralfate 1 g and oxetacaine 20 mg. Reassess persistent pain or bleeding instead of increasing the dose.\n\nAdministration Advice\nShake well and measure with a calibrated medicine cup or oral syringe. Take on an empty stomach, 1 hour before or 2 hours after food. Keep other oral medicines at least 2 hours apart and antacids at least 30 minutes apart.",
     "benefits": [
       {
@@ -3236,7 +3236,7 @@
     "product_type": "Drug",
     "short_description": "Fusifite™ contains fusidic acid, a topical antibiotic for treatment of superficial bacterial skin infections.",
     "full_description": "Fusifite™ contains fusidic acid, a topical antibiotic for treatment of superficial bacterial skin infections. It inhibits bacterial protein synthesis and acts against susceptible staphylococci. The cream is applied to affected skin during a prescribed course to manage localised infection, including impetigo and superficial infected lesions.",
-    "packshot_url": "/assets/therapeutic-general-health.jpg",
+    "packshot_url": null,
     "dosage_guidance": "Dosing and Schedule\nApply a thin layer to the affected skin three times daily for 5–7 days. Reassess if the infection fails to improve or spreads.\n\nAdministration Advice\nClean and dry the affected area, apply gently and wash hands afterwards. Keep away from the eyes and mucous membranes. Use a clean dressing only when directed.",
     "benefits": [
       {
@@ -3292,7 +3292,7 @@
     "product_type": "Cosmetic",
     "short_description": "Velliglow™ combines glutathione, kojic acid and vitamins A, C and E in a cosmetic cream for complexion care.",
     "full_description": "Velliglow™ combines glutathione, kojic acid and vitamins A, C and E in a cosmetic cream for complexion care. Kojic acid contributes to an even-looking tone, while the vitamins provide skin-conditioning and antioxidant ingredients. The cream complements a regular skin-care routine focused on dullness, uneven appearance and daily care.",
-    "packshot_url": "/assets/therapeutic-dermatology.jpg",
+    "packshot_url": null,
     "dosage_guidance": "Dosing and Schedule\nApply a thin layer to the intended skin area once nightly. If irritation develops, stop and obtain a skin-care review.\n\nAdministration Advice\nApply to clean, dry skin, avoiding eyes, lips and broken skin. Do not layer with other retinoid or exfoliating products without advice. Use a suitable broad-spectrum sunscreen during the day.",
     "benefits": [
       {
@@ -3404,7 +3404,7 @@
     "product_type": "Nutraceutical",
     "short_description": "Glutella Plus™ combines glutathione, N-acetylcysteine, coenzyme Q10, alpha-lipoic acid, botanical extracts, carotenoids and vitamins for antioxidant nutritional support.",
     "full_description": "Glutella Plus™ combines glutathione, N-acetylcysteine, coenzyme Q10, alpha-lipoic acid, botanical extracts, carotenoids and vitamins for antioxidant nutritional support. The formulation supplies multiple ingredients involved in cellular antioxidant and metabolic pathways. It complements a balanced diet and provides supplemental nutrients within a daily skin and general-wellness nutrition programme.",
-    "packshot_url": "/assets/therapeutic-dermatology.jpg",
+    "packshot_url": null,
     "dosage_guidance": "Dosing and Schedule\nTake one tablet daily with water, preferably after a meal.\n\nAdministration Advice\nTake with or immediately after a meal. Review continued use with the treating clinician and avoid overlapping supplements.",
     "benefits": [
       {
@@ -3572,7 +3572,7 @@
     "product_type": "Cosmetic",
     "short_description": "Yuvizee™ is a sunscreen lotion for daily care of sun-exposed skin.",
     "full_description": "Yuvizee™ is a sunscreen lotion for daily care of sun-exposed skin. It forms part of a sun-protection routine that includes regular application, shade and protective clothing. The lotion complements everyday outdoor skin care and pigmentation-care routines by helping protect exposed areas from ultraviolet exposure.",
-    "packshot_url": "/assets/therapeutic-general-health.jpg",
+    "packshot_url": null,
     "dosage_guidance": "Dosing and Schedule\nApply evenly 15 minutes before sun exposure, using approximately 2 mg/cm² of skin. Reapply at least every 2 hours outdoors and after swimming, heavy sweating or towel drying.\n\nAdministration Advice\nCover all exposed areas, including ears and neck, avoiding the eyes. Use enough to form an even film. Combine with shade and protective clothing; follow the actual pack’s SPF and water-resistance claims.",
     "benefits": [
       {
@@ -3628,7 +3628,7 @@
     "product_type": "Drug",
     "short_description": "Ebacore™ contains ebastine, a peripheral H1 antihistamine used in allergic rhinitis and urticaria.",
     "full_description": "Ebacore™ contains ebastine, a peripheral H1 antihistamine used in allergic rhinitis and urticaria. It blocks histamine-mediated responses to relieve sneezing, runny nose, itching and hives. The tablet provides symptomatic allergy control for nasal and skin symptoms as part of an individual allergy-management programme.",
-    "packshot_url": "/assets/therapeutic-dermatology.jpg",
+    "packshot_url": null,
     "dosage_guidance": "Dosing and Schedule\nAdults and adolescents aged 12 years or older requiring the 20 mg strength: take 1 tablet once daily. In severe liver impairment, do not use this 20 mg regimen; the maximum ebastine dose is 10 mg daily.\n\nAdministration Advice\nSwallow whole with water, with or without food, at the same time each day.",
     "benefits": [
       {
@@ -3684,7 +3684,7 @@
     "product_type": "Nutraceutical",
     "short_description": "Tracore™ (Biotin) combines biotin, N-acetylcysteine, B vitamins and trace minerals for hair and nail nutritional support.",
     "full_description": "Tracore™ (Biotin) combines biotin, N-acetylcysteine, B vitamins and trace minerals for hair and nail nutritional support. Zinc, selenium and biotin contribute to normal hair-related nutritional functions, while the additional nutrients support cellular metabolism. The tablet complements a balanced diet and addresses micronutrient gaps relevant to normal hair and nail maintenance.",
-    "packshot_url": "/assets/therapeutic-dermatology.jpg",
+    "packshot_url": null,
     "dosage_guidance": "Dosing and Schedule\nAdults: take 1 tablet once daily. Review the duration against the identified nutritional need and response.\n\nAdministration Advice\nTake with or immediately after a meal. Review continued use with the treating clinician and avoid overlapping supplements.",
     "benefits": [
       {
@@ -3740,7 +3740,7 @@
     "product_type": "Cosmetic",
     "short_description": "Acnozoe™ combines salicylic acid with niacinamide in a cosmetic face gel for oily, blemish-prone skin.",
     "full_description": "Acnozoe™ combines salicylic acid with niacinamide in a cosmetic face gel for oily, blemish-prone skin. Salicylic acid helps loosen surface cells and clear congested pores, while niacinamide supports the skin barrier. The gel complements a gentle daily routine for smoother-looking skin and improved surface texture.",
-    "packshot_url": "/assets/therapeutic-dermatology.jpg",
+    "packshot_url": null,
     "dosage_guidance": "Dosing and Schedule\nApply a thin layer once daily in the evening. For sensitive skin, start on alternate evenings for the first week, then increase to daily if tolerated.\n\nAdministration Advice\nApply to clean, dry acne-prone skin, avoiding eyes, lips and broken skin. Do not apply additional peeling agents at the same time without advice. Use daytime sunscreen.",
     "benefits": [
       {
@@ -3796,7 +3796,7 @@
     "product_type": "Drug",
     "short_description": "Coresoft™ combines white soft paraffin and liquid paraffin in an emollient cream for dry and rough skin.",
     "full_description": "Coresoft™ combines white soft paraffin and liquid paraffin in an emollient cream for dry and rough skin. The paraffins form a protective film that reduces moisture loss and softens the skin surface. Regular application supports skin hydration, flexibility and barrier care in dry-skin and eczema-care routines.",
-    "packshot_url": "/assets/therapeutic-dermatology.jpg",
+    "packshot_url": null,
     "dosage_guidance": "Dosing and Schedule\nApply a thin layer to dry or irritated skin three times daily and after washing. Reduce frequency if irritation occurs.\n\nAdministration Advice\nApply gently to clean skin. Avoid eyes and mucous membranes. Wash hands afterwards unless treating the hands. Keep paraffin-contaminated clothing and bedding away from flames and cigarettes.",
     "benefits": [
       {
@@ -3852,7 +3852,7 @@
     "product_type": "Drug",
     "short_description": "Velibact™ contains mupirocin, a topical antibiotic for treatment of localised bacterial skin infections.",
     "full_description": "Velibact™ contains mupirocin, a topical antibiotic for treatment of localised bacterial skin infections. It inhibits bacterial protein synthesis and acts against susceptible staphylococci and streptococci. The ointment is used on affected skin during a prescribed course to treat impetigo and other susceptible superficial bacterial infections.",
-    "packshot_url": "/assets/therapeutic-dermatology.jpg",
+    "packshot_url": null,
     "dosage_guidance": "Dosing and Schedule\nApply a small amount to the affected skin three times daily for up to 10 days. Reassess if there is no improvement within 3–5 days.\n\nAdministration Advice\nClean and dry the area before applying a thin layer. Wash hands afterwards unless treating the hands. Avoid eyes, mouth and other mucosal surfaces. A clean gauze dressing may be used if advised.",
     "benefits": [
       {
@@ -3908,7 +3908,7 @@
     "product_type": "Drug",
     "short_description": "Camycore™ combines calamine with liquid paraffin to soothe mildly irritated, dry and itchy skin.",
     "full_description": "Camycore™ combines calamine with liquid paraffin to soothe mildly irritated, dry and itchy skin. Calamine provides a protective, soothing effect, while liquid paraffin forms an emollient film that reduces moisture loss. The cream supports skin comfort and softening as part of a regular dry-skin care routine.",
-    "packshot_url": "/assets/therapeutic-dermatology.jpg",
+    "packshot_url": null,
     "dosage_guidance": "Dosing and Schedule\nApply a thin layer to dry or irritated skin three times daily and after washing. Reduce frequency if irritation occurs.\n\nAdministration Advice\nApply gently to clean skin. Avoid eyes and mucous membranes. Wash hands afterwards unless treating the hands. Keep paraffin-contaminated clothing and bedding away from flames and cigarettes.",
     "benefits": [
       {
@@ -3964,7 +3964,7 @@
     "product_type": "Cosmetic",
     "short_description": "Glukozoe™ combines glutathione, kojic acid, vitamins C and E, and niacinamide in a cosmetic face wash for daily cleansing and complexion care.",
     "full_description": "Glukozoe™ combines glutathione, kojic acid, vitamins C and E, and niacinamide in a cosmetic face wash for daily cleansing and complexion care. It removes surface impurities and excess oil while providing skin-conditioning ingredients. The formula complements a routine focused on clean skin and a fresh, even-looking appearance.",
-    "packshot_url": "/assets/therapeutic-dermatology.jpg",
+    "packshot_url": null,
     "dosage_guidance": "Dosing and Schedule\nUse once in the morning and once in the evening. Reduce to once daily if dryness develops.\n\nAdministration Advice\nWet the face, massage a small amount over the skin, then rinse thoroughly and pat dry. Avoid the eye area and follow with a suitable moisturiser.",
     "benefits": [
       {
@@ -4020,7 +4020,7 @@
     "product_type": "Nutraceutical",
     "short_description": "Oxyvive™ combines glutathione, alpha-lipoic acid, resveratrol and astaxanthin for supplemental antioxidant nutrition.",
     "full_description": "Oxyvive™ combines glutathione, alpha-lipoic acid, resveratrol and astaxanthin for supplemental antioxidant nutrition. These ingredients participate in cellular antioxidant pathways and complement dietary antioxidant intake. The tablet brings together four antioxidant ingredients in a single formulation for inclusion in a balanced skin and general-wellness nutritional programme.",
-    "packshot_url": "/assets/therapeutic-dermatology.jpg",
+    "packshot_url": null,
     "dosage_guidance": "Dosing and Schedule\nAdults: take 1 tablet once daily. Do not add other glutathione or antioxidant combinations without reviewing the total daily intake.\n\nAdministration Advice\nSwallow the tablet with water after a meal. Maintain a consistent daily schedule.",
     "benefits": [
       {
@@ -4421,7 +4421,7 @@
     "product_type": "Nutraceutical",
     "short_description": "Histocore™ combines botanical-derived ingredients, quercetin, vitamin C and bromelain for nutritional support.",
     "full_description": "Histocore™ combines botanical-derived ingredients, quercetin, vitamin C and bromelain for nutritional support. Vitamin C contributes to normal immune function and antioxidant protection, while the plant-derived ingredients complement dietary intake. The formulation provides supplemental antioxidant nutrients within a balanced wellness and clinician-directed allergy-care nutrition programme.",
-    "packshot_url": "/assets/therapeutic-general-health.jpg",
+    "packshot_url": null,
     "dosage_guidance": "Dosing and Schedule\nTake this medicine in the dose and duration as advised by your doctor.\n\nAdministration Advice\nUse the verified finished-product directions, usually with food if an oral supplement. Do not substitute it for prescribed antihistamines, inhalers or emergency treatment.",
     "benefits": [
       {
@@ -4477,7 +4477,7 @@
     "product_type": "Drug",
     "short_description": "Coldstar™ contains camphor, chlorothymol, eucalyptol, menthol and terpineol in a capsule for vapour inhalation.",
     "full_description": "Coldstar™ contains camphor, chlorothymol, eucalyptol, menthol and terpineol in a capsule for vapour inhalation. The aromatic ingredients provide a cooling, refreshing sensation during nasal stuffiness. The formulation offers temporary symptomatic comfort as part of supportive care for cold-related congestion and is intended for inhalation use.",
-    "packshot_url": "/assets/therapeutic-general-health.jpg",
+    "packshot_url": null,
     "dosage_guidance": "Dosing and Schedule\nFor adults using the tissue-inhalation method: use the contents of 1 capsule per application. \n\nAdministration Advice\nCut the capsule and place its contents on a tissue or handkerchief; inhale the vapour without touching the nose or skin. For inhalation only. Do not swallow, instil into the nostrils or add to a nebuliser. Keep away from children and avoid hot-water steam exposure.",
     "benefits": [
       {
@@ -4757,7 +4757,7 @@
     "product_type": "Drug",
     "short_description": "Gatiquin™ HS contains gatifloxacin, a fluoroquinolone antibiotic in eye-drop form for bacterial conjunctivitis.",
     "full_description": "Gatiquin™ HS contains gatifloxacin, a fluoroquinolone antibiotic in eye-drop form for bacterial conjunctivitis. It inhibits bacterial enzymes needed for DNA replication and acts against susceptible ocular pathogens. The drops treat bacterial infection of the conjunctiva and help resolve associated discharge, redness and irritation during a prescribed course.",
-    "packshot_url": "/assets/therapeutic-general-health.jpg",
+    "packshot_url": null,
     "dosage_guidance": "Dosing and Schedule\nDay 1: instil 1 drop into each affected eye every 2 hours while awake, up to 8 doses. Days 2–7: instil 1 drop two to four times daily, using the frequency specified in the prescription.\n\nAdministration Advice\nWash hands and place the prescribed drop inside the lower eyelid without touching the dropper tip. Close the eye gently. Separate other eye medicines by at least 5 minutes.",
     "benefits": [
       {
@@ -5856,7 +5856,7 @@
     "product_type": "Drug",
     "short_description": "Gatiquin™-KT combines gatifloxacin with ketorolac for ophthalmic treatment requiring antibacterial and non-steroidal anti-inflammatory activity.",
     "full_description": "Gatiquin™-KT combines gatifloxacin with ketorolac for ophthalmic treatment requiring antibacterial and non-steroidal anti-inflammatory activity. Gatifloxacin acts against susceptible bacteria, while ketorolac reduces prostaglandin-mediated pain and inflammation. The eye drops provide combined treatment in ophthalmologist-directed care for bacterial infection with associated inflammatory symptoms.",
-    "packshot_url": "/assets/therapeutic-general-health.jpg",
+    "packshot_url": null,
     "dosage_guidance": "Dosing and Schedule\nThis medicine is for external use only. Take it in the dose and duration as advised by your doctor.\n\nAdministration Advice\nWash hands and place the prescribed drop inside the lower eyelid without touching the dropper tip. Close the eye gently. Separate other eye medicines by at least 5 minutes.",
     "benefits": [
       {
@@ -7565,7 +7565,7 @@
     "product_type": "Drug",
     "short_description": "Tofcore™-11 contains extended-release tofacitinib, an oral Janus kinase inhibitor for immune-mediated inflammatory disease.",
     "full_description": "Tofcore™-11 contains extended-release tofacitinib, an oral Janus kinase inhibitor for immune-mediated inflammatory disease. It reduces signalling by cytokines involved in inflammation. The tablet is used in specialist management of active rheumatoid arthritis, psoriatic arthritis and ankylosing spondylitis following inadequate response or intolerance to prior treatment.",
-    "packshot_url": "/assets/therapeutic-general-health.jpg",
+    "packshot_url": null,
     "dosage_guidance": "Dosing and Schedule\nAdults with rheumatoid arthritis, psoriatic arthritis or ankylosing spondylitis requiring this formulation: take 1 extended-release tablet (11 mg) once daily. Moderate or severe kidney impairment, moderate liver impairment or relevant interacting medicines require a different reduced-dose regimen and formulation.\n\nAdministration Advice\nSwallow whole with water at the same time daily, with or without food. Do not split, crush or chew. Do not interchange with immediate-release tablets without a prescribing change.",
     "benefits": [
       {
@@ -7686,7 +7686,7 @@
     "product_type": "Drug",
     "short_description": "Frecox™ Gel combines aceclofenac with linseed oil, methyl salicylate, menthol and capsaicin for local musculoskeletal pain relief.",
     "full_description": "Frecox™ Gel combines aceclofenac with linseed oil, methyl salicylate, menthol and capsaicin for local musculoskeletal pain relief. Aceclofenac provides anti-inflammatory action, while menthol, methyl salicylate and capsaicin act through cutaneous sensory and counter-irritant pathways. The topical formulation is used for local muscle, joint and soft tissue discomfort.",
-    "packshot_url": "/assets/therapeutic-orthopedics.jpg",
+    "packshot_url": "/assets/products/frecox-gel.jpg",
     "dosage_guidance": "Dosing and Schedule\nTake this medicine in the dose and duration as advised by your doctor.\n\nAdministration Advice\nFor external use only on intact skin after label verification. Avoid heat pads, tight dressings, vigorous massage, eyes and mucous membranes. Wash hands thoroughly afterwards.",
     "benefits": [
       {
@@ -8179,7 +8179,7 @@
     "product_type": "Nutraceutical",
     "short_description": "Curaway™ combines nano-formulated curcuminoids and peptides with triterpenoid saponins, bacosides and pectin for supplemental nutrition.",
     "full_description": "Curaway™ combines nano-formulated curcuminoids and peptides with triterpenoid saponins, bacosides and pectin for supplemental nutrition. The formulation brings together plant-derived compounds in a single nutritional product. It complements balanced dietary intake and provides supplementary botanical ingredients within an individual, clinician-directed nutritional-care programme.",
-    "packshot_url": "/assets/therapeutic-oncology.jpg",
+    "packshot_url": null,
     "dosage_guidance": "Dosing and Schedule\nTake this medicine in the dose and duration as advised by your doctor.\n\nAdministration Advice\nFollow the finished-product directions and obtain approval from the treating team, particularly during cancer therapy. Do not substitute this blend for prescribed medicines.",
     "benefits": [
       {
@@ -8235,7 +8235,7 @@
     "product_type": "Nutraceutical",
     "short_description": "Tocofrac™ provides gamma- and delta-tocotrienol-rich fractions for supplemental antioxidant nutrition.",
     "full_description": "Tocofrac™ provides gamma- and delta-tocotrienol-rich fractions for supplemental antioxidant nutrition. Tocotrienols are members of the vitamin E family and participate in membrane-related antioxidant functions. The tablet complements dietary intake of these compounds within a balanced nutrition programme focused on everyday cellular antioxidant support.",
-    "packshot_url": "/assets/therapeutic-oncology.jpg",
+    "packshot_url": null,
     "dosage_guidance": "Dosing and Schedule\nTake this medicine in the dose and duration as advised by your doctor.\n\nAdministration Advice\nTake with or immediately after a meal. Review continued use with the treating clinician and avoid overlapping supplements.",
     "benefits": [
       {
@@ -9165,7 +9165,7 @@
     "product_type": "Drug",
     "short_description": "Appycore™ combines cyproheptadine with tricholine citrate in a prescription syrup for poor appetite associated with inadequate intake.",
     "full_description": "Appycore™ combines cyproheptadine with tricholine citrate in a prescription syrup for poor appetite associated with inadequate intake. Cyproheptadine has antihistamine and antiserotonin activity that promotes appetite. The formulation is used in medically supervised nutritional care to support food intake alongside appropriate dietary planning.",
-    "packshot_url": "/assets/pediaplus.jpg",
+    "packshot_url": null,
     "dosage_guidance": "Dosing and Schedule\nChildren aged 2 years or older: calculate a total DAILY cyproheptadine dose of 0.25 mg/kg, equivalent to 0.625 mL/kg/day of this syrup, and divide into 2 or 3 doses. Maximum daily volumes: ages 2–6 years, 30 mL; ages 7–14 years, 40 mL. The weight-based dose and age maximum both apply. Do not use under 2 years; confirm the assumed per-5-mL strength before publication.\n\nAdministration Advice\nMeasure each divided dose with an oral syringe and give at the prescribed times. Do not confuse the total daily volume with the volume per dose. Avoid sedating cough medicines and monitor alertness and food intake.",
     "benefits": [
       {

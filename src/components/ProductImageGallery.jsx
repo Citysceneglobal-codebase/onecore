@@ -9,7 +9,7 @@ import { assetUrl } from '../utils/assetUrl';
  */
 export default function ProductImageGallery({
   images = [],
-  fallbackImage = '/assets/therapeutic-orthopaedics.jpg',
+  fallbackImage = '',
   brandName = 'Product',
   className = '',
 }) {
@@ -54,7 +54,11 @@ export default function ProductImageGallery({
           alt={activeImage.alt_text || `${brandName} - Onecore Pharma`}
           className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105 mix-blend-multiply drop-shadow-2xl"
           onError={(e) => {
-            e.target.src = assetUrl(fallbackImage);
+            if (fallbackImage && e.target.src !== assetUrl(fallbackImage)) {
+              e.target.src = assetUrl(fallbackImage);
+            } else {
+              e.target.style.display = 'none';
+            }
           }}
         />
 

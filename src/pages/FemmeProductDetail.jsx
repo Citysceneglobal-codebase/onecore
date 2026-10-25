@@ -248,7 +248,7 @@ export default function FemmeProductDetail() {
               brandName={product.name}
               className="max-w-[340px]"
             />
-          ) : (product.image || product.packshot_url) ? (
+          ) : ((product.image || product.packshot_url) && !(product.image || product.packshot_url).includes('therapeutic-') && !(product.image || product.packshot_url).includes('pediaplus')) ? (
             <div className="absolute inset-0 w-full h-full overflow-hidden flex items-center justify-center">
               <img
                 src={assetUrl(product.image || product.packshot_url)}

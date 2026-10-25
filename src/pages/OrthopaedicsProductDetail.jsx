@@ -277,12 +277,12 @@ export default function OrthopaedicsProductDetail() {
           ) : isOneFlexo ? (
             <div className="w-full max-w-[280px] flex flex-col items-center justify-center">
               <img
-                src={assetUrl(product.image)}
+                src={assetUrl(product.image || product.packshot_url || '/assets/products/oneflexo.jpg')}
                 alt="OneFLEXO Packshot"
                 className="max-h-[380px] w-auto object-contain drop-shadow-xl"
               />
             </div>
-          ) : (product.image || product.packshot_url) ? (
+          ) : ((product.image || product.packshot_url) && !(product.image || product.packshot_url).includes('therapeutic-') && !(product.image || product.packshot_url).includes('pediaplus')) ? (
             <div className="absolute inset-0 w-full h-full overflow-hidden flex items-center justify-center">
               <img
                 src={assetUrl(product.image || product.packshot_url)}
