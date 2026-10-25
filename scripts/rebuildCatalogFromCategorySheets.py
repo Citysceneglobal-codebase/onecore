@@ -176,6 +176,9 @@ def get_sheet_rows(filename, sheet_name):
         return rows
 
 def resolve_packshot(slug):
+    # oneflexo was a synthetic vector mockup, no real photo in Onecore Images
+    if slug == "oneflexo":
+        return None
     pub_files = set(os.listdir(PUBLIC_PRODUCTS_DIR))
     # Exclude synthetic mockups or stock photos
     for ext in [".png", ".jpg", ".jpeg", ".webp"]:

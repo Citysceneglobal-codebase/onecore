@@ -2545,7 +2545,7 @@
     "product_type": "Nutraceutical",
     "short_description": "Oneflexo™ combines Boswellia serrata extract with native type II collagen, sodium hyaluronate and polysaccharides for joint nutritional support.",
     "full_description": "Oneflexo™ combines Boswellia serrata extract with native type II collagen, sodium hyaluronate and polysaccharides for joint nutritional support. The formulation brings together botanical and connective-tissue-related ingredients in a single capsule. It complements balanced nutrition, exercise and clinician-directed care focused on joint comfort and mobility.",
-    "packshot_url": "/assets/products/oneflexo.jpg",
+    "packshot_url": null,
     "dosage_guidance": "Dosing and Schedule\nOne capsule daily after meal orally with water for minimum 2-3 months or more depending upon the severity of condition, or as directed by a healthcare professional.\n\nAdministration Advice\nTake with or immediately after a meal. Review continued use with the treating clinician and avoid overlapping supplements.",
     "benefits": [
       {
@@ -4495,7 +4495,7 @@
     "product_type": "Drug",
     "short_description": "Moxable™-LP combines moxifloxacin with loteprednol for ocular inflammation requiring antibacterial and corticosteroid treatment.",
     "full_description": "Moxable™-LP combines moxifloxacin with loteprednol for ocular inflammation requiring antibacterial and corticosteroid treatment. Moxifloxacin acts against susceptible bacteria, while loteprednol suppresses inflammatory activity. The eye drops help control infection-associated redness, swelling and discomfort within an ophthalmologist-directed treatment programme.",
-    "packshot_url": null,
+    "packshot_url": "/assets/products/moxable-lp.png",
     "dosage_guidance": "Dosing and Schedule\nInstil 1–2 drops into each affected eye four times daily. After surgery, begin 24 hours postoperatively and follow the surgeon’s stop or taper schedule. Reassess if symptoms fail to improve within 2 days.\n\nAdministration Advice\nWash hands and place the prescribed drop inside the lower eyelid without touching the dropper tip. Close the eye gently. Separate other eye medicines by at least 5 minutes. Shake if the pack identifies the product as a suspension.",
     "benefits": [
       {
@@ -6255,7 +6255,7 @@
     "product_type": "Drug",
     "short_description": "Clobtos™-SA combines clobetasol propionate with salicylic acid for short-term management of thick, scaly inflammatory skin lesions.",
     "full_description": "Clobtos™-SA combines clobetasol propionate with salicylic acid for short-term management of thick, scaly inflammatory skin lesions. Clobetasol provides potent anti-inflammatory activity to reduce redness and itching, while salicylic acid loosens scale and thickened surface skin. The ointment is used on prescribed areas under medical supervision.",
-    "packshot_url": null,
+    "packshot_url": "/assets/products/clobtos-sa.png",
     "dosage_guidance": "Dosing and Schedule\nAdults: apply a thin layer to the prescribed thickened plaque once daily for up to 2 weeks, then reassess. Do not increase frequency or treat extensive areas. Confirm the unusual 6.5% salicylic acid declaration before publication.\n\nAdministration Advice\nClean and dry the area before applying a thin layer. Wash hands afterwards unless treating the hands. Avoid eyes, mouth and other mucosal surfaces.",
     "benefits": [
       {
