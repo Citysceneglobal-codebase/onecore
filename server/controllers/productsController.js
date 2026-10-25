@@ -17,10 +17,11 @@ const DIVISION_ALIAS_MAP = {
   'neurology': ['neurology', 'neuro', 'neurix', 'neurological'],
   'neuro': ['neurology', 'neuro', 'neurix', 'neurological'],
   'neurix': ['neurology', 'neuro', 'neurix', 'neurological'],
-  'ophthalmology': ['ophthalmology', 'ophthalmic', 'eyerix', 'ocular', 'eye-care', 'eye care', 'eye'],
-  'ocular': ['ophthalmology', 'ophthalmic', 'eyerix', 'ocular', 'eye-care', 'eye care', 'eye'],
-  'eyerix': ['ophthalmology', 'ophthalmic', 'eyerix', 'ocular', 'eye-care', 'eye care', 'eye'],
-  'eye-care': ['ophthalmology', 'ophthalmic', 'eyerix', 'ocular', 'eye-care', 'eye care', 'eye'],
+  'ophthalmology': ['ophthalmology', 'ophthalmic', 'eyerix', 'eyrix', 'ocular', 'eye-care', 'eye care', 'eye'],
+  'ocular': ['ophthalmology', 'ophthalmic', 'eyerix', 'eyrix', 'ocular', 'eye-care', 'eye care', 'eye'],
+  'eyerix': ['ophthalmology', 'ophthalmic', 'eyerix', 'eyrix', 'ocular', 'eye-care', 'eye care', 'eye'],
+  'eyrix': ['ophthalmology', 'ophthalmic', 'eyerix', 'eyrix', 'ocular', 'eye-care', 'eye care', 'eye'],
+  'eye-care': ['ophthalmology', 'ophthalmic', 'eyerix', 'eyrix', 'ocular', 'eye-care', 'eye care', 'eye'],
   'dermatology': ['dermatology', 'derma', 'vellis', 'cutaneous', 'skin', 'skin-care', 'skin care'],
   'derma': ['dermatology', 'derma', 'vellis', 'cutaneous', 'skin', 'skin-care', 'skin care'],
   'vellis': ['dermatology', 'derma', 'vellis', 'cutaneous', 'skin', 'skin-care', 'skin care'],
@@ -42,7 +43,7 @@ const DIVISION_TO_AREA_ID = {
   'paediatrics': 2, 'pediatrics': 2, 'pediaplus': 2, 'paediatric': 2, 'pediatric': 2,
   'orthopaedics': 3, 'orthopedics': 3, 'ortheon': 3, 'orthopaedic': 3, 'orthopedic': 3,
   'neurology': 4, 'neuro': 4, 'neurix': 4,
-  'ophthalmology': 5, 'eyerix': 5, 'ocular': 5, 'eye-care': 5,
+  'ophthalmology': 5, 'eyerix': 5, 'eyrix': 5, 'ocular': 5, 'eye-care': 5,
   'dermatology': 6, 'derma': 6, 'vellis': 6, 'skin': 6,
   'ent': 7, 'otira': 7, 'ear-nose-throat': 7,
   'general-medicine': 8, 'omnara': 8, 'general': 8, 'internal-medicine': 8,
@@ -235,6 +236,17 @@ export const getProductByIdOrSlug = async (req, res, next) => {
       [product.id]
     );
 
+    // Multi-specialty areas
+    const areaRows = await query(
+      'SELECT therapeutic_area_id FROM product_therapeutic_areas WHERE product_id = ?',
+      [product.id]
+    );
+    const areaIds = areaRows.map((r) => r.therapeutic_area_id);
+    if (product.therapeutic_area_id && !areaIds.includes(product.therapeutic_area_id)) {
+      areaIds.push(product.therapeutic_area_id);
+    }
+    product.therapeutic_area_ids = areaIds;
+
     const brandName = product.brand_name || product.brandName || product.name || '';
     const shortDesc = product.short_description || product.shortDescription || product.composition_summary || product.composition || product.full_description || '';
     const fullDesc = product.full_description || product.fullDescription || product.description || '';
@@ -244,6 +256,7 @@ export const getProductByIdOrSlug = async (req, res, next) => {
 
     const enriched = {
       ...product,
+      therapeutic_area_ids: areaIds,
       brandName,
       brand_name: brandName,
       name: brandName,
@@ -385,6 +398,19 @@ export const createProduct = async (req, res, next) => {
 
     const productId = result.insertId;
 
+    // Save multi-specialty area mappings in product_therapeutic_areas
+    const rawAreaIds = Array.isArray(req.body.therapeutic_area_ids) && req.body.therapeutic_area_ids.length > 0
+      ? req.body.therapeutic_area_ids
+      : [areaId];
+    const allAreaIds = [...new Set([areaId, ...rawAreaIds])].map(Number).filter(Boolean);
+    for (const tid of allAreaIds) {
+      await query(`
+        INSERT INTO product_therapeutic_areas (product_id, therapeutic_area_id, display_order)
+        VALUES (?, ?, ?)
+        ON DUPLICATE KEY UPDATE display_order = VALUES(display_order)
+      `, [productId, tid, order]);
+    }
+
     // Save nested details
     await saveNestedProductDetails(productId, { compositions, benefits, dosage, mechanisms, safetySections, images });
 
@@ -403,6 +429,7 @@ export const updateProduct = async (req, res, next) => {
     const { id } = req.params;
     const {
       therapeutic_area_id,
+      therapeutic_area_ids,
       therapeuticArea,
       brand_name,
       brandName,
@@ -430,7 +457,7 @@ export const updateProduct = async (req, res, next) => {
     } = req.body;
 
     // Resolve target numeric ID if slug or identifier was passed
-    const existingRows = await query('SELECT id, slug FROM products WHERE id = ? OR slug = ? LIMIT 1', [id, id]);
+    const existingRows = await query('SELECT id, slug, therapeutic_area_id FROM products WHERE id = ? OR slug = ? LIMIT 1', [id, id]);
     if (!existingRows || existingRows.length === 0) {
       return res.status(404).json({ success: false, error: 'Product not found', message: 'Product not found.' });
     }
@@ -515,6 +542,23 @@ export const updateProduct = async (req, res, next) => {
       await query(`UPDATE products SET ${updates.join(', ')} WHERE id = ?`, params);
     }
 
+    // Save multi-specialty area mappings in product_therapeutic_areas
+    const targetPrimaryArea = areaId !== undefined ? areaId : existingRows[0].therapeutic_area_id;
+    if (therapeutic_area_ids !== undefined || areaId !== undefined) {
+      const rawAreaIds = Array.isArray(therapeutic_area_ids) && therapeutic_area_ids.length > 0
+        ? therapeutic_area_ids
+        : (targetPrimaryArea ? [targetPrimaryArea] : [1]);
+      const allAreaIds = [...new Set([targetPrimaryArea, ...rawAreaIds])].map(Number).filter(Boolean);
+      await query('DELETE FROM product_therapeutic_areas WHERE product_id = ?', [targetId]);
+      for (const tid of allAreaIds) {
+        await query(`
+          INSERT INTO product_therapeutic_areas (product_id, therapeutic_area_id, display_order)
+          VALUES (?, ?, ?)
+          ON DUPLICATE KEY UPDATE display_order = VALUES(display_order)
+        `, [targetId, tid, display_order || targetId]);
+      }
+    }
+
     // Update nested details targeting numeric targetId
     await saveNestedProductDetails(targetId, { compositions, benefits, dosage, mechanisms, safetySections, images });
 
@@ -531,6 +575,7 @@ export const updateProduct = async (req, res, next) => {
 export const deleteProduct = async (req, res, next) => {
   try {
     const { id } = req.params;
+    await query('DELETE FROM product_therapeutic_areas WHERE product_id = ?', [id]);
     await query('DELETE FROM product_compositions WHERE product_id = ?', [id]);
     await query('DELETE FROM product_benefits WHERE product_id = ?', [id]);
     await query('DELETE FROM product_dosage WHERE product_id = ?', [id]);

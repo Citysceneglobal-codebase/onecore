@@ -130,6 +130,7 @@ export default function AdminProductEditor() {
     brand_name: '',
     slug: '',
     therapeutic_area_id: 3,
+    therapeutic_area_ids: [3],
     division: '',
     divisionSlug: '',
     therapeuticArea: '',
@@ -185,6 +186,9 @@ export default function AdminProductEditor() {
             brandName: p.brand_name || p.name || '',
             slug: p.slug || '',
             therapeutic_area_id: p.therapeutic_area_id || 3,
+            therapeutic_area_ids: (Array.isArray(p.therapeutic_area_ids) && p.therapeutic_area_ids.length > 0)
+              ? p.therapeutic_area_ids
+              : [p.therapeutic_area_id || 3],
             division: p.division || p.divisionSlug || p.therapeutic_area_slug || '',
             divisionSlug: p.divisionSlug || p.division || p.therapeutic_area_slug || '',
             therapeuticArea: p.therapeuticArea || p.therapeutic_area_name || '',
@@ -252,6 +256,7 @@ export default function AdminProductEditor() {
       therapeutic_area: selectedDivisionLabel,
       category: selectedDivisionSlug,
       therapeutic_area_id: form.therapeutic_area_id,
+      therapeutic_area_ids: form.therapeutic_area_ids || [form.therapeutic_area_id],
       updatedAt: new Date()
     };
 
@@ -422,12 +427,17 @@ export default function AdminProductEditor() {
               </div>
 
               <div>
-                <FieldLabel required>Therapeutic Area / Division</FieldLabel>
+                <FieldLabel required>Primary Division / Specialty</FieldLabel>
                 <select
                   value={form.therapeutic_area_id}
-                  onChange={(e) =>
-                    setForm((p) => ({ ...p, therapeutic_area_id: parseInt(e.target.value, 10) }))
-                  }
+                  onChange={(e) => {
+                    const newPrimary = parseInt(e.target.value, 10);
+                    setForm((p) => {
+                      const prevIds = Array.isArray(p.therapeutic_area_ids) ? p.therapeutic_area_ids : [];
+                      const updatedIds = prevIds.includes(newPrimary) ? prevIds : [newPrimary, ...prevIds];
+                      return { ...p, therapeutic_area_id: newPrimary, therapeutic_area_ids: updatedIds };
+                    });
+                  }}
                   className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-[#0D5C75] focus:ring-1 focus:ring-[#0D5C75]"
                 >
                   {areas.map((a) => (
@@ -436,6 +446,60 @@ export default function AdminProductEditor() {
                     </option>
                   ))}
                 </select>
+              </div>
+
+              {/* Multi-Specialty Category Checkboxes */}
+              <div className="md:col-span-3 bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+                    Multi-Specialty Display (Appear in Multiple Categories)
+                  </span>
+                  <span className="text-[10px] text-[#0D5C75] font-semibold bg-[#0D5C75]/10 px-2 py-0.5 rounded-full">
+                    {(form.therapeutic_area_ids || []).length} Categories Selected
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-500">
+                  Select all specialty pages where this product should be displayed. For example, if a medicine is prescribed in both Orthopaedics (Ortheon) and General Medicine (Omnara), check both.
+                </p>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 pt-1">
+                  {areas.map((a) => {
+                    const isPrimary = a.id === form.therapeutic_area_id;
+                    const isChecked = isPrimary || (form.therapeutic_area_ids || []).includes(a.id);
+                    return (
+                      <label
+                        key={a.id}
+                        className={`flex items-center gap-2 p-2 rounded-lg border text-xs cursor-pointer transition-colors ${
+                          isChecked
+                            ? 'bg-[#0D5C75]/5 border-[#0D5C75]/40 text-[#0D5C75] font-semibold'
+                            : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300'
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={isChecked}
+                          disabled={isPrimary}
+                          onChange={(e) => {
+                            const checked = e.target.checked;
+                            setForm((prev) => {
+                              const setIds = new Set(prev.therapeutic_area_ids || [prev.therapeutic_area_id]);
+                              if (checked) {
+                                setIds.add(a.id);
+                              } else {
+                                setIds.delete(a.id);
+                              }
+                              setIds.add(prev.therapeutic_area_id); // ensure primary is always kept
+                              return { ...prev, therapeutic_area_ids: Array.from(setIds) };
+                            });
+                          }}
+                          className="rounded border-slate-300 text-[#0D5C75] focus:ring-[#0D5C75]"
+                        />
+                        <span className="truncate">
+                          {a.name} {isPrimary && <span className="text-[10px] font-normal text-[#0D5C75]">(Primary)</span>}
+                        </span>
+                      </label>
+                    );
+                  })}
+                </div>
               </div>
 
               <div className="md:col-span-3">
