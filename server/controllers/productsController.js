@@ -174,6 +174,10 @@ export const getProducts = async (req, res, next) => {
         category: divSlug,
         status: p.status || 'published',
         display_order: p.display_order || 0,
+        link_url: p.link_url || null,
+        link_label: p.link_label || null,
+        external_link: p.link_url || null,
+        external_link_label: p.link_label || null,
         updatedAt: p.updated_at || new Date(),
         productUrl,
       };
@@ -286,6 +290,10 @@ export const getProductByIdOrSlug = async (req, res, next) => {
       therapeutic_area_name: taName,
       therapeutic_area_slug: divSlug,
       category: divSlug,
+      link_url: product.link_url || null,
+      link_label: product.link_label || null,
+      external_link: product.link_url || null,
+      external_link_label: product.link_label || null,
     };
 
     return res.status(200).json({
@@ -321,6 +329,13 @@ export const createProduct = async (req, res, next) => {
       display_order,
       seo_title,
       seo_description,
+      link_url,
+      linkUrl,
+      external_link,
+      external_link_url,
+      link_label,
+      linkLabel,
+      external_link_label,
       compositions,
       benefits,
       dosage,
@@ -362,6 +377,8 @@ export const createProduct = async (req, res, next) => {
     const shortDescVal = shortDescription || short_description || '';
     const fullDescVal = fullDescription || full_description || '';
     const packshotVal = productPrimaryPackshotImage || packshot_url || image || null;
+    const linkUrlVal = (link_url !== undefined ? link_url : (linkUrl !== undefined ? linkUrl : (external_link !== undefined ? external_link : external_link_url))) || null;
+    const linkLabelVal = (link_label !== undefined ? link_label : (linkLabel !== undefined ? linkLabel : (external_link_label !== undefined ? external_link_label : null))) || null;
 
     let order = display_order;
     if (order === undefined) {
@@ -389,9 +406,9 @@ export const createProduct = async (req, res, next) => {
     const result = await query(`
       INSERT INTO products (
         therapeutic_area_id, brand_name, slug, short_description, full_description, packshot_url,
-        status, display_order, seo_title, seo_description
+        status, display_order, seo_title, seo_description, link_url, link_label
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `, [
       areaId,
       brandNameVal,
@@ -402,7 +419,9 @@ export const createProduct = async (req, res, next) => {
       status || 'published',
       order,
       seo_title || null,
-      seo_description || null
+      seo_description || null,
+      linkUrlVal ? linkUrlVal.trim() : null,
+      linkLabelVal ? linkLabelVal.trim() : null,
     ]);
 
     const productId = result.insertId;
@@ -541,6 +560,18 @@ export const updateProduct = async (req, res, next) => {
     if (seo_description !== undefined) {
       updates.push('seo_description = ?');
       params.push(seo_description);
+    }
+
+    const linkUrlVal = link_url !== undefined ? link_url : (linkUrl !== undefined ? linkUrl : (external_link !== undefined ? external_link : external_link_url));
+    const linkLabelVal = link_label !== undefined ? link_label : (linkLabel !== undefined ? linkLabel : (external_link_label !== undefined ? external_link_label : undefined));
+
+    if (linkUrlVal !== undefined) {
+      updates.push('link_url = ?');
+      params.push(linkUrlVal ? linkUrlVal.trim() : null);
+    }
+    if (linkLabelVal !== undefined) {
+      updates.push('link_label = ?');
+      params.push(linkLabelVal ? linkLabelVal.trim() : null);
     }
 
     // Always update timestamp

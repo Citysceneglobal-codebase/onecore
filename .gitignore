@@ -37,9 +37,15 @@ server/node_modules
 server/.env
 !server/uploads/.gitkeep
 
-# Temporary raw downloads
+# Temporary raw downloads and scratch dumps
 drive-download*
 *.xlsx
 Onecore Images/
 New photos on whatsapp/
+/*.sql
+!database/*.sql
+!server/database/*.sql
+/*.pdf
+/*.png
+!public/**
 

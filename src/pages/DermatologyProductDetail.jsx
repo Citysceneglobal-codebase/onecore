@@ -179,6 +179,7 @@ function parsePrecautionsAccordions(precautionsArray) {
 import { useProduct } from '../hooks/useProduct';
 import { getAreaListingRoute } from '../utils/areaNavigation';
 import { formatProductName } from '../utils/formatProductName';
+import ProductEndLink from '../components/ProductEndLink';
 
 export default function DermatologyProductDetail() {
   const { productSlug } = useParams();
@@ -196,17 +197,28 @@ export default function DermatologyProductDetail() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ['precautions', 'directions', 'used', 'mechanism', 'overview'];
-      const scrollPos = window.scrollY + 140;
+      const navOffset = window.innerWidth < 640 ? 120 : 140;
+      const sections = ['precautions', 'directions', 'used', 'indications', 'mechanism'];
+      
+      if (window.scrollY < 300) {
+        setActiveTab('overview');
+        return;
+      }
+
       for (const id of sections) {
         const el = document.getElementById(id);
-        if (el && el.offsetTop <= scrollPos) {
-          setActiveTab(id);
-          break;
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= navOffset) {
+            setActiveTab(id === 'indications' ? 'used' : id);
+            return;
+          }
         }
       }
+      setActiveTab('overview');
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -251,10 +263,14 @@ export default function DermatologyProductDetail() {
 
   const scrollToSection = (id) => {
     setActiveTab(id);
+    if (id === 'overview') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
     const el = document.getElementById(id) || document.getElementById(id === 'used' ? 'indications' : (id === 'indications' ? 'used' : id));
     if (el) {
-      const yOffset = -90;
-      const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      const navOffset = window.innerWidth < 640 ? 114 : 126;
+      const y = el.getBoundingClientRect().top + window.pageYOffset - navOffset;
       window.scrollTo({ top: y, behavior: 'smooth' });
     }
   };
@@ -334,7 +350,7 @@ export default function DermatologyProductDetail() {
       </div>
 
       {/* 5. STICKY ANCHOR NAVIGATION */}
-      <div className="sticky top-0 z-20 bg-white/95 backdrop-blur-md border-t border-[#eeeae6] border-b border-[#d9d4cf] px-6 sm:px-12">
+      <div className="sticky top-[64px] sm:top-[76px] z-30 bg-white/95 backdrop-blur-md border-t border-[#eeeae6] border-b border-[#d9d4cf] px-6 sm:px-12 shadow-2xs">
         <div className="max-w-6xl mx-auto flex gap-6 sm:gap-8 overflow-x-auto py-3 scrollbar-none no-scrollbar">
           <button
             type="button"
@@ -554,6 +570,9 @@ export default function DermatologyProductDetail() {
           </div>
         </section>
       )}
+
+      {/* Direct Product Action Link */}
+      <ProductEndLink product={product} />
     </div>
   );
 }

@@ -426,7 +426,7 @@ export default function AreaOfCareDetail() {
               Areas of Care
             </Link>
             <span>›</span>
-            <span className="text-[#121212] font-semibold">{currentCategory.title} ({currentCategory.subtitle})</span>
+            <span className="text-[#121212] font-semibold">{currentCategory.title}</span>
           </div>
         </div>
       </div>

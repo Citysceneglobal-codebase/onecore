@@ -55,10 +55,30 @@ export function formatProductName(name) {
   const brandRoot = parts[0];
   const suffix = parts.slice(1).join('');
 
-  return React.createElement(
-    React.Fragment,
-    null,
-    brandRoot,
+  // Extract the immediate word before ™ so it cannot break away from the ™ symbol
+  const lastSpaceIdx = brandRoot.lastIndexOf(' ');
+  const prefix = lastSpaceIdx !== -1 ? brandRoot.slice(0, lastSpaceIdx + 1) : '';
+  const lastWord = lastSpaceIdx !== -1 ? brandRoot.slice(lastSpaceIdx + 1) : brandRoot;
+
+  // If the suffix immediately attaches via hyphen (e.g. Frecox™-R, Tofcore™-11), keep that unit bound as well
+  let boundSuffix = '';
+  let restSuffix = suffix;
+  const hyphenMatch = suffix.match(/^(-\w+)/);
+  if (hyphenMatch) {
+    boundSuffix = hyphenMatch[1];
+    restSuffix = suffix.slice(boundSuffix.length);
+  }
+
+  const boundWordWithTM = React.createElement(
+    'span',
+    {
+      className: 'whitespace-nowrap inline-block',
+      style: {
+        whiteSpace: 'nowrap',
+        display: 'inline-block',
+      },
+    },
+    lastWord,
     React.createElement(
       'span',
       {
@@ -74,7 +94,15 @@ export function formatProductName(name) {
       },
       '™'
     ),
-    suffix
+    boundSuffix
+  );
+
+  return React.createElement(
+    React.Fragment,
+    null,
+    prefix,
+    boundWordWithTM,
+    restSuffix
   );
 }
 

@@ -142,6 +142,8 @@ export default function AdminProductEditor() {
     display_order: 1,
     seo_title: '',
     seo_description: '',
+    link_url: '',
+    link_label: '',
     images: [],
     compositions: [],
     benefits: [],
@@ -200,6 +202,8 @@ export default function AdminProductEditor() {
             display_order: p.display_order || 1,
             seo_title: p.seo_title || '',
             seo_description: p.seo_description || '',
+            link_url: p.link_url || p.external_link || '',
+            link_label: p.link_label || p.external_link_label || '',
             images: (Array.isArray(p.images) && p.images.length > 0)
               ? p.images.map((img, idx) => ({
                   id: img.id,
@@ -257,6 +261,10 @@ export default function AdminProductEditor() {
       category: selectedDivisionSlug,
       therapeutic_area_id: form.therapeutic_area_id,
       therapeutic_area_ids: form.therapeutic_area_ids || [form.therapeutic_area_id],
+      link_url: form.link_url ? form.link_url.trim() : null,
+      link_label: form.link_label ? form.link_label.trim() : null,
+      external_link: form.link_url ? form.link_url.trim() : null,
+      external_link_label: form.link_label ? form.link_label.trim() : null,
       updatedAt: new Date()
     };
 
@@ -868,6 +876,34 @@ export default function AdminProductEditor() {
                   value={form.seo_description}
                   onChange={set('seo_description')}
                   placeholder="Clinical product monograph for OneFLEXO, its formulation, composition and joint health information..."
+                />
+              </div>
+            </div>
+          </AdminCard>
+
+          {/* Section 8: External / Direct Product Link */}
+          <AdminCard
+            title="Product Action Link (Bottom of Product Page)"
+            subtitle="Optional custom destination URL and button label displayed at the very end of this product monograph"
+          >
+            <div className="space-y-4">
+              <div>
+                <FieldLabel>Link URL / Destination</FieldLabel>
+                <TextInput
+                  value={form.link_url}
+                  onChange={set('link_url')}
+                  placeholder="e.g. https://example.com/order-product or /contact"
+                />
+                <span className="text-[11px] text-slate-500 mt-1.5 block">
+                  Enter an external URL (e.g. <code>https://...</code>) or internal page (e.g. <code>/contact</code>). If provided, a direct action button will be rendered at the end of the product page.
+                </span>
+              </div>
+              <div>
+                <FieldLabel>Button / Link Label</FieldLabel>
+                <TextInput
+                  value={form.link_label}
+                  onChange={set('link_label')}
+                  placeholder="e.g. Buy Online / Order Product / Request Monograph (defaults to 'Learn More')"
                 />
               </div>
             </div>

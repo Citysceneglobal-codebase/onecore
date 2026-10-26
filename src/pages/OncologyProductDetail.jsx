@@ -175,6 +175,7 @@ function parsePrecautionsAccordions(precautionsArray) {
 import { useProduct } from '../hooks/useProduct';
 import { getAreaListingRoute } from '../utils/areaNavigation';
 import { formatProductName } from '../utils/formatProductName';
+import ProductEndLink from '../components/ProductEndLink';
 
 export default function OncologyProductDetail() {
   const { productSlug } = useParams();
@@ -192,17 +193,28 @@ export default function OncologyProductDetail() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ['precautions', 'directions', 'indications', 'mechanism', 'overview'];
-      const scrollPos = window.scrollY + 140;
+      const navOffset = window.innerWidth < 640 ? 120 : 140;
+      const sections = ['precautions', 'directions', 'indications', 'used', 'mechanism'];
+      
+      if (window.scrollY < 300) {
+        setActiveTab('overview');
+        return;
+      }
+
       for (const id of sections) {
         const el = document.getElementById(id);
-        if (el && el.offsetTop <= scrollPos) {
-          setActiveTab(id);
-          break;
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= navOffset) {
+            setActiveTab(id === 'used' ? 'indications' : id);
+            return;
+          }
         }
       }
+      setActiveTab('overview');
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -247,10 +259,14 @@ export default function OncologyProductDetail() {
 
   const scrollToSection = (id) => {
     setActiveTab(id);
+    if (id === 'overview') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
     const el = document.getElementById(id) || document.getElementById(id === 'used' ? 'indications' : (id === 'indications' ? 'used' : id));
     if (el) {
-      const yOffset = -90;
-      const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      const navOffset = window.innerWidth < 640 ? 114 : 126;
+      const y = el.getBoundingClientRect().top + window.pageYOffset - navOffset;
       window.scrollTo({ top: y, behavior: 'smooth' });
     }
   };
@@ -326,7 +342,7 @@ export default function OncologyProductDetail() {
       </div>
 
       {/* STICKY ANCHOR NAVIGATION */}
-      <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-[#d9d4cf] px-6 sm:px-12 py-3 flex gap-6 sm:gap-10 overflow-x-auto text-xs uppercase tracking-widest font-semibold text-[#777078] scrollbar-none">
+      <div className="sticky top-[64px] sm:top-[76px] z-30 bg-white/95 backdrop-blur-md border-b border-[#d9d4cf] px-6 sm:px-12 py-3 flex gap-6 sm:gap-10 overflow-x-auto text-xs uppercase tracking-widest font-semibold text-[#777078] scrollbar-none shadow-2xs">
         <button
           type="button"
           onClick={() => scrollToSection('overview')}
@@ -527,6 +543,9 @@ export default function OncologyProductDetail() {
           </div>
         </section>
       )}
+
+      {/* Direct Product Action Link */}
+      <ProductEndLink product={product} />
 
       {/* FOOTER CTA */}
       <div className="border-t border-[#d9d4cf] py-12 px-6 sm:px-12 bg-[#f7f5f1] text-center">

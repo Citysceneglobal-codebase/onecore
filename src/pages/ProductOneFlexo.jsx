@@ -8,6 +8,7 @@ import { useProduct } from '../hooks/useProduct';
 import { assetUrl } from '../utils/assetUrl';
 import { getAreaListingRoute } from '../utils/areaNavigation';
 import { formatProductName } from '../utils/formatProductName';
+import ProductEndLink from '../components/ProductEndLink';
 
 export default function ProductOneFlexo() {
   const [activeSection, setActiveSection] = useState('description');
@@ -276,7 +277,7 @@ export default function ProductOneFlexo() {
       {/* 3. Sticky Sub-Navigation */}
       <nav
         aria-label="Product sections"
-        className="sticky top-[72px] z-30 bg-white/95 backdrop-blur-md border-b border-[#E5E3DC] py-3 shadow-xs"
+        className="sticky top-[64px] sm:top-[76px] z-30 bg-white/95 backdrop-blur-md border-b border-[#E5E3DC] py-3 shadow-xs"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-8">
           <div className="flex items-center justify-between gap-4">
@@ -486,6 +487,9 @@ export default function ProductOneFlexo() {
           ))}
         </div>
       </section>
+
+      {/* Direct Product Action Link */}
+      <ProductEndLink product={product} />
 
       {/* Mandatory Prescription Disclaimer */}
       <PrescriptionDisclaimer />
