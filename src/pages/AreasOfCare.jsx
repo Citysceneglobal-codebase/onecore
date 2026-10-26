@@ -126,6 +126,8 @@ export default function AreasOfCare() {
     }
   };
 
+  const [formError, setFormError] = useState(null);
+
   const isFormValid =
     formState.fullName.trim() !== '' &&
     formState.organisation.trim() !== '' &&
@@ -134,15 +136,42 @@ export default function AreasOfCare() {
     formState.country.trim() !== '' &&
     formState.consent === true;
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
     if (!isFormValid) return;
 
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
+    setFormError(null);
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fullName: formState.fullName,
+          workEmail: formState.workEmail,
+          organisation: formState.organisation,
+          role: formState.role,
+          country: formState.country,
+          contactType: formState.role || 'Institutional Healthcare Representative',
+          natureOfEnquiry: 'Institutional Access & Dossier Request',
+          message: `Institutional access and dossier request for ${formState.organisation} (Country/Region: ${formState.country}). Designated Role: ${formState.role}.`,
+        }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || 'Unable to submit your institutional request. Please verify your details.');
+      }
+
       setFormSubmitted(true);
-    }, 400);
+    } catch (err) {
+      console.error('Institutional request error:', err);
+      setFormError(err.message || 'Connection error. Please try again or email us directly.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (areasLoading || (cmsLoading && !cmsError && !dynamicAreas)) {
@@ -518,6 +547,15 @@ export default function AreasOfCare() {
               </div>
             ) : (
               <form onSubmit={handleFormSubmit} className="space-y-6">
+                {formError && (
+                  <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs sm:text-sm flex items-start gap-3">
+                    <span className="text-base">⚠️</span>
+                    <div>
+                      <p className="font-semibold text-rose-900">Request Submission Issue</p>
+                      <p className="mt-0.5 text-rose-700">{formError}</p>
+                    </div>
+                  </div>
+                )}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-xs font-semibold uppercase tracking-wider text-[#121212] block">

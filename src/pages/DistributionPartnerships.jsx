@@ -36,14 +36,58 @@ export default function DistributionPartnerships() {
 
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState(null);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
-    setTimeout(() => {
-      setSubmitting(false);
+    setSubmitError(null);
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          partnerName: formData.partnerName,
+          firmName: formData.firmName,
+          email: formData.email,
+          phone: formData.phone,
+          state: formData.state,
+          city: formData.city,
+          experienceYears: formData.experienceYears,
+          drugLicense: formData.drugLicense,
+          gstNumber: formData.gstNumber,
+          therapeuticInterest: formData.therapeuticInterest,
+          message: formData.message,
+        }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || 'Unable to submit your application. Please verify your details and try again.');
+      }
+
       setSubmitted(true);
-    }, 800);
+      setFormData({
+        partnerName: '',
+        firmName: '',
+        email: '',
+        phone: '',
+        state: '',
+        city: '',
+        experienceYears: '',
+        drugLicense: '',
+        gstNumber: '',
+        therapeuticInterest: 'All Divisions',
+        message: '',
+      });
+    } catch (err) {
+      console.error('Partnership submission error:', err);
+      setSubmitError(err.message || 'Connection error. Please try again or email us directly.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const partnerAdvantages = [
@@ -378,6 +422,15 @@ export default function DistributionPartnerships() {
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="p-8 sm:p-12 rounded-3xl bg-white/80 backdrop-blur-xs border border-[#E5E3DC] space-y-6 shadow-xs">
+              {submitError && (
+                <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs sm:text-sm flex items-start gap-3">
+                  <span className="text-base">⚠️</span>
+                  <div>
+                    <p className="font-semibold text-rose-900">Application Submission Issue</p>
+                    <p className="mt-0.5 text-rose-700">{submitError}</p>
+                  </div>
+                </div>
+              )}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-xs font-semibold uppercase tracking-wider text-[#333333] mb-2">

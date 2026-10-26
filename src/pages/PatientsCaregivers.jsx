@@ -10,6 +10,14 @@ export default function PatientsCaregivers() {
   const { getSection, loading: cmsLoading, isError: cmsError } = useCmsPage('patients-caregivers');
   const [activeSafetyModal, setActiveSafetyModal] = useState(null);
   const [modalSubmitted, setModalSubmitted] = useState(false);
+  const [safetySubmitting, setSafetySubmitting] = useState(false);
+  const [safetyError, setSafetyError] = useState(null);
+  const [safetyForm, setSafetyForm] = useState({
+    fullName: '',
+    email: '',
+    productOrBatch: '',
+    observation: '',
+  });
 
   useEffect(() => {
     document.title = "Patients & Caregivers | Onecore Pharma";
@@ -28,13 +36,44 @@ export default function PatientsCaregivers() {
     }
   };
 
-  const handleModalSubmit = (e) => {
+  const handleModalSubmit = async (e) => {
     e.preventDefault();
-    setModalSubmitted(true);
-    setTimeout(() => {
-      setModalSubmitted(false);
-      setActiveSafetyModal(null);
-    }, 2500);
+    setSafetySubmitting(true);
+    setSafetyError(null);
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fullName: safetyForm.fullName,
+          email: safetyForm.email,
+          productOrBatch: safetyForm.productOrBatch,
+          contactType: activeSafetyModal === 'patient' ? 'Patient / Family Caregiver' : 'Healthcare Professional',
+          natureOfEnquiry: 'Pharmacovigilance & Quality Observation',
+          message: safetyForm.observation,
+        }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || 'Unable to submit your observation report. Please try again.');
+      }
+
+      setModalSubmitted(true);
+      setSafetyForm({
+        fullName: '',
+        email: '',
+        productOrBatch: '',
+        observation: '',
+      });
+    } catch (err) {
+      console.error('Safety report error:', err);
+      setSafetyError(err.message || 'Connection error. Please try again or notify our medical safety team directly.');
+    } finally {
+      setSafetySubmitting(false);
+    }
   };
 
   // Section 1: Hero
@@ -645,6 +684,13 @@ export default function PatientsCaregivers() {
                   </h3>
                 </div>
 
+                {safetyError && (
+                  <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-start gap-2.5">
+                    <span>⚠️</span>
+                    <p className="font-medium">{safetyError}</p>
+                  </div>
+                )}
+
                 <div className="space-y-3 text-sm pt-2">
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-wider text-[#121212] mb-1.5">
@@ -653,6 +699,8 @@ export default function PatientsCaregivers() {
                     <input
                       type="text"
                       required
+                      value={safetyForm.fullName}
+                      onChange={(e) => setSafetyForm({ ...safetyForm, fullName: e.target.value })}
                       placeholder="Your name"
                       className="w-full px-4 py-2.5 bg-[#FAF9F6] border border-[#E5E3DC] text-sm rounded-xl focus:outline-none focus:border-[#D52B1E] transition-colors text-[#121212]"
                     />
@@ -665,6 +713,8 @@ export default function PatientsCaregivers() {
                     <input
                       type="email"
                       required
+                      value={safetyForm.email}
+                      onChange={(e) => setSafetyForm({ ...safetyForm, email: e.target.value })}
                       placeholder="name@domain.com"
                       className="w-full px-4 py-2.5 bg-[#FAF9F6] border border-[#E5E3DC] text-sm rounded-xl focus:outline-none focus:border-[#D52B1E] transition-colors text-[#121212]"
                     />
@@ -676,6 +726,8 @@ export default function PatientsCaregivers() {
                     </label>
                     <input
                       type="text"
+                      value={safetyForm.productOrBatch}
+                      onChange={(e) => setSafetyForm({ ...safetyForm, productOrBatch: e.target.value })}
                       placeholder="e.g. Calmme, Oneflexo, Batch 24B01"
                       className="w-full px-4 py-2.5 bg-[#FAF9F6] border border-[#E5E3DC] text-sm rounded-xl focus:outline-none focus:border-[#D52B1E] transition-colors text-[#121212]"
                     />
@@ -688,6 +740,8 @@ export default function PatientsCaregivers() {
                     <textarea
                       required
                       rows={3}
+                      value={safetyForm.observation}
+                      onChange={(e) => setSafetyForm({ ...safetyForm, observation: e.target.value })}
                       placeholder="Please describe the side effect, packaging irregularity, or quality concern in detail..."
                       className="w-full px-4 py-2.5 bg-[#FAF9F6] border border-[#E5E3DC] text-sm rounded-xl focus:outline-none focus:border-[#D52B1E] transition-colors text-[#121212] resize-none"
                     />
@@ -704,9 +758,10 @@ export default function PatientsCaregivers() {
                   </button>
                   <button
                     type="submit"
-                    className="px-6 py-2.5 bg-[#D52B1E] hover:bg-[#B52015] text-white text-xs font-semibold rounded-full transition-colors cursor-pointer shadow-xs"
+                    disabled={safetySubmitting}
+                    className="px-6 py-2.5 bg-[#D52B1E] hover:bg-[#B52015] text-white text-xs font-semibold rounded-full transition-colors cursor-pointer shadow-xs disabled:opacity-50"
                   >
-                    Submit Report
+                    {safetySubmitting ? 'Transmitting...' : 'Submit Report'}
                   </button>
                 </div>
               </form>
