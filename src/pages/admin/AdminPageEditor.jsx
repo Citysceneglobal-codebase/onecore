@@ -1412,6 +1412,16 @@ export default function AdminPageEditor() {
           recipient_email: 'enquiry@onecorepharma.com',
         }),
       }));
+    } else if (val === 'legal_clause') {
+      const timestamp = Date.now().toString().slice(-4);
+      setNewSectionForm((p) => ({
+        ...p,
+        section_type: 'editorial',
+        section_key: p.section_key || `clause_${timestamp}`,
+        heading: p.heading || 'New Policy Clause',
+        eyebrow: p.eyebrow || 'POLICY',
+        body: p.body || 'Add detailed legal policy clause or regulatory text here.',
+      }));
     } else {
       setNewSectionForm((p) => ({ ...p, section_type: val }));
     }
@@ -1640,6 +1650,7 @@ export default function AdminPageEditor() {
                   className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-[#0D5C75] focus:ring-1 focus:ring-[#0D5C75]"
                 >
                   <option value="editorial">Editorial / Text + Image</option>
+                  <option value="legal_clause">Legal Policy Clause / Article</option>
                   <option value="hero">Hero Section</option>
                   <option value="hero_banner">Hero Banner & Core Mission</option>
                   <option value="divisions_showcase">Therapeutic Divisions Overview</option>

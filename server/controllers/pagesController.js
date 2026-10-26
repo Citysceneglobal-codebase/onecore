@@ -245,6 +245,70 @@ export const PAGE_SECTION_DEFAULTS = {
         image_url: '/assets/news-1.jpg'
       }
     }
+  ],
+  'privacy': [
+    {
+      key: 'banner',
+      type: 'hero',
+      title: 'Page Banner & Header',
+      eyebrow: 'LEGAL & COMPLIANCE',
+      heading: 'Privacy Policy',
+      subheading: 'How Onecore Pharma collects, protects, and handles personal data.',
+      body: 'Onecore Pharma is committed to protecting your privacy and ensuring responsible, transparent handling of all communications and interactions.',
+      image_url: '/assets/about-facility.jpg',
+    },
+    {
+      key: 'information_collection',
+      type: 'editorial',
+      title: '1. Information Collection',
+      eyebrow: 'ARTICLE 01',
+      heading: '1. Information Collection',
+      body: 'Onecore Pharma collects information voluntarily submitted through our contact and inquiry forms, including names, professional affiliations, and contact details necessary to respond to product or partnership communications.',
+    },
+    {
+      key: 'use_of_information',
+      type: 'editorial',
+      title: '2. Use of Information',
+      eyebrow: 'ARTICLE 02',
+      heading: '2. Use of Information',
+      body: 'Submitted details are used solely to route inquiries to the appropriate departmental function, such as medical information, business partnerships, or customer support.',
+    },
+    {
+      key: 'data_protection',
+      type: 'editorial',
+      title: '3. Data Protection & Confidentiality',
+      eyebrow: 'ARTICLE 03',
+      heading: '3. Data Protection & Confidentiality',
+      body: 'We maintain reasonable technical and organizational standards to protect communications from unauthorized disclosure, access, or alteration.',
+    }
+  ],
+  'disclaimer': [
+    {
+      key: 'banner',
+      type: 'hero',
+      title: 'Page Banner & Header',
+      eyebrow: 'LEGAL & REGULATORY',
+      heading: 'Disclaimer',
+      subheading: 'Regulatory notices, medical boundaries, and conditions of website use.',
+      body: 'Please review the following legal disclosures regarding medical information, product specifications, and regulatory frameworks.',
+      image_url: '/assets/hero-healthcare.jpg',
+    },
+    {
+      key: 'medical_information_notice',
+      type: 'editorial',
+      title: 'Medical Information Notice',
+      eyebrow: 'NOTICE 01',
+      heading: 'Medical Information Notice',
+      body: 'The content provided on this website is for informational and educational purposes only and is not intended to replace consultation with a qualified medical professional.',
+    },
+    {
+      key: 'product_availability',
+      type: 'editorial',
+      title: 'Product Availability',
+      eyebrow: 'NOTICE 02',
+      heading: 'Product Availability',
+      body: 'Product specifications and availability are subject to local regulatory authorizations and marketed formulation guidelines.',
+    }
   ]
 };
 
@@ -253,6 +317,7 @@ PAGE_SECTION_DEFAULTS['areas_of_care'] = PAGE_SECTION_DEFAULTS['areas-of-care'];
 PAGE_SECTION_DEFAULTS['patients_caregivers'] = PAGE_SECTION_DEFAULTS['patients-caregivers'];
 PAGE_SECTION_DEFAULTS['healthcare_professionals'] = PAGE_SECTION_DEFAULTS['healthcare-professionals'];
 PAGE_SECTION_DEFAULTS['quality_manufacturing'] = PAGE_SECTION_DEFAULTS['quality-manufacturing'];
+PAGE_SECTION_DEFAULTS['terms'] = PAGE_SECTION_DEFAULTS['disclaimer'];
 PAGE_SECTION_DEFAULTS[''] = PAGE_SECTION_DEFAULTS['home'];
 
 const KNOWN_PAGE_TEMPLATES = [
@@ -264,6 +329,9 @@ const KNOWN_PAGE_TEMPLATES = [
   { page_key: 'areas-of-care', title: 'Therapeutic Areas', slug: '/areas-of-care' },
   { page_key: 'contact', title: 'Contact', slug: '/contact' },
   { page_key: 'news', title: 'News & Perspectives', slug: '/news' },
+  { page_key: 'partnerships', title: 'Distribution & Partnerships', slug: '/partnerships' },
+  { page_key: 'privacy', title: 'Privacy Statement', slug: '/privacy' },
+  { page_key: 'disclaimer', title: 'Terms of Use & Disclaimer', slug: '/disclaimer' },
   { page_key: 'careers', title: 'Careers', slug: '/careers' },
   { page_key: 'research-quality', title: 'Research & Quality', slug: '/research-quality' },
 ];
@@ -361,6 +429,17 @@ const setNoCacheHeaders = (res) => {
 export const getPages = async (req, res, next) => {
   try {
     setNoCacheHeaders(res);
+
+    // Auto-seed missing known pages in MySQL
+    for (const t of KNOWN_PAGE_TEMPLATES) {
+      const existing = await query('SELECT id FROM pages WHERE page_key = ? OR slug = ?', [t.page_key, t.slug]);
+      if (!existing || existing.length === 0) {
+        await query(
+          'INSERT INTO pages (page_key, title, slug, status, seo_title, seo_description, created_at, updated_at) VALUES (?, ?, ?, "published", ?, ?, NOW(), NOW())',
+          [t.page_key, t.title, t.slug, `${t.title} | Onecore Pharma`, `Overview and detailed information on ${t.title} at Onecore Pharma.`]
+        );
+      }
+    }
 
     // Auto-seed missing sections across all pages in MySQL
     const allPages = await query('SELECT * FROM pages');
