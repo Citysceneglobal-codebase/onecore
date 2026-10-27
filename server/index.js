@@ -1,4 +1,5 @@
 import './config/env.js';
+import dns from 'dns';
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -6,6 +7,11 @@ import rateLimit from 'express-rate-limit';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
+
+// Prioritize IPv4 over IPv6 for local service resolution in Node 18+
+try {
+  dns.setDefaultResultOrder('ipv4first');
+} catch {}
 
 import authRoutes from './routes/authRoutes.js';
 import dashboardRoutes from './routes/dashboardRoutes.js';
@@ -42,7 +48,58 @@ if (!fs.existsSync(parentUploadsDir)) {
 }
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = parseInt(process.env.PORT, 10) || 5000;
+const HOST = '0.0.0.0';
+
+// Crucial behind Hostinger LiteSpeed / Nginx reverse proxy
+app.set('trust proxy', 1);
+
+// Lightweight Request Duration Logger (Sanitized, production-safe observability)
+app.use((req, res, next) => {
+  const start = Date.now();
+  res.on('finish', () => {
+    const duration = Date.now() - start;
+    if (req.originalUrl.startsWith('/api') || duration > 1000 || res.statusCode >= 400) {
+      console.log(`[HTTP] ${req.method} ${req.originalUrl} ${res.statusCode} ${duration}ms`);
+    }
+  });
+  next();
+});
+
+// Immediate Liveness Check (<1ms, no DB query, never rate-limited)
+app.get('/api/health', (req, res) => {
+  res.status(200).json({
+    status: 'ok',
+    uptime: Math.floor(process.uptime()),
+    service: 'Onecore Pharma API',
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// Readiness Check (Validates DB connectivity with non-blocking 3s timeout)
+app.get('/api/health/db', async (req, res) => {
+  try {
+    const isConnected = await testConnection(3000);
+    if (isConnected) {
+      return res.status(200).json({
+        status: 'connected',
+        database: process.env.DB_NAME || 'u222341186_onecore',
+        timestamp: new Date().toISOString(),
+      });
+    }
+    return res.status(503).json({
+      status: 'disconnected',
+      message: 'Database connection failed or timed out',
+      timestamp: new Date().toISOString(),
+    });
+  } catch (err) {
+    return res.status(503).json({
+      status: 'error',
+      message: err.message,
+      timestamp: new Date().toISOString(),
+    });
+  }
+});
 
 // Security & Middlewares
 app.use(helmet({
@@ -166,15 +223,6 @@ if (fs.existsSync(placeholderPath)) {
   app.use('/placeholder.png', (req, res) => res.sendFile(placeholderPath));
 }
 
-// Health check
-app.get('/api/health', (req, res) => {
-  res.json({
-    status: 'ok',
-    service: 'Onecore Pharma API',
-    timestamp: new Date().toISOString(),
-  });
-});
-
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', dashboardRoutes);
@@ -214,14 +262,51 @@ if (fs.existsSync(distPath)) {
 app.use(errorHandler);
 
 // Start Server
-app.listen(PORT, async () => {
+const server = app.listen(PORT, HOST, () => {
   console.log(`========================================`);
   console.log(` Onecore Pharma API Server Running      `);
-  console.log(` Port:    http://localhost:${PORT}      `);
-  console.log(` Health:  http://localhost:${PORT}/api/health `);
-  console.log(` Environment: ${process.env.NODE_ENV || 'development'} `);
+  console.log(` Bind Address: http://${HOST}:${PORT} `);
+  console.log(` Health:       http://${HOST}:${PORT}/api/health `);
+  console.log(` HealthDB:     http://${HOST}:${PORT}/api/health/db `);
+  console.log(` Environment:  ${process.env.NODE_ENV || 'development'} `);
   console.log(`========================================`);
 
-  // Verify MySQL connection
-  await testConnection();
+  // Non-blocking database check
+  testConnection(5000).catch((err) => {
+    console.warn('⚠️ Background MySQL connection test failed:', err.message);
+  });
 });
+
+server.on('error', (error) => {
+  if (error.code === 'EADDRINUSE') {
+    console.error(`❌ [Onecore] Port ${PORT} on ${HOST} is already in use by another process.`);
+  } else {
+    console.error('❌ [Onecore] Server startup error:', error);
+  }
+  process.exit(1);
+});
+
+// Graceful Shutdown on LiteSpeed / system signals
+const handleShutdown = (signal) => {
+  console.log(`\n🛑 [Onecore] Received ${signal}. Shutting down gracefully...`);
+  server.close(() => {
+    console.log('✅ [Onecore] HTTP server closed.');
+    process.exit(0);
+  });
+  setTimeout(() => {
+    console.error('⚠️ [Onecore] Forcing server exit after timeout.');
+    process.exit(1);
+  }, 5000).unref();
+};
+
+process.on('SIGTERM', () => handleShutdown('SIGTERM'));
+process.on('SIGINT', () => handleShutdown('SIGINT'));
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('⚠️ [Onecore] Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
+process.on('uncaughtException', (err) => {
+  console.error('❌ [Onecore] Uncaught Exception:', err);
+});
+
