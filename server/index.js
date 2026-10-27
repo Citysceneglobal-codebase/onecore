@@ -48,9 +48,8 @@ if (!fs.existsSync(parentUploadsDir)) {
 }
 
 const app = express();
-const PRIMARY_PORT = parseInt(process.env.PORT, 10) || 3000;
-const FALLBACK_PORT = 5000;
-const HOST = '0.0.0.0';
+// Express port and listener configuration compatible with both TCP and Passenger Unix Domain Sockets
+const PORT = process.env.PORT || 3000;
 
 
 // Crucial behind Hostinger LiteSpeed / Nginx reverse proxy
@@ -264,13 +263,16 @@ if (fs.existsSync(distPath)) {
 app.use(errorHandler);
 
 // Start Server
-const server = app.listen(PRIMARY_PORT, HOST, () => {
+// Calling app.listen(PORT) without a fixed host string allows Node.js to:
+// 1) Bind simultaneously to all interfaces (IPv4 and IPv6)
+// 2) Bind correctly to Passenger/CloudLinux Unix Domain Sockets when PORT is a socket path
+const server = app.listen(PORT, () => {
   console.log(`========================================`);
   console.log(` Onecore Pharma API Server Running      `);
-  console.log(` Primary Bind: http://${HOST}:${PRIMARY_PORT} `);
-  console.log(` Health:       http://${HOST}:${PRIMARY_PORT}/api/health `);
-  console.log(` HealthDB:     http://${HOST}:${PRIMARY_PORT}/api/health/db `);
-  console.log(` Environment:  ${process.env.NODE_ENV || 'development'} `);
+  console.log(` Port / Socket: ${PORT}                 `);
+  console.log(` Health:        /api/health             `);
+  console.log(` HealthDB:      /api/health/db          `);
+  console.log(` Environment:   ${process.env.NODE_ENV || 'development'} `);
   console.log(`========================================`);
 
   // Non-blocking database check
@@ -279,28 +281,14 @@ const server = app.listen(PRIMARY_PORT, HOST, () => {
   });
 });
 
-// Dual-listener: If Hostinger proxy targets port 5000 or 3000, serve both simultaneously
-if (!process.env.PORT && PRIMARY_PORT !== FALLBACK_PORT) {
-  try {
-    const secondaryServer = app.listen(FALLBACK_PORT, HOST, () => {
-      console.log(`[Onecore] Dual-port fallback listener active on http://${HOST}:${FALLBACK_PORT}`);
-    });
-    secondaryServer.on('error', (err) => {
-      // Ignore if port 5000 is occupied by dev process
-      console.log(`[Onecore] Secondary port ${FALLBACK_PORT} unavailable (${err.code}), continuing on primary port ${PRIMARY_PORT}.`);
-    });
-  } catch {}
-}
-
 server.on('error', (error) => {
   if (error.code === 'EADDRINUSE') {
-    console.error(`❌ [Onecore] Port ${PRIMARY_PORT} on ${HOST} is already in use by another process.`);
+    console.error(`❌ [Onecore] Port or socket ${PORT} is already in use by another process.`);
   } else {
     console.error('❌ [Onecore] Server startup error:', error);
   }
   process.exit(1);
 });
-
 
 // Graceful Shutdown on LiteSpeed / system signals
 const handleShutdown = (signal) => {
@@ -325,4 +313,7 @@ process.on('unhandledRejection', (reason, promise) => {
 process.on('uncaughtException', (err) => {
   console.error('❌ [Onecore] Uncaught Exception:', err);
 });
+
+export { app, server };
+export default app;
 
