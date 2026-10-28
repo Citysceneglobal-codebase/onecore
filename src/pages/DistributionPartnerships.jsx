@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { CheckCircle2, ArrowRight, ShieldCheck, Building2, MapPin, Mail, Phone, Users, TrendingUp } from 'lucide-react';
 import ScrollReveal from '../components/ScrollReveal';
+import HeroResponsiveImage from '../components/HeroResponsiveImage';
 import { useSettings } from '../hooks/useSettings';
 import { useCmsPage } from '../hooks/useCmsPage';
 import { assetUrl } from '../utils/assetUrl';
@@ -125,21 +126,18 @@ export default function DistributionPartnerships() {
           Clean, stately, high-contrast human photography with bold typography
           ========================================================================= */}
       <section className="relative min-h-[90vh] sm:min-h-screen flex items-end pb-16 sm:pb-24 pt-32 px-4 sm:px-8 lg:px-12 bg-black">
-        {/* Hero Background Photograph */}
+        {/* Hero Background Responsive Photograph */}
         <div className="absolute inset-0 z-0">
-          <img
-            src={assetUrl(heroSection?.image_url || '/assets/about-facility.jpg')}
+          <HeroResponsiveImage
+            desktopImage={heroSection?.image_url}
+            mobileImage={heroSection?.image_mobile_url || heroSection?.mobile_image_url}
             alt="Onecore Pharma pan-India pharmaceutical supply network"
-            className="w-full h-full object-cover object-center opacity-85 brightness-90"
-            loading="eager"
-            onError={(e) => {
-              e.currentTarget.onerror = null;
-              e.currentTarget.src = '/assets/about-facility.jpg';
-            }}
+            fallback="/assets/about-facility.jpg"
+            className="w-full h-full object-cover object-center"
           />
-          {/* Directional contrast gradient */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 to-black/20" />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/40 to-transparent" />
+          {/* Directional contrast gradient — lessened intensity */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/25 to-transparent pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/15 to-transparent pointer-events-none" />
         </div>
 
         {/* Hero Content Block */}

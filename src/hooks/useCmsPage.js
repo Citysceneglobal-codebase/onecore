@@ -66,6 +66,8 @@ export function useCmsPage(pageKey, fallbackData = {}) {
                 eyebrow: sec.eyebrow || parsedContent?.eyebrow || '',
                 body: sec.body || parsedContent?.body || parsedContent?.description || parsedContent?.mission || '',
                 image_url: sec.image_url || parsedContent?.image_url || '',
+                image_mobile_url: sec.image_mobile_url || parsedContent?.image_mobile_url || parsedContent?.mobile_image_url || '',
+                mobile_image_url: sec.image_mobile_url || parsedContent?.image_mobile_url || parsedContent?.mobile_image_url || '',
                 poster_url: sec.image_url || parsedContent?.image_url || '',
                 video_url: sec.video_url || parsedContent?.video_url || '',
                 cta_text: sec.cta_text || parsedContent?.cta_text || '',

@@ -44,6 +44,7 @@ async function syncCms() {
     await ensureColumn('items_json', 'items_json LONGTEXT NULL AFTER body');
     await ensureColumn('secondary_cta_text', 'secondary_cta_text VARCHAR(100) NULL AFTER cta_url');
     await ensureColumn('secondary_cta_url', 'secondary_cta_url VARCHAR(255) NULL AFTER secondary_cta_text');
+    await ensureColumn('image_mobile_url', 'image_mobile_url VARCHAR(255) NULL AFTER image_url');
 
     // 2. Ensure pages exist
     const pages = [

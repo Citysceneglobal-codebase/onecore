@@ -82,6 +82,7 @@ export default function Privacy() {
       <PageBanner
         title={bannerTitle}
         imageUrl={bannerImage}
+        imageMobileUrl={bannerSec.image_mobile_url || bannerSec.mobile_image_url}
         imageAlt={`${bannerTitle} - Onecore Pharma`}
       />
 

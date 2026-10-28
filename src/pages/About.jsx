@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import ScrollReveal from '../components/ScrollReveal';
+import HeroResponsiveImage from '../components/HeroResponsiveImage';
 import { ArrowRight, CheckCircle2 } from 'lucide-react';
 import { useCmsPage } from '../hooks/useCmsPage';
 import { assetUrl } from '../utils/assetUrl';
@@ -131,17 +132,18 @@ export default function About() {
           Clean, stately, high-contrast human photography with bold typography
           ========================================================================= */}
       <section className="relative min-h-[90vh] sm:min-h-screen flex items-end pb-16 sm:pb-24 pt-32 px-4 sm:px-8 lg:px-12 bg-black">
-        {/* Hero Background Photograph */}
+        {/* Hero Background Responsive Photograph */}
         <div className="absolute inset-0 z-0">
-          <img
-            src={assetUrl(heroSec.image_url || '/assets/about-facility.jpg')}
+          <HeroResponsiveImage
+            desktopImage={heroSec.image_url}
+            mobileImage={heroSec.image_mobile_url || heroSec.mobile_image_url}
             alt="Onecore Pharma formulation and manufacturing facility"
-            className="w-full h-full object-cover object-center opacity-85 brightness-90"
-            loading="eager"
+            fallback="/assets/about-facility.jpg"
+            className="w-full h-full object-cover object-center"
           />
-          {/* Directional contrast gradient */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 to-black/20" />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/40 to-transparent" />
+          {/* Directional contrast gradient — lessened intensity */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/25 to-transparent pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/15 to-transparent pointer-events-none" />
         </div>
 
         {/* Hero Content Block */}

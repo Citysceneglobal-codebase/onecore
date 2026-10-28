@@ -383,6 +383,7 @@ function SectionEditorPanel({ section, onSave, onCancel, onOpenMedia }) {
     secondary_cta_text: section.secondary_cta_text || '',
     secondary_cta_url: section.secondary_cta_url || '',
     image_url: section.image_url || '',
+    image_mobile_url: section.image_mobile_url || initialContent.image_mobile_url || initialContent.mobile_image_url || '',
     video_url: section.video_url || '',
     is_active: section.is_active !== 0,
     items_json: JSON.stringify(initialItems),
@@ -525,11 +526,15 @@ function SectionEditorPanel({ section, onSave, onCancel, onOpenMedia }) {
     if (form.image_url) {
       if ('image_url' in finalContent) finalContent.image_url = form.image_url;
     }
+    if (form.image_mobile_url !== undefined) {
+      finalContent.image_mobile_url = form.image_mobile_url;
+    }
 
     const finalContentJson = JSON.stringify(finalContent);
 
     onSave({
       ...form,
+      image_mobile_url: form.image_mobile_url || '',
       body: isContactCoords ? contactCoords.registered_office : form.body,
       items_json: JSON.stringify(parsedItems),
       content_json: finalContentJson,
@@ -848,11 +853,14 @@ function SectionEditorPanel({ section, onSave, onCancel, onOpenMedia }) {
           />
         </div>
 
-        {/* Image URL & Selector */}
+        {/* Image URL & Selector (Desktop / Default) */}
         <div>
-          <label className="block text-[11px] font-mono uppercase tracking-wider text-slate-600 font-medium mb-1">
-            Section Image URL
-          </label>
+          <div className="flex items-center justify-between mb-1">
+            <label className="block text-[11px] font-mono uppercase tracking-wider text-slate-700 font-semibold">
+              Section Image (Desktop / Default)
+            </label>
+            <span className="text-[10px] text-slate-500">Standard & Desktop</span>
+          </div>
           <div className="flex gap-2">
             <input
               type="text"
@@ -884,7 +892,7 @@ function SectionEditorPanel({ section, onSave, onCancel, onOpenMedia }) {
             <div className="mt-2.5 flex items-center gap-3 p-2 bg-slate-50 border border-slate-200 rounded-lg">
               <img
                 src={assetUrl(form.image_url)}
-                alt="Section Preview"
+                alt="Desktop Preview"
                 className="w-16 h-10 object-cover rounded border border-slate-200 bg-white"
                 onError={(e) => {
                   e.currentTarget.onerror = null;
@@ -893,6 +901,64 @@ function SectionEditorPanel({ section, onSave, onCancel, onOpenMedia }) {
               />
               <span className="text-[11px] text-slate-500 font-mono truncate">{form.image_url}</span>
             </div>
+          )}
+        </div>
+
+        {/* Mobile Image URL & Selector (Optional) */}
+        <div>
+          <div className="flex items-center justify-between mb-1">
+            <label className="block text-[11px] font-mono uppercase tracking-wider text-slate-700 font-semibold">
+              Section Mobile Image (Optional)
+            </label>
+            <span className="text-[10px] text-slate-500">Used on Mobile (&lt;768px)</span>
+          </div>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={form.image_mobile_url}
+              onChange={set('image_mobile_url')}
+              placeholder="e.g. /uploads/hero-mobile.jpg"
+              className="flex-1 bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#0D5C75] focus:ring-1 focus:ring-[#0D5C75]"
+            />
+            <button
+              type="button"
+              onClick={() => onOpenMedia((url) => setForm((p) => ({ ...p, image_mobile_url: url })))}
+              className="shrink-0 flex items-center gap-1.5 px-3 py-2 bg-slate-50 border border-slate-200 hover:bg-slate-100 rounded-lg text-xs font-semibold text-slate-700 transition-all cursor-pointer"
+            >
+              <ImageIcon size={14} />
+              <span>Choose</span>
+            </button>
+            {form.image_mobile_url && (
+              <button
+                type="button"
+                onClick={() => setForm((p) => ({ ...p, image_mobile_url: '' }))}
+                className="shrink-0 px-2.5 py-2 bg-slate-50 border border-slate-200 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 rounded-lg text-xs font-semibold text-slate-500 transition-all cursor-pointer"
+                title="Clear mobile image (will use desktop image instead)"
+              >
+                Clear
+              </button>
+            )}
+          </div>
+          {form.image_mobile_url ? (
+            <div className="mt-2.5 flex items-center gap-3 p-2 bg-slate-50 border border-slate-200 rounded-lg">
+              <img
+                src={assetUrl(form.image_mobile_url)}
+                alt="Mobile Preview"
+                className="w-10 h-14 object-cover rounded border border-slate-200 bg-white"
+                onError={(e) => {
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = '/placeholder.png';
+                }}
+              />
+              <div className="flex flex-col min-w-0">
+                <span className="text-[10px] text-emerald-600 font-semibold uppercase tracking-wider">Active on Mobile Screens</span>
+                <span className="text-[11px] text-slate-500 font-mono truncate">{form.image_mobile_url}</span>
+              </div>
+            </div>
+          ) : (
+            <p className="text-[11px] text-slate-400 mt-1 italic">
+              No mobile image set. Mobile visitors will automatically see the Desktop image.
+            </p>
           )}
         </div>
 

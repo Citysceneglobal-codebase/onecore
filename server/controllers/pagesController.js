@@ -647,6 +647,8 @@ export const updatePageSection = async (req, res, next) => {
       secondary_cta_text,
       secondary_cta_url,
       image_url,
+      image_mobile_url,
+      mobile_image_url,
       video_url,
       is_active,
       display_order,
@@ -656,6 +658,7 @@ export const updatePageSection = async (req, res, next) => {
 
     const updates = [];
     const params = [];
+    const mobileImg = image_mobile_url !== undefined ? image_mobile_url : mobile_image_url;
 
     if (eyebrow !== undefined) { updates.push('eyebrow = ?'); params.push(eyebrow); }
     if (heading !== undefined || section_title !== undefined) { 
@@ -665,7 +668,13 @@ export const updatePageSection = async (req, res, next) => {
     if (subheading !== undefined) { updates.push('subheading = ?'); params.push(subheading); }
     if (body !== undefined) { updates.push('body = ?'); params.push(body); }
     if (items_json !== undefined || content_json !== undefined) {
-      const val = items_json !== undefined ? items_json : content_json;
+      let val = items_json !== undefined ? items_json : content_json;
+      if (typeof val === 'string') {
+        try { val = JSON.parse(val); } catch {}
+      }
+      if (val && typeof val === 'object' && !Array.isArray(val) && mobileImg !== undefined) {
+        val.image_mobile_url = mobileImg;
+      }
       updates.push('items_json = ?');
       params.push(typeof val === 'object' ? JSON.stringify(val) : val);
     }
@@ -682,12 +691,27 @@ export const updatePageSection = async (req, res, next) => {
     }
     if (section_type !== undefined) { updates.push('section_type = ?'); params.push(section_type); }
 
-    if (updates.length === 0) {
+    if (updates.length === 0 && mobileImg === undefined) {
       return res.status(400).json({ success: false, message: 'No fields provided.' });
     }
 
-    params.push(id);
-    await query(`UPDATE page_sections SET ${updates.join(', ')} WHERE id = ?`, params);
+    if (updates.length > 0) {
+      params.push(id);
+      await query(`UPDATE page_sections SET ${updates.join(', ')} WHERE id = ?`, params);
+    }
+
+    if (mobileImg !== undefined) {
+      try {
+        await query('UPDATE page_sections SET image_mobile_url = ? WHERE id = ?', [mobileImg, id]);
+      } catch (colErr) {
+        if (colErr.code === 'ER_BAD_FIELD_ERROR' || colErr.message?.includes('image_mobile_url')) {
+          try {
+            await query('ALTER TABLE page_sections ADD COLUMN image_mobile_url VARCHAR(255) NULL AFTER image_url');
+            await query('UPDATE page_sections SET image_mobile_url = ? WHERE id = ?', [mobileImg, id]);
+          } catch {}
+        }
+      }
+    }
 
     return res.status(200).json({
       success: true,

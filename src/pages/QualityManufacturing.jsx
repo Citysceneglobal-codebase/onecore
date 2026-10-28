@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, CheckCircle2, ShieldCheck, Microscope, Layers } from 'lucide-react';
 import ScrollReveal from '../components/ScrollReveal';
+import HeroResponsiveImage from '../components/HeroResponsiveImage';
 import { useCmsPage } from '../hooks/useCmsPage';
 import { assetUrl } from '../utils/assetUrl';
 import PageSkeleton from '../components/PageSkeleton';
@@ -125,24 +126,39 @@ export default function QualityManufacturing() {
           Headline & body overlaid directly on video with contrast grading & smooth looping
           ========================================================================= */}
       <section className="relative min-h-[85vh] sm:min-h-[90vh] flex items-end pb-16 sm:pb-24 pt-32 px-4 sm:px-8 lg:px-12 bg-[#071324] overflow-hidden">
-        {/* Background Video with Cinematic Grading & Color Filter */}
+        {/* Background Video or Responsive Mobile Image */}
         <div className="absolute inset-0 z-0 overflow-hidden bg-[#071324]">
-          <video
-            ref={videoRef}
-            src={assetUrl(heroSec.video_url || '/assets/quality-manufacturing.mp4')}
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="auto"
-            onLoadedData={() => setVideoReady(true)}
-            className={`w-full h-full object-cover object-center scale-[1.02] filter brightness-[0.72] contrast-[1.12] saturate-[0.88] transition-opacity duration-700 ${videoReady ? 'opacity-100' : 'opacity-0'}`}
-          />
+          {/* Mobile view if a dedicated mobile hero image is uploaded */}
+          {heroSec.image_mobile_url ? (
+            <div className="block md:hidden w-full h-full">
+              <HeroResponsiveImage
+                desktopImage={heroSec.image_url}
+                mobileImage={heroSec.image_mobile_url}
+                alt={heroSec.heading || heroSec.title || 'Onecore Pharma Quality and Manufacturing'}
+                fallback="/assets/quality.jpg"
+                className="w-full h-full object-cover object-center"
+              />
+            </div>
+          ) : null}
 
-          {/* Clinical Color Contrast Grading Filters */}
-          <div className="absolute inset-0 bg-[#071324]/35 mix-blend-multiply pointer-events-none" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/55 to-black/30 pointer-events-none" />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/50 to-transparent pointer-events-none" />
+          {/* High Performance Video (Desktop or default fallback) */}
+          <div className={`w-full h-full ${heroSec.image_mobile_url ? 'hidden md:block' : 'block'}`}>
+            <video
+              ref={videoRef}
+              src={assetUrl(heroSec.video_url || '/assets/quality-manufacturing.mp4')}
+              poster={assetUrl(heroSec.image_url || '/assets/quality.jpg')}
+              autoPlay
+              loop
+              muted
+              playsInline
+              preload="metadata"
+              onLoadedData={() => setVideoReady(true)}
+              className={`w-full h-full object-cover object-center scale-[1.01] transition-opacity duration-500 ${videoReady ? 'opacity-100' : 'opacity-90'}`}
+            />
+          </div>
+
+          {/* Clean minimal readable vignette — heavy black film removed */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none" />
         </div>
 
         {/* Hero Content Block Overlaid On Video */}
